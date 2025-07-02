@@ -1,6 +1,6 @@
 
-#include "Renderer.hpp"
-
+# include "Renderer.hpp"
+# include "stdio.h"
 
 // render every pixel of the screen.
 void Raytracing::Renderer::Render()
@@ -10,20 +10,30 @@ void Raytracing::Renderer::Render()
     {
         imageData[i] = 0xFF000000 | (int)(0x00FFFFFF * ((float)rand() / RAND_MAX));
     }
+
+
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
 void Raytracing::Renderer::OnResize(const uint32_t newWidth, const uint32_t newHeight)
 {
     if (imageData && width == newWidth && height == newHeight)
         return;
-
+        
     // resize GPU image
     delete[] imageData;
+
+    // update dims
+    width = newWidth;
+    height = newHeight;
     imageData = new uint32_t[width * height];
 
     if (textureId == 0) {
         glGenTextures(1, &textureId);
     }
+
     glBindTexture(GL_TEXTURE_2D, textureId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

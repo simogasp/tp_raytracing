@@ -60,8 +60,8 @@ namespace Raytracing
         void Render()
         {
 
-            // renderer.OnResize(m_viewportWidth, m_viewportHeight);
-            // renderer.Render();
+            renderer.OnResize(m_viewportWidth, m_viewportHeight);
+            renderer.Render();
 
         }
     };
