@@ -9,15 +9,22 @@
 #CXX = g++
 #CXX = clang++
 
+RAYTRACING_DIR = raytracing
+GUI_SRCS := $(wildcard $(RAYTRACING_DIR)/gui/*cpp)
+CONTROLLER_SRCS := $(wildcard $(RAYTRACING_DIR)/controller/*cpp)
+MODEL_SRCS := $(wildcard $(RAYTRACING_DIR)/model/*cpp)
+ALGEBRA_SRCS := $(wildcard $(RAYTRACING_DIR)/algebra/*cpp)
+
+
 EXE = MyApp
 IMGUI_DIR = ..
-SOURCES = main.cpp raytracing/gui/App.cpp raytracing/controller/Renderer.cpp
+SOURCES = main.cpp $(GUI_SRCS) $(CONTROLLER_SRCS) $(MODEL_SRCS)
 SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
 SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glut.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl2.cpp
-OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
+OBJS = $(SOURCES:.cpp=.o)
 UNAME_S := $(shell uname -s)
 
-CXXFLAGS = -std=c++11 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
+CXXFLAGS = -std=c++17 -fopenmp -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
 
@@ -51,7 +58,6 @@ else
 endif
 	CFLAGS = $(CXXFLAGS)
 endif
-
 ##---------------------------------------------------------------------
 ## BUILD RULES
 ##---------------------------------------------------------------------
@@ -64,13 +70,6 @@ endif
 
 %.o:$(IMGUI_DIR)/backends/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-App.o:
-	$(CXX) $(CXXFLAGS) -c -o $@ raytracing/gui/App.cpp
-
-Renderer.o:
-	$(CXX) $(CXXFLAGS) -c -o $@ raytracing/controller/Renderer.cpp
-
 
 
 all: $(EXE)
