@@ -3,6 +3,13 @@
 # include "Renderer.hpp"
 # include <stdio.h>
 
+Raytracing::Renderer::Renderer()
+{
+    image = new Raytracing::ImageWrapper();
+    scene = Scene();
+    scene.addRandomSphere();
+}
+
 Raytracing::Renderer::~Renderer()
 {
     free(image);

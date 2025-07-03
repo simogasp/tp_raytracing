@@ -1,7 +1,10 @@
 # pragma once
 
 # include "ImageWrapper.hpp"
+# include "raytracing/core/Scene.hpp"
+
 # include <stdint.h>
+
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -14,10 +17,10 @@ namespace Raytracing
     class Renderer
     {
     private:
-        Raytracing::ImageWrapper* image = new Raytracing::ImageWrapper();
-
+        Raytracing::ImageWrapper* image;
+        Raytracing::Scene scene;
     public:
-        Renderer() = default;
+        Renderer();
         ~Renderer();
 
         void OnResize(const uint32_t newWidth, const uint32_t newHeight);

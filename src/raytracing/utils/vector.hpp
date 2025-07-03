@@ -1,22 +1,18 @@
+
 #pragma once
 
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#pragma region
 
 #include "math.hpp"
-
-#pragma endregion
 
 //-----------------------------------------------------------------------------
 // System Includes
 //-----------------------------------------------------------------------------
-#pragma region
 
 #include <iostream>
 
-#pragma endregion
 
 //-----------------------------------------------------------------------------
 // Declarations and Definitions
@@ -271,11 +267,8 @@ public:
 // Vector3 Utilities
 //-------------------------------------------------------------------------
 
-std::ostream &operator<<(std::ostream &os, const Vector3 &v)
-{
-	os << '[' << v.m_x << ' ' << v.m_y << ' ' << v.m_z << ']';
-	return os;
-}
+std::ostream &operator<<(std::ostream &os, const Vector3 &v);
+
 
 [[nodiscard]]
 constexpr Vector3 operator+(double a, const Vector3 &v) noexcept

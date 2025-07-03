@@ -2,7 +2,7 @@
  * This is the App We wants to build with a raytracing.
  */
 
-# include "../controller/Renderer.hpp"
+# include "raytracing/controller/Renderer.hpp"
 
 
 namespace Raytracing

@@ -13,19 +13,21 @@ SRC = ../src
 RAYTRACING_DIR = $(SRC)/raytracing
 GUI_SRCS := $(wildcard $(RAYTRACING_DIR)/gui/*cpp)
 CONTROLLER_SRCS := $(wildcard $(RAYTRACING_DIR)/controller/*cpp)
-MODEL_SRCS := $(wildcard $(RAYTRACING_DIR)/model/*cpp)
-ALGEBRA_SRCS := $(wildcard $(RAYTRACING_DIR)/algebra/*cpp)
+MODEL_SRCS := $(wildcard $(RAYTRACING_DIR)/core/*.cpp)
+MODEL_HITABLE_SRCS := $(wildcard $(RAYTRACING_DIR)/core/hittableObject/*.cpp)
+UTILS_SRCS := $(wildcard $(RAYTRACING_DIR)/utils/*cpp)
 
 
 EXE = MyApp
 IMGUI_DIR = ..
-SOURCES = $(SRC)/main.cpp $(GUI_SRCS) $(CONTROLLER_SRCS) $(MODEL_SRCS)
+SOURCES = $(SRC)/main.cpp $(GUI_SRCS) $(CONTROLLER_SRCS) $(MODEL_SRCS) $(UTILS_SRCS) \
+	$(MODEL_HITABLE_SRCS)
 SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
 SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glut.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl2.cpp
 OBJS = $(SOURCES:.cpp=.o)
 UNAME_S := $(shell uname -s)
 
-CXXFLAGS = -std=c++17 -fopenmp -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
+CXXFLAGS = -std=c++17 -fopenmp -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(SRC)
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
 

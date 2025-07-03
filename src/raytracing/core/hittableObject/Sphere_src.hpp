@@ -3,32 +3,28 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#pragma region
-
-#include "geometry.hpp"
-
-#pragma endregion
+# include "stdint.h"
+#include <pstl/glue_algorithm_defs.h>
+#include "raytracing/utils/vector.hpp"
 
 //-----------------------------------------------------------------------------
 // Defines
 //-----------------------------------------------------------------------------
-#pragma region
 
 #define EPSILON_SPHERE 1e-4
 
-#pragma endregion
 
 //-----------------------------------------------------------------------------
 // Declarations and Definitions
 //-----------------------------------------------------------------------------
-namespace smallpt
+namespace Raytracing
 {
 
 	//-------------------------------------------------------------------------
 	// Declarations and Definitions: Reflection_t
 	//-------------------------------------------------------------------------
 
-	enum struct Reflection_t : std::uint8_t
+	enum struct Reflection_t : uint8_t
 	{
 		Diffuse = 0u,
 		Specular,
@@ -73,7 +69,7 @@ namespace smallpt
 		//---------------------------------------------------------------------
 
 		[[nodiscard]]
-		constexpr bool Intersect(const Ray &ray) const noexcept
+		constexpr bool Intersect(const Raytracing::Ray &ray) const noexcept
 		{
 			// (o + t*d - p) . (o + t*d - p) - r*r = 0
 			// <=> (d . d) * t^2 + 2 * d . (o - p) * t + (o - p) . (o - p) - r*r = 0

@@ -25,7 +25,7 @@ SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glut.cpp $(IMGUI_DIR)/backends/imgui
 OBJS = $(SOURCES:.cpp=.o)
 UNAME_S := $(shell uname -s)
 
-CXXFLAGS = -std=c++17 -fopenmp -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
+CXXFLAGS = -std=c++17 -fopenmp -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(SRC)
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
 
