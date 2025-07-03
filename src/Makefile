@@ -9,7 +9,8 @@
 #CXX = g++
 #CXX = clang++
 
-RAYTRACING_DIR = raytracing
+SRC = ../src
+RAYTRACING_DIR = $(SRC)/raytracing
 GUI_SRCS := $(wildcard $(RAYTRACING_DIR)/gui/*cpp)
 CONTROLLER_SRCS := $(wildcard $(RAYTRACING_DIR)/controller/*cpp)
 MODEL_SRCS := $(wildcard $(RAYTRACING_DIR)/model/*cpp)
@@ -18,7 +19,7 @@ ALGEBRA_SRCS := $(wildcard $(RAYTRACING_DIR)/algebra/*cpp)
 
 EXE = MyApp
 IMGUI_DIR = ..
-SOURCES = main.cpp $(GUI_SRCS) $(CONTROLLER_SRCS) $(MODEL_SRCS)
+SOURCES = $(SRC)/main.cpp $(GUI_SRCS) $(CONTROLLER_SRCS) $(MODEL_SRCS)
 SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
 SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glut.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl2.cpp
 OBJS = $(SOURCES:.cpp=.o)
@@ -27,6 +28,9 @@ UNAME_S := $(shell uname -s)
 CXXFLAGS = -std=c++17 -fopenmp -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
+
+# Set build directory
+BUILD_DIR = ../build
 
 ##---------------------------------------------------------------------
 ## BUILD FLAGS PER PLATFORM
@@ -62,13 +66,18 @@ endif
 ## BUILD RULES
 ##---------------------------------------------------------------------
 
-%.o:%.cpp
+# Ensure build dir exists before compiling
+$(BUILD_DIR):
+	@mkdir -p $(BUILD_DIR)
+
+# Pattern rules to compile .cpp to build/*.o
+$(BUILD_DIR)/%.o: $(SRC)/%.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-%.o:$(IMGUI_DIR)/%.cpp
+$(BUILD_DIR)/%.o: $(IMGUI_DIR)/%.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-%.o:$(IMGUI_DIR)/backends/%.cpp
+$(BUILD_DIR)/%.o: $(IMGUI_DIR)/backends/%.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 

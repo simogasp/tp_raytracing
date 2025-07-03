@@ -1,5 +1,6 @@
 # pragma once
 
+# include "ImageWrapper.hpp"
 # include <stdint.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -13,14 +14,11 @@ namespace Raytracing
     class Renderer
     {
     private:
-        uint32_t width;
-        uint32_t height;
-        GLuint textureId;
-        uint32_t * imageData = nullptr;
+        Raytracing::ImageWrapper* image = new Raytracing::ImageWrapper();
 
     public:
         Renderer() = default;
-        ~Renderer() = default;
+        ~Renderer();
 
         void OnResize(const uint32_t newWidth, const uint32_t newHeight);
         void Render();
@@ -30,7 +28,7 @@ namespace Raytracing
         GLuint getTextureId();
 
     private:
-    
+        uint32_t perPixel(const uint32_t x, const uint32_t y);
     };
 
 }

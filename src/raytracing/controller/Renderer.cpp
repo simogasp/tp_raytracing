@@ -1,55 +1,54 @@
 
+# include "imgui.h"
 # include "Renderer.hpp"
-# include "stdio.h"
+# include <stdio.h>
+
+Raytracing::Renderer::~Renderer()
+{
+    free(image);
+}
 
 // render every pixel of the screen.
 void Raytracing::Renderer::Render()
 {
-
-    for (size_t i = 0; i < width * height; i++)
+    for (size_t y = 0; y < getHeight(); y++)
     {
-        imageData[i] = 0xFF000000 | (int)(0x00FFFFFF * ((float)rand() / RAND_MAX));
+        for (size_t x = 0; x < getWidth(); x++)
+        {
+            image->setPixel(x + y * getWidth(), perPixel(x, y));
+        }        
+    }
+    
+    {
     }
 
-
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    image->update();
 }
+
 
 void Raytracing::Renderer::OnResize(const uint32_t newWidth, const uint32_t newHeight)
 {
-    if (imageData && width == newWidth && height == newHeight)
+    if (image && image->getWidth() == newWidth && image->getHeight() == newHeight)
         return;
-        
-    // resize GPU image
-    delete[] imageData;
-
-    // update dims
-    width = newWidth;
-    height = newHeight;
-    imageData = new uint32_t[width * height];
-
-    if (textureId == 0) {
-        glGenTextures(1, &textureId);
-    }
-
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    image->resize(newWidth, newHeight);
 }
 
 uint32_t Raytracing::Renderer::getWidth()
 {
-    return width;
+    return image->getWidth();
 }
 
 uint32_t Raytracing::Renderer::getHeight()
 {
-    return height;
+    return image->getHeight();
 }
 
 GLuint Raytracing::Renderer::getTextureId()
 {
-    return textureId;
+    return image->getTextureId();
+}
+
+uint32_t Raytracing::Renderer::perPixel(const uint32_t x, const uint32_t y)
+{
+    return IM_COL32((float) x / getWidth() * 255, (1 - (float) y / getHeight()) * 255, 0, 255);
 }

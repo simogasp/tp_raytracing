@@ -1,35 +1,28 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#pragma region
 
 #include "imageio.hpp"
 #include "sampling.hpp"
 #include "specular.hpp"
 #include "sphere.hpp"
 
-#pragma endregion
 
 //-----------------------------------------------------------------------------
 // System Includes
 //-----------------------------------------------------------------------------
-#pragma region
 
 #include <iterator>
 #include <memory>
 #include <optional>
 
-#pragma endregion
 
 //-----------------------------------------------------------------------------
 // Defines
 //-----------------------------------------------------------------------------
-#pragma region
 
 #define REFRACTIVE_INDEX_OUT 1.0
 #define REFRACTIVE_INDEX_IN  1.5
-
-#pragma endregion
 
 //-----------------------------------------------------------------------------
 // Declarations and Definitions

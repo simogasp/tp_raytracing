@@ -1,0 +1,8 @@
+# remove docs directory
+docs
+
+# ignore object files
+*.o
+
+# ignore executable files
+*.exe
