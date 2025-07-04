@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "string_view": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "numbers": "cpp"
     },
     "cmake.sourceDirectory": "/home/timot/Documents/projets/tp_raytracing/examples/example_glfw_wgpu",
     "C_Cpp.dimInactiveRegions": true

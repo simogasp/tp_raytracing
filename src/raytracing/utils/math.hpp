@@ -30,3 +30,14 @@ inline std::uint8_t ToByte(double color, double gamma = 2.2) noexcept {
 	return static_cast< std::uint8_t >(std::clamp(255.0 * gcolor, 
 													0.0, 255.0));
 }
+
+[[ nodiscard ]]
+inline int clampi(const int value, const int min, const int max) {
+	if (value < min) {
+		return min;
+	}
+	if (value > max) {
+		return max;
+	}
+	return value;
+}

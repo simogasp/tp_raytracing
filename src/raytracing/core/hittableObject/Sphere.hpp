@@ -2,6 +2,7 @@
 
 # include "stdint.h"
 # include "raytracing/utils/vector.hpp"
+# include "raytracing/core/Ray.hpp"
 
 # define EPSILON_SPHERE 1e-4
 
@@ -18,8 +19,11 @@ namespace Raytracing
     public:
         Sphere(const float theRadius, const Vector3& pos);
         ~Sphere() = default;
+        
+        [[nodiscard]]
+        bool intersect(Ray &ray);
     };
 
-
+		
 
 } // namespace Raytracing
