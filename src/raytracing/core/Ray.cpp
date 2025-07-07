@@ -11,6 +11,7 @@ namespace Raytracing
         color = IM_COL32(0, 0, 0, 255);
         near = nearRay;
         far = farRay;
+        depth = far;
     }
 
     Vector3 Ray::getOrigin()
@@ -57,6 +58,11 @@ namespace Raytracing
     void Ray::setDirection(const Vector3 &newDirection)
     {
         direction = newDirection;
+    }
+
+    void Ray::setOrigin(const Vector3 &newOrigin)
+    {
+        origin = newOrigin; 
     }
 
 } // namespace Raytracing

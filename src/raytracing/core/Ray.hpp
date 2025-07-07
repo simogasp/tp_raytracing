@@ -37,10 +37,13 @@ namespace Raytracing
         void setNear(const float newNear);
 
         void setFar(const float newFar);
+
         
         void reset();
         
         void setDirection(const Vector3& newDirection);
+        
+        void setOrigin(const Vector3 &newOrigin);
     };
     
     

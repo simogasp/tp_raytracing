@@ -9,7 +9,7 @@ Raytracing::Camera::Camera(const Vector3 &positionCamera, const Vector3 &lookAtC
     lookAt = lookAtCamera;
     up = upCamera;
     focal = focalCamera;
-    fieldOfView = clampi(fieldOfViewCamera, 1, 359);
+    fieldOfView = std::clamp((double) fieldOfViewCamera, 0.0, 2.0 * g_pi);
     near = nearCamera;
     far = farCamera;
 }

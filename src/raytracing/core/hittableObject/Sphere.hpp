@@ -21,7 +21,7 @@ namespace Raytracing
         ~Sphere() = default;
         
         [[nodiscard]]
-        bool intersect(Ray &ray);
+        bool intersect(Ray *ray);
     };
 
 		
