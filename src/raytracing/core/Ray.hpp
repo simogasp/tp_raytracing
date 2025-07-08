@@ -15,7 +15,7 @@ namespace Raytracing
         float far;
         float depth;
     public:
-        Ray() = default;
+        Ray();
         Ray(const Vector3& origin, const Vector3& direction,
             const float nearRay, const float farRay);
         ~Ray() = default;
@@ -32,6 +32,9 @@ namespace Raytracing
         [[ nodiscard ]]
         float getDepth();
 
+        [[ nodiscard ]]
+        ImColor getColor();
+
         void setDepth(const float newDepth);
 
         void setNear(const float newNear);
@@ -44,6 +47,10 @@ namespace Raytracing
         void setDirection(const Vector3& newDirection);
         
         void setOrigin(const Vector3 &newOrigin);
+
+        void setColor(ImColor newColor);
+
+        void setNormalHit(const double t, const Vector3& center);
     };
     
     

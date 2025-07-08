@@ -52,7 +52,7 @@ bool cond(int x, int y, int w, int h) {
 void Raytracing::Renderer::Render()
 {
     size_t x, y;
-#pragma omp parallel for collapse(2) private(x, y)
+#pragma omp parallel for collapse(2)
     for (y = 0; y < getHeight(); y++)
     {
         for (x = 0; x < getWidth(); x++)
@@ -65,12 +65,48 @@ void Raytracing::Renderer::Render()
     image->update();
 }
 
+void Raytracing::Renderer::setFov(const double newValue)
+{
+    camera.setFov(newValue);
+    setRayDirection();
+}
+
+void Raytracing::Renderer::cameraForward()
+{
+    camera.forward();
+}
+
+void Raytracing::Renderer::cameraBackward()
+{
+    camera.backward();
+}
+
+void Raytracing::Renderer::cameraLeftShift()
+{
+    camera.left();
+}
+
+void Raytracing::Renderer::cameraRightShift()
+{
+    camera.right();
+}
+
+void Raytracing::Renderer::cameraUpShift()
+{
+    camera.up();
+}
+
+void Raytracing::Renderer::cameraDownShift()
+{
+    camera.down();
+}
+
 void Raytracing::Renderer::setRayDirection()
 {
     const float invScreenRatio = (float) getHeight() / getWidth();
     uint32_t x, y;
     Vector3 lookAtVector = camera.getLookAt() - camera.getPosition();
-    #pragma omp parallel for collapse(2) private(x, y)
+    #pragma omp parallel for collapse(2)
     for (y = 0; y < getHeight(); y++)
     {
         for (x = 0; x < getWidth(); x++)
@@ -88,74 +124,48 @@ void Raytracing::Renderer::setRayDirection()
             const float theta = camera.getFieldOfView() / 2 * relativeX;
             const float phi = camera.getFieldOfView() / 2 * relativeY * invScreenRatio;
 
-            const float delta = g_pi / 2 - phi;
-
             const float sintheta = sin(theta);
             const float costheta = cos(theta);
 
             const float sinphi = sin(phi);
             const float cosphi = cos(phi);
 
-
-            const float sindelta = sin(delta);
-            const float cosdelta = cos(delta);
-
             // point on the screen is also
-            // const Vector3 point = Vector3(
-            //     lookAtVector.m_x,
-            //     cosphi * lookAtVector.m_y - sinphi * lookAtVector.m_z,
-            //     sinphi * lookAtVector.m_y + cosphi * lookAtVector.m_z
-            // );
 
-            // const Vector3 point = Vector3(
-            //     costheta * lookAtVector.m_x - sintheta * lookAtVector.m_z,
-            //     lookAtVector.m_y,
-            //     sintheta * lookAtVector.m_x + costheta * lookAtVector.m_z
-            // );
-
-            const Vector3 point = Vector3(
+            const Vector3 dir = camera.baseChangment(Vector3(
                 cosphi * sintheta, // y nor
                 sinphi, // z nor
                 cosphi * costheta // x nor
-            );
-
-
-            // const Vector3 point = lookAtVector + Vector3(
-            //     relativeX * screenRatio,
-            //     relativeY,
-            //     0
-            // );
+            ));
 
             // create a Ray from the camera to the point of the screen
-            const Vector3 dir = point;
-            const Vector3 res = Normalize(dir);
             Ray *ray = &rays[x + y * getWidth()];
             ray->setOrigin(camera.getPosition());
-            ray->setDirection(res);
+            ray->setDirection(dir);
             ray->setFar(camera.getFar());
             ray->setNear(camera.getNear());
             ray->reset();
-            if (cond(x, y, getWidth(), getHeight()))
-            {
-                printf("phi = %lf° theta = %lf° costheta = %lf sinteta = %lf cos pi = %lf sin pi = %lf\n", phi * 180 / g_pi, theta * 180 / g_pi,  costheta, sintheta, cosphi, sinphi);
-                // printf("tx = %f ty = %f dir = %lf %lf %lf\n", thetax, thetay, dir.m_x, dir.m_y, dir.m_z);
-                printf(
-                    "dir at (%d, %d) (%f, %f) = (%lf, %lf, %lf) (%lf, %lf, %lf) (%lf, %lf, %lf)\n",
-                    x,
-                    y, 
-                    relativeX,
-                    relativeY,
-                    rays[x + y * getWidth()].getDirection().m_x,
-                    rays[x + y * getWidth()].getDirection().m_y,
-                    rays[x + y * getWidth()].getDirection().m_z, 
-                    lookAtVector.m_x,
-                    lookAtVector.m_y,
-                    lookAtVector.m_z,
-                    point.m_x,
-                    point.m_y,
-                    point.m_z
-                );
-            }
+            // if (cond(x, y, getWidth(), getHeight()))
+            // {
+            //     printf("phi = %lf° theta = %lf° costheta = %lf sinteta = %lf cos pi = %lf sin pi = %lf\n", phi * 180 / g_pi, theta * 180 / g_pi,  costheta, sintheta, cosphi, sinphi);
+            //     // printf("tx = %f ty = %f dir = %lf %lf %lf\n", thetax, thetay, dir.m_x, dir.m_y, dir.m_z);
+            //     printf(
+            //         "dir at (%d, %d) (%f, %f) = (%lf, %lf, %lf) (%lf, %lf, %lf) (%lf, %lf, %lf)\n",
+            //         x,
+            //         y, 
+            //         relativeX,
+            //         relativeY,
+            //         rays[x + y * getWidth()].getDirection().m_x,
+            //         rays[x + y * getWidth()].getDirection().m_y,
+            //         rays[x + y * getWidth()].getDirection().m_z, 
+            //         lookAtVector.m_x,
+            //         lookAtVector.m_y,
+            //         lookAtVector.m_z,
+            //         dir.m_x,
+            //         dir.m_y,
+            //         dir.m_z
+            //     );
+            // }
         }
     }
 }
@@ -167,18 +177,18 @@ uint32_t Raytracing::Renderer::perPixel(const uint32_t x, const uint32_t y)
     // return IM_COL32((float) x / getWidth() * 255, (1 - (float) y / getHeight()) * 255, 0, 255);
 
     // special points (printed for set direction)
-    if (cond(x, y, getWidth(), getHeight()))
-    {
-        return 0xFF00FFFF;
-    }
-    Ray *ray = &rays[x + y * getWidth()];
-    // for (size_t i = 0; i < scene.getListSphere().size(); i++)
+    // if (cond(x, y, getWidth(), getHeight()))
     // {
-    //     if (scene.getListSphere()[i].intersect(ray))
-    //     {
-    //         return IM_COL32(255, 0, 255, 255); // magenta
-    //     }
+    //     return 0xFF00FFFF;
     // }
+    Ray *ray = &rays[x + y * getWidth()];
+    for (size_t i = 0; i < scene.getListSphere().size(); i++)
+    {
+        if (scene.getListSphere()[i].intersect(ray))
+        {
+            return ray->getColor();
+        }
+    }
 
     // if (x == 36 || y == 134) {
     //     return 0xFF00FFFF;
@@ -187,10 +197,10 @@ uint32_t Raytracing::Renderer::perPixel(const uint32_t x, const uint32_t y)
     // printf("dir = %f\n", ray.getDirection().m_y);
     // return IM_COL32((1 + ray->getDirection().m_y) / 2 * 255,(1 + ray->getDirection().m_y) / 2 * 255, (1 + ray->getDirection().m_y) / 2 * 255, 255);
     // return IM_COL32((1 + ray->getDirection().m_x) / 2 * 255, (1 + ray->getDirection().m_y) / 2 * 255, (1 + ray->getDirection().m_z) / 2 * 255, 255);
-    // if (ray->getDirection().m_y > 0) {
-    //     return IM_COL32(184, 115, 51, 255);
-    // }
-    const float alpha = (1 - abs(ray->getDirection().m_z)) * 255;
+    const float alpha = (1 - abs(ray->getDirection().m_y)) * 255;
+    if (ray->getDirection().m_y > 0) {
+        return IM_COL32(184, 115, 51, 255);
+    }
     // printf("m_y = %f %f %f %f\n", ray.getDirection().m_x, ray.getDirection().m_y, ray.getDirection().m_z, alpha);
     return IM_COL32(alpha, alpha, 255, 255);
 }

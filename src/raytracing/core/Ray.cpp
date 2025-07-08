@@ -2,6 +2,10 @@
 
 namespace Raytracing
 {
+    Ray::Ray()
+    {
+        far = 500;
+    }
 
     Ray::Ray(const Vector3 &originRay, const Vector3 &directionRay,
             const float nearRay, const float farRay)
@@ -12,6 +16,7 @@ namespace Raytracing
         near = nearRay;
         far = farRay;
         depth = far;
+        color = IM_COL32(0, 0, 0, 0);
     }
 
     Vector3 Ray::getOrigin()
@@ -34,6 +39,11 @@ namespace Raytracing
         return near;
     }
 
+    ImColor Ray::getColor()
+    {
+        return color;
+    }
+
     void
     Ray::setDepth(const float newDepth)
     {
@@ -48,6 +58,7 @@ namespace Raytracing
     void Ray::setFar(const float newFar)
     {
         far = newFar;
+
     }
 
     void Ray::reset()
@@ -63,6 +74,27 @@ namespace Raytracing
     void Ray::setOrigin(const Vector3 &newOrigin)
     {
         origin = newOrigin; 
+    }
+
+    void Ray::setColor(ImColor newColor)
+    {
+        color = newColor;
+    }
+
+    void Ray::setNormalHit(const double t, const Vector3 &center)
+    {
+        const Vector3 hitPos(origin + t * direction);
+        Vector3 normal(hitPos - center);
+        normal = Normalize(normal);
+        // std::cout << "orig = " << origin << std::endl;
+        // std::cout << "t = " << t << std::endl;
+        // std::cout << "dir = " << direction << std::endl;
+
+        // std::cout << "hitpos = " << hitPos << std::endl;
+
+        // std::cout << "norm = " << normal << std::endl;
+        // color = IM_COL32((int) (normal.m_x * 255), (int) (normal.m_y * 255), (int) (normal.m_z * 255), 255);
+        color = 0xFFAAAAAA;
     }
 
 } // namespace Raytracing

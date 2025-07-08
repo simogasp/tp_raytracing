@@ -9,11 +9,15 @@ namespace Raytracing
     private:
         Vector3 position;
         Vector3 lookAt;
-        Vector3 up;
+        Vector3 upVector;
+        Vector3 x;
+        Vector3 y;
+        Vector3 z;
         float focal;
         float near;
         float far;
         float fieldOfView;
+        float speed = 1;
     public:
         Camera(const Vector3& positionCamera, const Vector3& lookAtCamera, 
             const Vector3& upCamera, const float focalCamera, 
@@ -38,6 +42,22 @@ namespace Raytracing
         [[ nodiscard ]]
         float getFar();
 
+        [[ nodiscard ]]
+        Vector3 baseChangment(Vector3 vect);
+
+
+        void setFov(const double newValue);
+
+        // mouvement of the camera
+        void forward();
+        void backward();
+        void left();
+        void right();
+        void up();
+        void down();
+        // rotation of the camera
+        void rotateClockWise();
+        void rotateAntiClockWise();
 
     };
     

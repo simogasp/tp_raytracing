@@ -34,6 +34,14 @@ namespace Raytracing
 
         void OnResize(const uint32_t newWidth, const uint32_t newHeight);
         void Render();
+        void setFov(const double newValue);
+        // camera mouvement
+        void cameraForward();
+        void cameraBackward();
+        void cameraLeftShift();
+        void cameraRightShift();
+        void cameraUpShift();
+        void cameraDownShift();
 
     private:
         void setRayDirection();

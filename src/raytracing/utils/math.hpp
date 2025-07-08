@@ -41,3 +41,7 @@ inline int clampi(const int value, const int min, const int max) {
 	}
 	return value;
 }
+
+inline float toRadian(int degree) {
+	return degree * g_pi / 180;
+}

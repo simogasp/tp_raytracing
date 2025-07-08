@@ -38,6 +38,8 @@ bool Raytracing::Sphere::intersect(Ray * ray)
     if (ray->getNear() < tmin && tmin < ray->getDepth())
     {
         ray->setDepth(tmin);
+        ray->setNormalHit(tmin, center);
+        // ray->setColor(0xFF00FFFF);
         return true;
     }
 
@@ -45,6 +47,8 @@ bool Raytracing::Sphere::intersect(Ray * ray)
     if (ray->getNear() < tmax && tmax < ray->getDepth())
     {
         ray->setDepth(tmax);
+        ray->setNormalHit(tmax, center);
+        // ray->setColor(0xFF00FFFF);
         return true;
     }
 

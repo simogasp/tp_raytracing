@@ -17,7 +17,7 @@ void Raytracing::Scene::addSphere(Raytracing::Sphere sphere)
 
 void Raytracing::Scene::addRandomSphere()
 {
-    const float radius = 0.5;
+    const float radius = 1;
     const Vector3 center = {0, 0, 0};
     const Sphere sphere = Sphere(radius, center);
     sphereList.push_back(sphere);

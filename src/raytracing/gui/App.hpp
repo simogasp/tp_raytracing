@@ -16,12 +16,14 @@ namespace Raytracing
         uint32_t m_viewportHeight = 0;
 
         Renderer renderer;
+        int fovDegree = 179;
+        float fov = toRadian(fovDegree);
 
     public:
         App();
 
         ~App();
-
+        
         void OnUIRender()
         {
             ImGuiIO &io = ImGui::GetIO();
@@ -29,9 +31,19 @@ namespace Raytracing
             // Dockspace Window
             ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
 
+            
             // Help panel
             ImGui::Begin("Help");
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+            ImGui::End();
+
+            // Settings panel
+            ImGui::Begin("Settings");
+            if (ImGui::SliderInt("Fov", &fovDegree, 0, 180))
+            {
+                fov = toRadian(fovDegree);
+                renderer.setFov(fov);
+            }
             ImGui::End();
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -54,6 +66,30 @@ namespace Raytracing
             ImGui::End();
             ImGui::PopStyleVar();
 
+            if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Z))
+            {
+                renderer.cameraForward();
+            }
+            if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
+            {
+                renderer.cameraBackward();
+            }
+            if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Q))
+            {
+                renderer.cameraLeftShift();
+            }
+            if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_D))
+            {
+                renderer.cameraRightShift();
+            }
+            if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Space))
+            {
+                renderer.cameraUpShift();
+            }
+            if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_LeftCtrl))
+            {
+                renderer.cameraDownShift();
+            }
 
         }
 
