@@ -23,6 +23,7 @@ namespace Raytracing
         Camera camera;
         float screenDistance;
         Ray *rays;
+        int pixel;
 
     public:
         Renderer();
@@ -42,8 +43,13 @@ namespace Raytracing
         void cameraRightShift();
         void cameraUpShift();
         void cameraDownShift();
-
-    private:
+        void cameraLookLeft();
+        void cameraLookRight();
+        void cameraRotateAntiClockWise();
+        void cameraRotateClockWise();
+        void updateRay();
+        
+        private:
         void setRayDirection();
         uint32_t perPixel(const uint32_t x, const uint32_t y);
     };

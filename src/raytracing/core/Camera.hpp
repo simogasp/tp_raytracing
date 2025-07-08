@@ -18,6 +18,10 @@ namespace Raytracing
         float far;
         float fieldOfView;
         float speed = 1;
+        float rotationSpeed = 0.1;
+        float cosRotationSpeed = cos(rotationSpeed);
+        float sinRotationSpeed = sin(rotationSpeed);
+
     public:
         Camera(const Vector3& positionCamera, const Vector3& lookAtCamera, 
             const Vector3& upCamera, const float focalCamera, 
@@ -56,8 +60,13 @@ namespace Raytracing
         void up();
         void down();
         // rotation of the camera
+        void lookLeft();
+        void lookRight();
         void rotateClockWise();
         void rotateAntiClockWise();
+
+    private:
+        void computeBase();
 
     };
     

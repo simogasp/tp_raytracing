@@ -5,12 +5,15 @@
 #include <stdio.h>
 # include <omp.h>
 
+# define QUARTER_RENDER 0
+
 Raytracing::Renderer::Renderer()
     : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 10, 15 * g_pi / 16, 0, 500)
 {
     image = new ImageWrapper();
     scene = Scene();
     scene.addRandomSphere();
+    pixel = 0;
 }
 
 Raytracing::Renderer::~Renderer()
@@ -51,8 +54,25 @@ bool cond(int x, int y, int w, int h) {
 // render every pixel of the screen.
 void Raytracing::Renderer::Render()
 {
+    # if QUARTER_RENDER
+    pixel = ++pixel % 4;
     size_t x, y;
-#pragma omp parallel for collapse(2)
+    #pragma omp parallel for collapse(2)
+    for (y = pixel % 2; y < getHeight(); y+=2)
+    {
+        for (x = pixel < 2 ? 0 : 1; x < getWidth(); x+=2)
+        {
+            rays[x + y * getWidth()].reset();
+            const ImColor pixelColor = perPixel(x, y);
+            image->setPixel(x + y * getWidth(), pixelColor);
+            image->setPixel(x + y * getWidth(), pixelColor);
+            image->setPixel(x + y * getWidth(), pixelColor);
+            image->setPixel(x + y * getWidth(), pixelColor);
+        }
+    }
+    # else
+    size_t x, y;
+    #pragma omp parallel for collapse(2)
     for (y = 0; y < getHeight(); y++)
     {
         for (x = 0; x < getWidth(); x++)
@@ -61,6 +81,7 @@ void Raytracing::Renderer::Render()
             image->setPixel(x + y * getWidth(), perPixel(x, y));
         }
     }
+    # endif
 
     image->update();
 }
@@ -101,12 +122,37 @@ void Raytracing::Renderer::cameraDownShift()
     camera.down();
 }
 
+void Raytracing::Renderer::cameraLookLeft()
+{
+    camera.lookLeft();
+}
+
+void Raytracing::Renderer::cameraLookRight()
+{
+    camera.lookRight();
+}
+
+void Raytracing::Renderer::cameraRotateAntiClockWise()
+{
+    camera.rotateAntiClockWise();
+}
+
+void Raytracing::Renderer::cameraRotateClockWise()
+{
+    camera.rotateClockWise();
+}
+
+void Raytracing::Renderer::updateRay()
+{
+    setRayDirection();
+}
+
 void Raytracing::Renderer::setRayDirection()
 {
     const float invScreenRatio = (float) getHeight() / getWidth();
     uint32_t x, y;
     Vector3 lookAtVector = camera.getLookAt() - camera.getPosition();
-    #pragma omp parallel for collapse(2)
+    // #pragma omp parallel for collapse(2)
     for (y = 0; y < getHeight(); y++)
     {
         for (x = 0; x < getWidth(); x++)
