@@ -90,6 +90,11 @@ namespace Raytracing
 
     void App::keyboardHandler()
     {
+        if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Escape))
+        {
+            exit(0);
+        }
+
         bool updateRays = false;
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Z))
         {

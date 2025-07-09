@@ -1,9 +1,10 @@
 #include "Sphere.hpp"
 
-Raytracing::Sphere::Sphere(const float theRadius, const Vector3 &pos)
+Raytracing::Sphere::Sphere(const float theRadius, const Vector3 &pos, const Vector3& sphereReflection)
 {
     radius = theRadius;
     center = pos;
+    reflection = sphereReflection;
 }
 
 bool Raytracing::Sphere::intersect(Ray * ray)
@@ -27,7 +28,7 @@ bool Raytracing::Sphere::intersect(Ray * ray)
     const double dop = ray->getDirection().Dot(op);
     const double D = dop * dop - op.Dot(op) + radius * radius;
 
-    if (D < 0.0)
+    if (D < 0.0 || dop < 0)
     {
         return false;
     }
@@ -48,7 +49,7 @@ bool Raytracing::Sphere::intersect(Ray * ray)
     {
         ray->setDepth(tmax);
         ray->setNormalHit(tmax, center);
-        // ray->setColor(0xFF00FFFF);
+        ray->setColor(ImColor((int) reflection.m_x, (int) reflection.m_y, (int) reflection.m_z));
         return true;
     }
 

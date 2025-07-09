@@ -5,7 +5,7 @@
 #include <stdio.h>
 # include <omp.h>
 
-# define QUARTER_RENDER 0
+# define QUARTER_RENDER 1
 
 Raytracing::Renderer::Renderer()
     : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 10, 15 * g_pi / 16, 0, 500)
@@ -151,7 +151,6 @@ void Raytracing::Renderer::setRayDirection()
 {
     const float invScreenRatio = (float) getHeight() / getWidth();
     uint32_t x, y;
-    Vector3 lookAtVector = camera.getLookAt() - camera.getPosition();
     // #pragma omp parallel for collapse(2)
     for (y = 0; y < getHeight(); y++)
     {
@@ -243,10 +242,11 @@ uint32_t Raytracing::Renderer::perPixel(const uint32_t x, const uint32_t y)
     // printf("dir = %f\n", ray.getDirection().m_y);
     // return IM_COL32((1 + ray->getDirection().m_y) / 2 * 255,(1 + ray->getDirection().m_y) / 2 * 255, (1 + ray->getDirection().m_y) / 2 * 255, 255);
     // return IM_COL32((1 + ray->getDirection().m_x) / 2 * 255, (1 + ray->getDirection().m_y) / 2 * 255, (1 + ray->getDirection().m_z) / 2 * 255, 255);
-    const float alpha = (1 - abs(ray->getDirection().m_y)) * 255;
-    if (ray->getDirection().m_y > 0) {
-        return IM_COL32(184, 115, 51, 255);
-    }
+    // const float alpha = (1 - abs(ray->getDirection().m_y)) * 255;
+    // if (ray->getDirection().m_y > 0) {
+    //     return IM_COL32(184, 115, 51, 255);
+    // }
     // printf("m_y = %f %f %f %f\n", ray.getDirection().m_x, ray.getDirection().m_y, ray.getDirection().m_z, alpha);
-    return IM_COL32(alpha, alpha, 255, 255);
+    // return IM_COL32(alpha, alpha, 255, 255);
+    return IM_COL32(0, 0, 0, 255);
 }

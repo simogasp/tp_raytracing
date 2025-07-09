@@ -14,10 +14,10 @@ namespace Raytracing
         float radius;
         Vector3 center;
         // Vector3 emission;
-        // Vector3 reflection;
+        Vector3 reflection;
 
     public:
-        Sphere(const float theRadius, const Vector3& pos);
+        Sphere(const float theRadius, const Vector3& pos, const Vector3& reflection);
         ~Sphere() = default;
         
         [[nodiscard]]

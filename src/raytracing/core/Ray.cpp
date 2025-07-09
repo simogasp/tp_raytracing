@@ -86,15 +86,11 @@ namespace Raytracing
         const Vector3 hitPos(origin + t * direction);
         Vector3 normal(hitPos - center);
         normal = Normalize(normal);
-        // std::cout << "orig = " << origin << std::endl;
-        // std::cout << "t = " << t << std::endl;
-        // std::cout << "dir = " << direction << std::endl;
-
-        // std::cout << "hitpos = " << hitPos << std::endl;
-
-        // std::cout << "norm = " << normal << std::endl;
-        // color = IM_COL32((int) (normal.m_x * 255), (int) (normal.m_y * 255), (int) (normal.m_z * 255), 255);
-        color = 0xFFAAAAAA;
+        // std::cout << "orig = " << origin << " t = " << t << " dir = " << direction << " hitpos = " << hitPos << " norm = " << normal << std::endl;
+        // color = IM_COL32((int) ((normal.m_x + 1) / 2 * 255), (int) ((normal.m_y + 1) / 2 * 255), (int) ((normal.m_z + 1) / 2 * 255), 255);
+        // printf("%0x\n", color);
+        const double l = std::max(normal.Dot(Normalize(Vector3(1, 1, 1))), 0.);
+        color = IM_COL32(l * 255, 00, l * 255, 255);
     }
 
 } // namespace Raytracing
