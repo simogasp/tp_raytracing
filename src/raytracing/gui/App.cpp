@@ -2,12 +2,20 @@
 
 namespace Raytracing
 {
+    App::App()
+        : camera(), scene()
+    {
+        camera.setCameraPosition(glm::vec3(0, 0, 2));
+        camera.setLookAt(glm::vec3(0));
+        camera.setDegreeHorizontalFOV(180);
+        camera.setUpVector({0, 1, 0});
+        camera.setNear(0.1);
+        camera.setFar(100);
+    }
 
     void App::OnUIRender()
     {
         ImGuiIO &io = ImGui::GetIO();
-
-
 
         // Dockspace Window
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
@@ -47,11 +55,17 @@ namespace Raytracing
 
         // Settings panel
         ImGui::Begin("Settings");
-        if (ImGui::SliderInt("Fov", &fovDegree, 0, 180))
+        if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 0, 180))
         {
-            fov = toRadian(fovDegree);
-            renderer.setFov(fov);
+            fov = glm::radians((double)fovDegree);
+            // renderer.setFov(fov);
         }
+        for (size_t i = 0; i < scene.getListOfSphere(); i++)
+        {
+            
+        }
+        
+
         ImGui::End();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -75,7 +89,7 @@ namespace Raytracing
         if (imageTextureId)
         {
             ImGui::Image((ImTextureID)imageTextureId,
-                ImVec2(renderer.getWidth(), renderer.getHeight()));
+                         ImVec2(renderer.getWidth(), renderer.getHeight()));
         }
         ImGui::End();
         ImGui::PopStyleVar();
@@ -83,9 +97,12 @@ namespace Raytracing
 
     void App::Render()
     {
+        // resize
+        camera.onResize(m_viewportWidth, m_viewportHeight);
+        renderer.onResize(m_viewportWidth, m_viewportHeight);
 
-        renderer.OnResize(m_viewportWidth, m_viewportHeight);
-        renderer.Render();
+        // render
+        renderer.Render(scene.getScene(), camera.getCamera());
     }
 
     void App::keyboardHandler()
@@ -98,56 +115,56 @@ namespace Raytracing
         bool updateRays = false;
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Z))
         {
-            renderer.cameraForward();
+            camera.forward();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
         {
-            renderer.cameraBackward();
+            camera.backward();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Q))
         {
-            renderer.cameraLeftShift();
+            camera.left();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_D))
         {
-            renderer.cameraRightShift();
+            camera.right();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Space))
         {
-            renderer.cameraUpShift();
+            camera.up();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_LeftCtrl))
         {
-            renderer.cameraDownShift();
+            camera.down();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_A))
         {
-            renderer.cameraRotateAntiClockWise();
+            camera.rotateAntiClockWise();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_E))
         {
-            renderer.cameraRotateClockWise();
+            camera.rotateClockWise();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_LeftArrow))
         {
-            renderer.cameraLookLeft();
+            camera.lookLeft();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_RightArrow))
         {
-            renderer.cameraLookRight();
+            camera.lookRight();
             updateRays = true;
         }
 
         if (updateRays)
-            renderer.updateRay();
+            camera.updateRay();
     }
 } // namespace Raytracing

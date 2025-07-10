@@ -44,9 +44,9 @@ namespace Raytracing
 
 		constexpr explicit Sphere(
 			double r,
-			Vector3 p,
-			Vector3 e,
-			Vector3 f,
+			glm::vec3 p,
+			glm::vec3 e,
+			glm::vec3 f,
 			Reflection_t reflection_t) noexcept
 			: m_r(r),
 			  m_p(std::move(p)), 
@@ -85,7 +85,7 @@ namespace Raytracing
 			// t = (- 2 * d . (o - p) +- 2 * sqrt(D)) / (2 * (d . d))
 			// <=> t = dop +- sqrt(D)
 
-			const Vector3 op = m_p - ray.m_o;
+			const glm::vec3 op = m_p - ray.m_o;
 			const double dop = ray.m_d.Dot(op);
 			const double D = dop * dop - op.Dot(op) + m_r * m_r;
 
@@ -118,9 +118,9 @@ namespace Raytracing
 		//---------------------------------------------------------------------
 
 		double m_r;
-		Vector3 m_p; // position
-		Vector3 m_e; // emission
-		Vector3 m_f; // reflection
+		glm::vec3 m_p; // position
+		glm::vec3 m_e; // emission
+		glm::vec3 m_f; // reflection
 		Reflection_t m_reflection_t;
 	};
 }

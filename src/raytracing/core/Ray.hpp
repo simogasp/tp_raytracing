@@ -1,30 +1,30 @@
 # pragma once
 
 # include "imgui.h"
-# include "raytracing/utils/vector.hpp"
+# include "glm/glm.hpp"
 
 namespace Raytracing
 {
     class Ray
     {
     private:
-        Vector3 origin;
-        Vector3 direction;
+        glm::vec3 origin;
+        glm::vec3 direction;
         ImColor color;
         float near;
         float far;
         float depth;
     public:
         Ray();
-        Ray(const Vector3& origin, const Vector3& direction,
+        Ray(const glm::vec3& origin, const glm::vec3& direction,
             const float nearRay, const float farRay);
         ~Ray() = default;
 
         [[ nodiscard ]]
-        Vector3 getOrigin();
+        glm::vec3 getOrigin();
         
         [[ nodiscard ]]
-        Vector3 getDirection();
+        glm::vec3 getDirection();
         
         [[ nodiscard ]]
         float getNear();
@@ -44,13 +44,13 @@ namespace Raytracing
         
         void reset();
         
-        void setDirection(const Vector3& newDirection);
+        void setDirection(const glm::vec3& newDirection);
         
-        void setOrigin(const Vector3 &newOrigin);
+        void setOrigin(const glm::vec3 &newOrigin);
 
         void setColor(ImColor newColor);
 
-        void setNormalHit(const double t, const Vector3& center);
+        void setNormalHit(const double t, const glm::vec3& center);
     };
     
     

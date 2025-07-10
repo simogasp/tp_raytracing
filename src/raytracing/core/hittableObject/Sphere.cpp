@@ -1,6 +1,6 @@
 #include "Sphere.hpp"
 
-Raytracing::Sphere::Sphere(const float theRadius, const Vector3 &pos, const Vector3& sphereReflection)
+Raytracing::Sphere::Sphere(const float theRadius, const glm::vec3 &pos, const glm::vec3& sphereReflection)
 {
     radius = theRadius;
     center = pos;
@@ -24,9 +24,9 @@ bool Raytracing::Sphere::intersect(Ray * ray)
     // t = (- 2 * d . (o - p) +- 2 * sqrt(D)) / (2 * (d . d))
     // <=> t = dop +- sqrt(D)
 
-    const Vector3 op = center - ray->getOrigin();
-    const double dop = ray->getDirection().Dot(op);
-    const double D = dop * dop - op.Dot(op) + radius * radius;
+    const glm::vec3 op = center - ray->getOrigin();
+    const double dop = glm::dot(ray->getDirection(), op);
+    const double D = dop * dop - glm::dot(op, op) + radius * radius;
 
     if (D < 0.0 || dop < 0)
     {
@@ -49,7 +49,7 @@ bool Raytracing::Sphere::intersect(Ray * ray)
     {
         ray->setDepth(tmax);
         ray->setNormalHit(tmax, center);
-        ray->setColor(ImColor((int) reflection.m_x, (int) reflection.m_y, (int) reflection.m_z));
+        ray->setColor(ImColor((int) reflection.x, (int) reflection.y, (int) reflection.z));
         return true;
     }
 

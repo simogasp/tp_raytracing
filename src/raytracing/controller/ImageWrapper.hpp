@@ -13,19 +13,19 @@ namespace Raytracing
     {
     private:
         uint32_t width;
-        uint32_t height;
+        uint32_t height; 
         GLuint textureId;
-        uint32_t *imageData = nullptr;
+        uint32_t *imageData;
 
     public:
-        ImageWrapper() = default;
+        ImageWrapper();
         ~ImageWrapper() = default;
         void setPixel(const int i, const uint32_t color);
         void update();
         uint getWidth();
         uint getHeight();
         GLuint getTextureId();
-        void resize(const uint newWidth, const uint newHeight); 
+        void resize(const uint32_t newWidth, const uint32_t newHeight); 
 
     };
 

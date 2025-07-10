@@ -8,7 +8,7 @@
 # define QUARTER_RENDER 1
 
 Raytracing::Renderer::Renderer()
-    : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 10, 15 * g_pi / 16, 0, 500)
+    : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 15 * g_pi / 16, 0, 500)
 {
     image = new ImageWrapper();
     scene = Scene();
@@ -36,15 +36,12 @@ GLuint Raytracing::Renderer::getTextureId()
     return image->getTextureId();
 }
 
-void Raytracing::Renderer::OnResize(const uint32_t newWidth, const uint32_t newHeight)
+void Raytracing::Renderer::onResize(const uint32_t newWidth, const uint32_t newHeight)
 {
     if (image && image->getWidth() == newWidth && image->getHeight() == newHeight)
         return;
+    
     image->resize(newWidth, newHeight);
-    delete[] rays;
-    const uint32_t length = newWidth * newHeight;
-    rays = new Ray[length];
-    setRayDirection();
 }
 
 bool cond(int x, int y, int w, int h) {
@@ -52,170 +49,33 @@ bool cond(int x, int y, int w, int h) {
 }
 
 // render every pixel of the screen.
-void Raytracing::Renderer::Render()
+void Raytracing::Renderer::Render(const Scene& renderedScene, const Camera& renderingCamera)
 {
-    # if QUARTER_RENDER
-    pixel = ++pixel % 4;
+    scene = renderedScene;
+    camera = renderingCamera;
     size_t x, y;
-    #pragma omp parallel for collapse(2)
-    for (y = pixel % 2; y < getHeight(); y+=2)
-    {
-        for (x = pixel < 2 ? 0 : 1; x < getWidth(); x+=2)
-        {
-            rays[x + y * getWidth()].reset();
-            const ImColor pixelColor = perPixel(x, y);
-            image->setPixel(x + y * getWidth(), pixelColor);
-            image->setPixel(x + y * getWidth(), pixelColor);
-            image->setPixel(x + y * getWidth(), pixelColor);
-            image->setPixel(x + y * getWidth(), pixelColor);
-        }
-    }
-    # else
-    size_t x, y;
-    #pragma omp parallel for collapse(2)
-    for (y = 0; y < getHeight(); y++)
-    {
-        for (x = 0; x < getWidth(); x++)
-        {
-            rays[x + y * getWidth()].reset();
-            image->setPixel(x + y * getWidth(), perPixel(x, y));
-        }
-    }
-    # endif
-
-    image->update();
-}
-
-void Raytracing::Renderer::setFov(const double newValue)
-{
-    camera.setFov(newValue);
-    setRayDirection();
-}
-
-void Raytracing::Renderer::cameraForward()
-{
-    camera.forward();
-}
-
-void Raytracing::Renderer::cameraBackward()
-{
-    camera.backward();
-}
-
-void Raytracing::Renderer::cameraLeftShift()
-{
-    camera.left();
-}
-
-void Raytracing::Renderer::cameraRightShift()
-{
-    camera.right();
-}
-
-void Raytracing::Renderer::cameraUpShift()
-{
-    camera.up();
-}
-
-void Raytracing::Renderer::cameraDownShift()
-{
-    camera.down();
-}
-
-void Raytracing::Renderer::cameraLookLeft()
-{
-    camera.lookLeft();
-}
-
-void Raytracing::Renderer::cameraLookRight()
-{
-    camera.lookRight();
-}
-
-void Raytracing::Renderer::cameraRotateAntiClockWise()
-{
-    camera.rotateAntiClockWise();
-}
-
-void Raytracing::Renderer::cameraRotateClockWise()
-{
-    camera.rotateClockWise();
-}
-
-void Raytracing::Renderer::updateRay()
-{
-    setRayDirection();
-}
-
-void Raytracing::Renderer::setRayDirection()
-{
-    const float invScreenRatio = (float) getHeight() / getWidth();
-    uint32_t x, y;
+    Ray ray;
+    ray.setOrigin(camera.getPosition());
+    ray.setFar(camera.getFar());
+    ray.setNear(camera.getNear());
+    const std::vector<glm::vec3> dirs = camera.getRayDirections();
     // #pragma omp parallel for collapse(2)
     for (y = 0; y < getHeight(); y++)
     {
         for (x = 0; x < getWidth(); x++)
         {
-            image->setPixel(x + y * getWidth(), perPixel(x, y));
-            
-            
-            
-            // relative placement on the screen of the pixel
-            const float relativeX = 2 * (float) x / (getWidth() - 1) - 1;
-            const float relativeY = 2 * (float) y / (getHeight() - 1) - 1;
-
-            
-            // rotation angle
-            const float theta = camera.getFieldOfView() / 2 * relativeX;
-            const float phi = camera.getFieldOfView() / 2 * relativeY * invScreenRatio;
-
-            const float sintheta = sin(theta);
-            const float costheta = cos(theta);
-
-            const float sinphi = sin(phi);
-            const float cosphi = cos(phi);
-
-            // point on the screen is also
-
-            const Vector3 dir = camera.baseChangment(Vector3(
-                cosphi * sintheta, // y nor
-                sinphi, // z nor
-                cosphi * costheta // x nor
-            ));
-
-            // create a Ray from the camera to the point of the screen
-            Ray *ray = &rays[x + y * getWidth()];
-            ray->setOrigin(camera.getPosition());
-            ray->setDirection(dir);
-            ray->setFar(camera.getFar());
-            ray->setNear(camera.getNear());
-            ray->reset();
-            // if (cond(x, y, getWidth(), getHeight()))
-            // {
-            //     printf("phi = %lf° theta = %lf° costheta = %lf sinteta = %lf cos pi = %lf sin pi = %lf\n", phi * 180 / g_pi, theta * 180 / g_pi,  costheta, sintheta, cosphi, sinphi);
-            //     // printf("tx = %f ty = %f dir = %lf %lf %lf\n", thetax, thetay, dir.m_x, dir.m_y, dir.m_z);
-            //     printf(
-            //         "dir at (%d, %d) (%f, %f) = (%lf, %lf, %lf) (%lf, %lf, %lf) (%lf, %lf, %lf)\n",
-            //         x,
-            //         y, 
-            //         relativeX,
-            //         relativeY,
-            //         rays[x + y * getWidth()].getDirection().m_x,
-            //         rays[x + y * getWidth()].getDirection().m_y,
-            //         rays[x + y * getWidth()].getDirection().m_z, 
-            //         lookAtVector.m_x,
-            //         lookAtVector.m_y,
-            //         lookAtVector.m_z,
-            //         dir.m_x,
-            //         dir.m_y,
-            //         dir.m_z
-            //     );
-            // }
+            ray.setDirection(dirs[x + y * getWidth()]);
+            ray.reset();
+            const ImColor pixelColor = traceRay(&ray);
+            image->setPixel(x + y * getWidth(), pixelColor);
         }
     }
+
+    image->update();
 }
 
-uint32_t Raytracing::Renderer::perPixel(const uint32_t x, const uint32_t y)
+
+uint32_t Raytracing::Renderer::traceRay(Ray *ray)
 {
     // img (green, yellow,
     //      black, red)
@@ -226,7 +86,6 @@ uint32_t Raytracing::Renderer::perPixel(const uint32_t x, const uint32_t y)
     // {
     //     return 0xFF00FFFF;
     // }
-    Ray *ray = &rays[x + y * getWidth()];
     for (size_t i = 0; i < scene.getListSphere().size(); i++)
     {
         if (scene.getListSphere()[i].intersect(ray))

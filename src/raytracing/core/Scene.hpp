@@ -1,4 +1,4 @@
-
+# pragma once
 # include "hittableObject/Sphere.hpp"
 # include "hittableObject/Triangle.hpp"
 # include <vector>

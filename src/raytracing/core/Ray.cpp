@@ -1,4 +1,5 @@
-#include "Ray.hpp"
+# include "Ray.hpp"
+# include <iostream>
 
 namespace Raytracing
 {
@@ -7,7 +8,7 @@ namespace Raytracing
         far = 500;
     }
 
-    Ray::Ray(const Vector3 &originRay, const Vector3 &directionRay,
+    Ray::Ray(const glm::vec3 &originRay, const glm::vec3 &directionRay,
             const float nearRay, const float farRay)
     {
         origin = originRay;
@@ -19,12 +20,12 @@ namespace Raytracing
         color = IM_COL32(0, 0, 0, 0);
     }
 
-    Vector3 Ray::getOrigin()
+    glm::vec3 Ray::getOrigin()
     {
         return origin;
     }
 
-    Vector3 Ray::getDirection()
+    glm::vec3 Ray::getDirection()
     {
         return direction;
     }
@@ -66,12 +67,12 @@ namespace Raytracing
         depth = far;
     }
 
-    void Ray::setDirection(const Vector3 &newDirection)
+    void Ray::setDirection(const glm::vec3 &newDirection)
     {
         direction = newDirection;
     }
 
-    void Ray::setOrigin(const Vector3 &newOrigin)
+    void Ray::setOrigin(const glm::vec3 &newOrigin)
     {
         origin = newOrigin; 
     }
@@ -81,15 +82,18 @@ namespace Raytracing
         color = newColor;
     }
 
-    void Ray::setNormalHit(const double t, const Vector3 &center)
+    void Ray::setNormalHit(const double t, const glm::vec3 &center)
     {
-        const Vector3 hitPos(origin + t * direction);
-        Vector3 normal(hitPos - center);
-        normal = Normalize(normal);
-        // std::cout << "orig = " << origin << " t = " << t << " dir = " << direction << " hitpos = " << hitPos << " norm = " << normal << std::endl;
+        const glm::vec3 hitPos = origin + direction * glm::vec1(t);
+        glm::vec3 normal(hitPos - center);
+        normal = glm::normalize(normal);
+        // std::cout << "orig = " << origin.x << " " << origin.y << " " 
+        // << origin.z << " t = " << t << " dir = " << direction.x << " "
+        //  << direction.y << " " << direction.z << " hitpos = " 
+        //  << hitPos.x << " " << hitPos.y << " " << hitPos.z <<  " norm = " << normal.x << " " << normal.y << " " << normal.z << std::endl;
         // color = IM_COL32((int) ((normal.m_x + 1) / 2 * 255), (int) ((normal.m_y + 1) / 2 * 255), (int) ((normal.m_z + 1) / 2 * 255), 255);
         // printf("%0x\n", color);
-        const double l = std::max(normal.Dot(Normalize(Vector3(1, 1, 1))), 0.);
+        const double l = glm::max(glm::dot(normal, glm::normalize(glm::vec3(1, 1, 1))), 0.f);
         color = IM_COL32(l * 255, 00, l * 255, 255);
     }
 

@@ -21,8 +21,6 @@ namespace Raytracing
         ImageWrapper *image;
         Scene scene;
         Camera camera;
-        float screenDistance;
-        Ray *rays;
         int pixel;
 
     public:
@@ -33,25 +31,11 @@ namespace Raytracing
         uint32_t getHeight();
         GLuint getTextureId();
 
-        void OnResize(const uint32_t newWidth, const uint32_t newHeight);
-        void Render();
-        void setFov(const double newValue);
-        // camera mouvement
-        void cameraForward();
-        void cameraBackward();
-        void cameraLeftShift();
-        void cameraRightShift();
-        void cameraUpShift();
-        void cameraDownShift();
-        void cameraLookLeft();
-        void cameraLookRight();
-        void cameraRotateAntiClockWise();
-        void cameraRotateClockWise();
-        void updateRay();
-        
+        void onResize(const uint32_t newWidth, const uint32_t newHeight);
+        void Render(const Scene& renderedScene, const Camera& renderingCamera);
+
         private:
-        void setRayDirection();
-        uint32_t perPixel(const uint32_t x, const uint32_t y);
+        uint32_t traceRay(Raytracing::Ray * ray);
     };
 
 }

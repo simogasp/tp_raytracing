@@ -1,19 +1,21 @@
 # pragma once
 
-# include "raytracing/utils/vector.hpp"
+# include "glm/glm.hpp"
+# include <vector>
 
 namespace Raytracing
 {
     class Camera
     {
     private:
-        Vector3 position;
-        Vector3 lookAt;
-        Vector3 upVector;
-        Vector3 x;
-        Vector3 y;
-        Vector3 z;
-        float focal;
+        glm::vec3 position;
+        glm::vec3 lookAt;
+        glm::vec3 upVector;
+        glm::vec3 x;
+        glm::vec3 y;
+        glm::vec3 z;
+        uint32_t width;
+        uint32_t height;
         float near;
         float far;
         float fieldOfView;
@@ -21,21 +23,20 @@ namespace Raytracing
         float rotationSpeed = 0.1;
         float cosRotationSpeed = cos(rotationSpeed);
         float sinRotationSpeed = sin(rotationSpeed);
+        std::vector<glm::vec3> rayDirections;
 
     public:
-        Camera(const Vector3& positionCamera, const Vector3& lookAtCamera, 
-            const Vector3& upCamera, const float focalCamera, 
+        Camera(const glm::vec3& positionCamera, const glm::vec3& lookAtCamera, 
+            const glm::vec3& upCamera, 
             const float fieldOfViewCamera, const float nearCamera, const float farCamera);
+        Camera() = default;
         ~Camera();
 
         [[ nodiscard ]]
-        Vector3 getPosition();
+        glm::vec3 getPosition();
         
         [[ nodiscard ]]
-        Vector3 getLookAt();
-
-        [[ nodiscard ]]
-        float getFocal();
+        glm::vec3 getLookAt();
 
         [[ nodiscard ]]
         float getFieldOfView();
@@ -47,10 +48,19 @@ namespace Raytracing
         float getFar();
 
         [[ nodiscard ]]
-        Vector3 baseChangment(Vector3 vect);
+        std::vector<glm::vec3> getRayDirections();
 
+        
 
+        // setters
         void setFov(const double newValue);
+        void setUpVector(const glm::vec3& newUp);
+        void setPosition(const glm::vec3& newPosition);
+        void setLookAt(const glm::vec3& newLookAt);
+        void setNear(const double newNear);
+        void setFar(const double newFar);
+
+
 
         // mouvement of the camera
         void forward();
@@ -64,8 +74,14 @@ namespace Raytracing
         void lookRight();
         void rotateClockWise();
         void rotateAntiClockWise();
+        
+        // action
+        void onResize(const uint32_t newWidth, const uint32_t newHeight);
+        void updateRay();
 
     private:
+        [[ nodiscard ]]
+        glm::vec3 baseChangment(glm::vec3 vect);
         void computeBase();
 
     };
