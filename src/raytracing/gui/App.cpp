@@ -57,13 +57,12 @@ namespace Raytracing
         ImGui::Begin("Settings");
         if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 0, 180))
         {
-            fov = glm::radians((double)fovDegree);
-            // renderer.setFov(fov);
+            camera.setDegreeHorizontalFOV(fovDegree);
         }
-        for (size_t i = 0; i < scene.getListOfSphere(); i++)
-        {
+        // for (size_t i = 0; i < scene.getListOfSphere(); i++)
+        // {
             
-        }
+        // }
         
 
         ImGui::End();

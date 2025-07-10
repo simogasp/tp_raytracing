@@ -23,7 +23,6 @@ namespace Raytracing
         Renderer renderer;
 
         int fovDegree = 180;
-        float fov = glm::radians((double) fovDegree);
 
     public:
         App();
