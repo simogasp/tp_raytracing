@@ -48,7 +48,7 @@ void Raytracing::Renderer::onResize(const uint32_t newWidth, const uint32_t newH
 void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &renderingCamera)
 {
     scene = renderedScene;
-    const Light light = {1.f, {1.f, 1.f, 1.f}};
+    const Light light = {1.f, {1.f, 0.f, 0.f}};
     camera = renderingCamera;
     size_t x, y;
     const std::vector<glm::vec3> dirs = camera.getRayDirections();

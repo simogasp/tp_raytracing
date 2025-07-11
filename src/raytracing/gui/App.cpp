@@ -6,21 +6,22 @@ namespace Raytracing
         : camera(), scene()
     {
         scene.addRandomSphereToScene();
-        camera.setCameraPosition(glm::vec3(0, 0, 2));
+        scene.pushSphere({0.f, 1.f, -0.6f}, 1.f, {0, 255, 255}, {0, 0, 0});
+        camera.setCameraPosition(glm::vec3(0, 0, 5));
         camera.setLookAt(glm::vec3(0));
-        camera.setDegreeHorizontalFOV(180);
+        camera.setDegreeHorizontalFOV(90);
         camera.setUpVector({0, 1, 0});
         camera.setNear(0.1);
         camera.setFar(100);
     }
-
+    
     void App::OnUIRender()
     {
         ImGuiIO &io = ImGui::GetIO();
-
+        
         // Dockspace Window
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
-
+        
         // Help panel
         ImGui::Begin("Help");
         if (ImGui::TreeNode("Move in the scene"))
@@ -48,12 +49,12 @@ namespace Raytracing
         for (ImGuiKey key = ImGuiKey_NamedKey_BEGIN; key < ImGuiKey_NamedKey_END; key = (ImGuiKey)(key + 1))
         {
             if (funcs::IsLegacyNativeDupe(key) || !ImGui::IsKeyDown(key))
-                continue;
+            continue;
             ImGui::SameLine();
             ImGui::Text((key < ImGuiKey_NamedKey_BEGIN) ? "\"%s\"" : "\"%s\" %d", ImGui::GetKeyName(key), key);
         }
         ImGui::End();
-
+        
         // Settings panel
         ImGui::Begin("Settings");
         if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 0, 180))
@@ -61,34 +62,34 @@ namespace Raytracing
             camera.setDegreeHorizontalFOV(fovDegree);
         }
         ImGui::End();
-
+        
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         // Dockspace Viewport
         ImGui::Begin("Viewport", NULL, ImGuiWindowFlags_NoScrollbar);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-
+        
         m_viewportWidth = ImGui::GetContentRegionAvail().x;
         m_viewportHeight = ImGui::GetContentRegionAvail().y;
-
+        
         // call the render
         Render();
-
+        
         // call the keyboard handler
         keyboardHandler();
         io.ClearInputKeys();
         io.ClearInputCharacters();
-
+        
         // if there is a image : draw it
         const GLuint imageTextureId = renderer.getTextureId();
         if (imageTextureId)
         {
             ImGui::Image((ImTextureID)imageTextureId,
-                         ImVec2(renderer.getWidth(), renderer.getHeight()));
+            ImVec2(renderer.getWidth(), renderer.getHeight()));
         }
         ImGui::End();
         ImGui::PopStyleVar();
     }
-
+    
     void App::Render()
     {
         // resize

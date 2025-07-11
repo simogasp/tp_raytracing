@@ -15,6 +15,11 @@ void Raytracing::SceneFactory::addRandomSphereToScene()
     currentScene.addRandomSphere();
 }
 
+void Raytracing::SceneFactory::pushSphere(const glm::vec3 center, const float radius, const glm::vec3 reflection, const glm::vec3 emission)
+{
+    currentScene.addSphere({center, radius, reflection, emission});
+}
+
 void Raytracing::SceneFactory::popSphere()
 {
     currentScene.getListSphere().pop_back();

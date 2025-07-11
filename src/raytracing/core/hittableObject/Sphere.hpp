@@ -10,10 +10,10 @@ namespace Raytracing
 {
     struct Sphere
     {
-        float radius;
         glm::vec3 center;
-        glm::vec3 emission;
+        float radius;
         glm::vec3 reflection;
+        glm::vec3 emission;
     };
 
 } // namespace Raytracing
