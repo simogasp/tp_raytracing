@@ -8,22 +8,12 @@
 
 namespace Raytracing
 {
-    class Sphere
+    struct Sphere
     {
-    private:
         float radius;
         glm::vec3 center;
         // glm::vec3 emission;
         glm::vec3 reflection;
-
-    public:
-        Sphere(const float theRadius, const glm::vec3& pos, const glm::vec3& reflection);
-        ~Sphere() = default;
-        
-        [[nodiscard]]
-        bool intersect(Ray *ray);
     };
-
-		
 
 } // namespace Raytracing

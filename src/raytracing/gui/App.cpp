@@ -1,10 +1,11 @@
-#include "App.hpp"
-
+# include "App.hpp"
+# include "glm/gtc/type_ptr.hpp"
 namespace Raytracing
 {
     App::App()
         : camera(), scene()
     {
+        scene.addRandomSphereToScene();
         camera.setCameraPosition(glm::vec3(0, 0, 2));
         camera.setLookAt(glm::vec3(0));
         camera.setDegreeHorizontalFOV(180);
@@ -59,12 +60,6 @@ namespace Raytracing
         {
             camera.setDegreeHorizontalFOV(fovDegree);
         }
-        // for (size_t i = 0; i < scene.getListOfSphere(); i++)
-        // {
-            
-        // }
-        
-
         ImGui::End();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));

@@ -16,6 +16,7 @@ namespace Raytracing
         void popSphere();
         Raytracing::Scene getScene();
         static Raytracing::Scene getDefaultScene();
+        std::vector<Raytracing::Sphere> getListOfSphere();
     };
     
 } // namespace Raytracing

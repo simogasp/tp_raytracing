@@ -2,7 +2,7 @@
 
 Raytracing::SceneFactory::SceneFactory()
 {
-    currentScene = getDefaultScene();
+    currentScene = Scene();
 }
 
 void Raytracing::SceneFactory::createNewScene()
@@ -30,4 +30,9 @@ Raytracing::Scene Raytracing::SceneFactory::getDefaultScene()
     Scene res = Scene();
     res.addRandomSphere();
     return res;
+}
+
+std::vector<Raytracing::Sphere> Raytracing::SceneFactory::getListOfSphere()
+{
+    return currentScene.getListSphere();
 }

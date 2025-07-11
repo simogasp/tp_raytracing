@@ -3,7 +3,7 @@
 #include "ImageWrapper.hpp"
 #include "raytracing/core/Scene.hpp"
 #include "raytracing/core/Camera.hpp"
-
+#include "raytracing/core/HitPayload.hpp"
 #include <stdint.h>
 
 #ifdef __APPLE__
@@ -21,7 +21,6 @@ namespace Raytracing
         ImageWrapper *image;
         Scene scene;
         Camera camera;
-        int pixel;
 
     public:
         Renderer();
@@ -35,7 +34,11 @@ namespace Raytracing
         void Render(const Scene& renderedScene, const Camera& renderingCamera);
 
         private:
-        uint32_t traceRay(Raytracing::Ray * ray);
+            ImColor perPixel(Ray* ray, const size_t x, const size_t y);
+            Raytracing::HitPayload traceRay(Ray * ray);
+            Raytracing::HitPayload closestHit(Ray * ray, float hitDistance, int ObjectIndex);
+            Raytracing::HitPayload miss(Ray * ray);
+
     };
 
 }

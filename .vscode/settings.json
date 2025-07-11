@@ -86,6 +86,6 @@
         "valarray": "cpp",
         "variant": "cpp"
     },
-    "cmake.sourceDirectory": "/home/timot/Documents/projets/tp_raytracing/examples/example_glfw_wgpu",
+    "cmake.sourceDirectory": "/home/timot/Documents/projets/tp_raytracing/src/glm",
     "C_Cpp.dimInactiveRegions": true
 }
