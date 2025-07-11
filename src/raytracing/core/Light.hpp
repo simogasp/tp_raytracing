@@ -2,7 +2,7 @@
 
 # include "glm/glm.hpp"
 
-namespace name
+namespace Raytracing
 {
     struct Light
     {
@@ -10,4 +10,4 @@ namespace name
         glm::vec3 direction;
     };
     
-} // namespace name
+} // namespace Raytracing

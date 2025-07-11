@@ -48,47 +48,36 @@ void Raytracing::Renderer::onResize(const uint32_t newWidth, const uint32_t newH
 void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &renderingCamera)
 {
     scene = renderedScene;
+    const Light light = {1.f, {1.f, 1.f, 1.f}};
     camera = renderingCamera;
     size_t x, y;
-    Ray ray;
-    ray.origin = camera.getPosition();
     const std::vector<glm::vec3> dirs = camera.getRayDirections();
-    // #pragma omp parallel for collapse(2)
+    #pragma omp parallel for private(x) schedule(dynamic)
     for (y = 0; y < getHeight(); y++)
     {
         for (x = 0; x < getWidth(); x++)
         {
             const uint32_t pixelIndex = x + y * getWidth();
+            const int bounces = 2;
+            Ray ray;
+            ray.origin = camera.getPosition();
             ray.direction = dirs[pixelIndex];
-            HitPayload payload = traceRay(&ray);
-
-            if (payload.hitDistance < 0)
+            glm::vec3 col(0.f);
+            for (int bounce = 0; bounce < bounces; bounce++)
             {
-                // we missed all spheres
-                image->setPixel(pixelIndex, IM_COL32(255, 255, 255, 255));
-                continue;
+                HitPayload payload = traceRay(&ray);
+                if (payload.hitDistance < 0)
+                {
+                    // we missed all spheres
+                    break;
+                }
+                ray.origin = payload.worldPosition + EPSILON * payload.worldNormal;
+                ray.direction = glm::reflect(ray.direction, payload.worldNormal);
+                const float lightIntensity = glm::max(glm::dot(glm::normalize(light.direction), payload.worldNormal), 0.f);
+                const Sphere& sphere = scene.getListSphere()[payload.objectIndex];
+                col += lightIntensity * sphere.reflection;
             }
-
-            // compute the color from the payload
-            // if (payload.objectIndex == 0)
-            // {
-            //     ImColor color = IM_COL32(255 * (payload.worldNormal.x + 1) / 2, 255 * (payload.worldNormal.y + 1) / 2, 255 * (payload.worldNormal.z + 1) / 2, 255);
-            //     image->setPixel(pixelIndex, IM_COL32(0, 0, 255, 255));
-            // } else {
-            //     ImColor color = IM_COL32(255, 0, 0, 255);
-            //     image->setPixel(pixelIndex, color);
-
-            // }
-            // if (payload.objectIndex <= 0)
-            // {
-            //     std ::cout << "=============================================" << std::endl;
-            //     std ::cout << "p.hitDist = " << payload.hitDistance << std::endl;
-            //     std ::cout << "p.pos = " << payload.worldPosition.x << " " << payload.worldPosition.y << " " << payload.worldPosition.z << std::endl;
-            //     std ::cout << "p.normal = " << payload.worldNormal.x << " " << payload.worldNormal.y << " " << payload.worldNormal.z << std::endl;
-            //     std ::cout << "=============================================" << std::endl;
-            // }
-            ImColor color = IM_COL32(255 * (payload.worldNormal.x + 1) / 2, 255 * (payload.worldNormal.y + 1) / 2, 255 * (payload.worldNormal.z + 1) / 2, 255);
-            image->setPixel(pixelIndex, color);
+            image->setPixel(pixelIndex, IM_COL32(col.r, col.g, col.b, 255));
         }
     }
 

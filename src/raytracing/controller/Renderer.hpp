@@ -17,6 +17,9 @@ namespace Raytracing
 
     class Renderer
     {
+    public:
+        float EPSILON = 1e-3;
+
     private:
         ImageWrapper *image;
         Scene scene;
@@ -25,20 +28,17 @@ namespace Raytracing
     public:
         Renderer();
         ~Renderer();
-
         uint32_t getWidth();
         uint32_t getHeight();
         GLuint getTextureId();
 
         void onResize(const uint32_t newWidth, const uint32_t newHeight);
-        void Render(const Scene& renderedScene, const Camera& renderingCamera);
+        void Render(const Scene &renderedScene, const Camera &renderingCamera);
 
-        private:
-            ImColor perPixel(Ray* ray, const size_t x, const size_t y);
-            Raytracing::HitPayload traceRay(Ray * ray);
-            Raytracing::HitPayload closestHit(Ray * ray, float hitDistance, int ObjectIndex);
-            Raytracing::HitPayload miss(Ray * ray);
-
+    private:
+        Raytracing::HitPayload traceRay(Ray *ray);
+        Raytracing::HitPayload closestHit(Ray *ray, float hitDistance, int ObjectIndex);
+        Raytracing::HitPayload miss(Ray *ray);
     };
 
 }

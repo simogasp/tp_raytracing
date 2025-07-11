@@ -12,7 +12,7 @@ namespace Raytracing
     {
         float radius;
         glm::vec3 center;
-        // glm::vec3 emission;
+        glm::vec3 emission;
         glm::vec3 reflection;
     };
 
