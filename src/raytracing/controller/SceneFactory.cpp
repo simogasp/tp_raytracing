@@ -15,9 +15,20 @@ void Raytracing::SceneFactory::addRandomSphereToScene()
     currentScene.addRandomSphere();
 }
 
-void Raytracing::SceneFactory::pushSphere(const glm::vec3 center, const float radius, const glm::vec3 reflection, const glm::vec3 emission)
+void Raytracing::SceneFactory::pushSphere(const glm::vec3 center, const float radius, const uint materialIndex)
 {
-    currentScene.addSphere({center, radius, reflection, emission});
+    currentScene.addSphere({center, radius, materialIndex});
+}
+
+void Raytracing::SceneFactory::pushMaterial(const glm::vec3 reflectionColor, const glm::vec3 emissionColor, const double shinyness, const double roughness)
+{
+    std::cout<<" matInit = " << reflectionColor.r << " " << reflectionColor.g << " " << reflectionColor.b << std::endl;
+    Material mat;
+    mat.emission = emissionColor;
+    mat.reflection = reflectionColor;
+    mat.shinyness = shinyness;
+    mat.roughness = roughness;
+    currentScene.addMaterial(mat);
 }
 
 void Raytracing::SceneFactory::popSphere()

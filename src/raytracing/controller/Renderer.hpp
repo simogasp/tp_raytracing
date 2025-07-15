@@ -18,22 +18,26 @@ namespace Raytracing
     class Renderer
     {
     public:
-        float EPSILON = 1e-3;
+        const float EPSILON = 1e-3;
 
     private:
         ImageWrapper *image;
+        uint32_t *imageData;
+        glm::vec4 *accumulatedData;
+        uint FrameId;
         Scene scene;
         Camera camera;
 
     public:
         Renderer();
-        ~Renderer();
+        ~Renderer() = default;
         uint32_t getWidth();
         uint32_t getHeight();
         GLuint getTextureId();
 
         void onResize(const uint32_t newWidth, const uint32_t newHeight);
         void Render(const Scene &renderedScene, const Camera &renderingCamera);
+        void resetAcc();
 
     private:
         Raytracing::HitPayload traceRay(Ray *ray);

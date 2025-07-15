@@ -20,10 +20,9 @@ namespace Raytracing
     public:
         ImageWrapper();
         ~ImageWrapper() = default;
-        void setPixel(const int i, const uint32_t color);
-        void update();
-        uint getWidth();
-        uint getHeight();
+        void setData(uint32_t *newData);
+        uint getWidth() const;
+        uint getHeight() const;
         GLuint getTextureId();
         void resize(const uint32_t newWidth, const uint32_t newHeight); 
 

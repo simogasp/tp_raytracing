@@ -33,22 +33,22 @@ namespace Raytracing
         ~Camera();
 
         [[ nodiscard ]]
-        glm::vec3 getPosition();
+        glm::vec3 getPosition() const;
         
         [[ nodiscard ]]
-        glm::vec3 getLookAt();
+        glm::vec3 getLookAt() const;
 
         [[ nodiscard ]]
-        float getFieldOfView();
+        float getFieldOfView() const;
 
         [[ nodiscard ]]
-        float getNear();
+        float getNear() const;
 
         [[ nodiscard ]]
-        float getFar();
+        float getFar() const;
 
         [[ nodiscard ]]
-        std::vector<glm::vec3> getRayDirections();
+        std::vector<glm::vec3> getRayDirections() const;
 
         
 

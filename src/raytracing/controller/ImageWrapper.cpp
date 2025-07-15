@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include <iostream>
 
-uint Raytracing::ImageWrapper::getWidth()
+uint Raytracing::ImageWrapper::getWidth() const
 {
     return width;
 }
 
-uint Raytracing::ImageWrapper::getHeight()
+uint Raytracing::ImageWrapper::getHeight() const
 {
     return height;
 }
@@ -25,16 +25,11 @@ Raytracing::ImageWrapper::ImageWrapper()
     imageData = nullptr;
 }
 
-void Raytracing::ImageWrapper::setPixel(const int i, const uint32_t color)
+void Raytracing::ImageWrapper::setData(uint32_t *newData)
 {
-    imageData[i] = color;
-    // printf("set imageData[%d, %d] = %0x\n", i / width, i % height, color);
-}
-
-void Raytracing::ImageWrapper::update()
-{
+    imageData = newData;
     glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, newData);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
@@ -44,21 +39,13 @@ void Raytracing::ImageWrapper::resize(const uint32_t newWidth, const uint32_t ne
     {
         return;
     }
-    // resize GPU image
-    if (imageData)
-    {
-        delete[] imageData;
-        imageData = nullptr;
-    }
-    // update dims
+
     width = newWidth;
     height = newHeight;
-    imageData = new uint32_t[width * height];
+
 
     if (textureId == 0)
     {
         glGenTextures(1, &textureId);
     }
-
-    update();
 }

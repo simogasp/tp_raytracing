@@ -20,32 +20,32 @@ Raytracing::Camera::~Camera()
 {
 }
 
-glm::vec3 Raytracing::Camera::getPosition()
+glm::vec3 Raytracing::Camera::getPosition() const
 {
     return position;
 }
 
-glm::vec3 Raytracing::Camera::getLookAt()
+glm::vec3 Raytracing::Camera::getLookAt() const
 {
     return lookAt;
 }
 
-float Raytracing::Camera::getFieldOfView()
+float Raytracing::Camera::getFieldOfView() const
 {
     return fieldOfView;
 }
 
-float Raytracing::Camera::getNear()
+float Raytracing::Camera::getNear() const
 {
     return near;
 }
 
-float Raytracing::Camera::getFar()
+float Raytracing::Camera::getFar() const
 {
     return far;
 }
 
-std::vector<glm::vec3> Raytracing::Camera::getRayDirections()
+std::vector<glm::vec3> Raytracing::Camera::getRayDirections() const
 {
     return rayDirections;
 }

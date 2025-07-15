@@ -4,10 +4,6 @@
 
 namespace Raytracing
 {
-    struct Light
-    {
-        double intensity;
-        glm::vec3 direction;
-    };
+    
     
 } // namespace Raytracing

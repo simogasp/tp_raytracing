@@ -13,11 +13,11 @@ namespace Raytracing
         ~SceneFactory() = default;
         void createNewScene();
         void addRandomSphereToScene();
-        void pushSphere(const glm::vec3 center, const float radius, const glm::vec3 reflection, const glm::vec3 emission);
+        void pushSphere(const glm::vec3 center, const float radius, const uint materialIndex);
+        void pushMaterial(const glm::vec3 reflectionColor, const glm::vec3 emissionColor, const double shinyness, const double roughness);
         void popSphere();
         Raytracing::Scene getScene();
         static Raytracing::Scene getDefaultScene();
         std::vector<Raytracing::Sphere> getListOfSphere();
     };
-    
 } // namespace Raytracing

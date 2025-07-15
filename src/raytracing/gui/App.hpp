@@ -22,7 +22,7 @@ namespace Raytracing
         SceneFactory scene;
         Renderer renderer;
 
-        int fovDegree = 90;
+        int fovDegree = 45;
 
     public:
         App();

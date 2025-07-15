@@ -5,14 +5,22 @@ namespace Raytracing
     App::App()
         : camera(), scene()
     {
-        scene.addRandomSphereToScene();
-        scene.pushSphere({0.f, 1.f, -0.6f}, 1.f, {0, 255, 255}, {0, 0, 0});
+        // scene.addRandomSphereToScene();
+        const glm::vec3 black(0.f, 0.f, 0.f);
+        const glm::vec3 red(1.f, 0.f, 0.f);
+
+        const glm::vec3 origin(0.f);
+
+
+        scene.pushMaterial(red, black, 0.0, 0.5);
+        scene.pushSphere(origin, 1.f, 0);
+        // scene.pushSphere({0.f, 1001.f, 0}, 1000.f, 1);
         camera.setCameraPosition(glm::vec3(0, 0, 5));
         camera.setLookAt(glm::vec3(0));
-        camera.setDegreeHorizontalFOV(90);
+        camera.setDegreeHorizontalFOV(45);
         camera.setUpVector({0, 1, 0});
         camera.setNear(0.1);
-        camera.setFar(100);
+        camera.setFar(10000);
     }
     
     void App::OnUIRender()
@@ -57,10 +65,15 @@ namespace Raytracing
         
         // Settings panel
         ImGui::Begin("Settings");
-        if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 0, 180))
+        if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 0, 50))
         {
             camera.setDegreeHorizontalFOV(fovDegree);
         }
+        if (ImGui::Button("Reset"))
+        {
+            renderer.resetAcc();
+        }
+        
         ImGui::End();
         
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
