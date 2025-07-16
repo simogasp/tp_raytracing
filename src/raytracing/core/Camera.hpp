@@ -7,8 +7,9 @@ namespace Raytracing
 {
     class Camera
     {
-    private:
+    public:
         glm::vec3 position;
+    private:
         glm::vec3 lookAt;
         glm::vec3 upVector;
         glm::vec3 x;

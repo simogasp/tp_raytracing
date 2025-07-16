@@ -10,5 +10,5 @@ namespace Raytracing
         glm::vec3 origin;
         glm::vec3 direction;
         uint bounce = 0;
-    };    
+    };
 } // namespace Raytracing

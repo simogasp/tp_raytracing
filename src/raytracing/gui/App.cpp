@@ -7,16 +7,34 @@ namespace Raytracing
     {
         // scene.addRandomSphereToScene();
         const glm::vec3 black(0.f, 0.f, 0.f);
-        const glm::vec3 red(1.f, 0.f, 0.f);
+        const glm::vec3 red(1.f, 0.f, 1.f);
+        const glm::vec3 blue(51.f/255, 77.f/255, 1.f);
+        const glm::vec3 orange(0.8f, 0.5f, 0.2f);
 
-        const glm::vec3 origin(0.f);
+        const glm::vec3 redPos(-1.f, 0.f, 0.f);
+        const glm::vec3 floorPos(0.f, 1001.f, 0.f);
+        const glm::vec3 lightPos(1.f, -10.f, -30.f);
+
+        const float mat = 0.5f;
+        
+        const float fullRoughness = 1.0f;
+        const float midRoughness = .5f;
+        const float noRoughness = 0.0f;
 
 
-        scene.pushMaterial(red, black, 0.0, 0.5);
-        scene.pushSphere(origin, 1.f, 0);
-        // scene.pushSphere({0.f, 1001.f, 0}, 1000.f, 1);
-        camera.setCameraPosition(glm::vec3(0, 0, 5));
-        camera.setLookAt(glm::vec3(0));
+        // materials
+        scene.pushMaterial(red, black, mat, fullRoughness, 0.f);
+        scene.pushMaterial(blue, black, 1, fullRoughness, 0.f);
+        scene.pushMaterial(orange, orange, mat, fullRoughness, 15.f);
+
+        // spheres
+        scene.pushSphere(redPos, 1.f, 0);
+        scene.pushSphere(floorPos, 1000.f, 1);
+        scene.pushSphere(lightPos, 20.f, 2);
+
+        // camera
+        camera.setCameraPosition(glm::vec3(-6.709, 0, 3.160));
+        camera.setLookAt(glm::vec3(-5.907, 0, 2.563));
         camera.setDegreeHorizontalFOV(45);
         camera.setUpVector({0, 1, 0});
         camera.setNear(0.1);
@@ -61,6 +79,7 @@ namespace Raytracing
             ImGui::SameLine();
             ImGui::Text((key < ImGuiKey_NamedKey_BEGIN) ? "\"%s\"" : "\"%s\" %d", ImGui::GetKeyName(key), key);
         }
+        
         ImGui::End();
         
         // Settings panel
@@ -68,7 +87,21 @@ namespace Raytracing
         if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 0, 50))
         {
             camera.setDegreeHorizontalFOV(fovDegree);
+            renderer.resetAcc();
         }
+        glm::vec3 pos = camera.getCamera().getPosition();
+        if (ImGui::DragFloat3("Camera position", glm::value_ptr(pos)))
+        {
+            camera.setCameraPosition(pos);
+            renderer.resetAcc();
+        }
+        glm::vec3 lookAt = camera.getCamera().getLookAt();
+        if (ImGui::DragFloat3("Camera lookAt", glm::value_ptr(lookAt)))
+        {
+            camera.setLookAt(lookAt);
+            renderer.resetAcc();
+        }
+
         if (ImGui::Button("Reset"))
         {
             renderer.resetAcc();
@@ -173,6 +206,10 @@ namespace Raytracing
         }
 
         if (updateRays)
+        {
             camera.updateRay();
+            renderer.resetAcc();
+        }
+
     }
 } // namespace Raytracing

@@ -20,14 +20,17 @@ void Raytracing::SceneFactory::pushSphere(const glm::vec3 center, const float ra
     currentScene.addSphere({center, radius, materialIndex});
 }
 
-void Raytracing::SceneFactory::pushMaterial(const glm::vec3 reflectionColor, const glm::vec3 emissionColor, const double shinyness, const double roughness)
+void Raytracing::SceneFactory::pushMaterial(const glm::vec3 reflectionColor, const glm::vec3 emissionColor, const float shinyness, const float roughness, const float emissionPower)
 {
-    std::cout<<" matInit = " << reflectionColor.r << " " << reflectionColor.g << " " << reflectionColor.b << std::endl;
+    std::cout<<" matInit1 = " << reflectionColor.r << " " << reflectionColor.g << " " << reflectionColor.b << std::endl;
+    std::cout<<" matInit2 = " << emissionColor.r << " " << emissionColor.g << " " << emissionColor.b << " " << emissionPower << std::endl;
     Material mat;
     mat.emission = emissionColor;
     mat.reflection = reflectionColor;
     mat.shinyness = shinyness;
     mat.roughness = roughness;
+    mat.emissionPower = emissionPower;
+    std::cout<<" matInit3 = " << mat.emission.r << " " << mat.emission.g << " " << mat.emission.b << " " << mat.emissionPower << std::endl;
     currentScene.addMaterial(mat);
 }
 

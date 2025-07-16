@@ -12,8 +12,13 @@ namespace Raytracing
     {
         glm::vec3 reflection;
         glm::vec3 emission;
-        double shinyness;
-        double roughness;
+        float shinyness;
+        float roughness;
+        float emissionPower;
+
+        glm::vec3 getEmission() const {
+            return emissionPower * emission;
+        }
     };
 
 } // namespace Raytracing
