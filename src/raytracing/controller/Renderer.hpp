@@ -23,10 +23,11 @@ namespace Raytracing
     private:
         ImageWrapper *image;
         uint32_t *imageData;
-        glm::vec4 *accumulatedData;
+        glm::vec3 *accumulatedData;
         uint FrameId;
         Scene scene;
         Camera camera;
+        uint attenuationFormula;
 
     public:
         Renderer();
@@ -38,6 +39,9 @@ namespace Raytracing
         void onResize(const uint32_t newWidth, const uint32_t newHeight);
         void Render(const Scene &renderedScene, const Camera &renderingCamera);
         void resetAcc();
+        void setAttenuationFormula(const uint newFormula);
+        [[ nodiscard ]]
+        uint getAttenuationFormula() const;
 
     private:
         Raytracing::HitPayload traceRay(Ray *ray);

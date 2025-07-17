@@ -1,6 +1,6 @@
-# pragma once
+#pragma once
 
-# include "raytracing/core/Scene.hpp"
+#include "raytracing/core/Scene.hpp"
 
 namespace Raytracing
 {
@@ -8,13 +8,20 @@ namespace Raytracing
     {
     private:
         Scene currentScene;
+
     public:
         SceneFactory();
         ~SceneFactory() = default;
         void createNewScene();
         void addRandomSphereToScene();
         void pushSphere(const glm::vec3 center, const float radius, const uint materialIndex);
-        void pushMaterial(const glm::vec3 reflectionColor, const glm::vec3 emissionColor, const float shinyness, const float roughness, const float emissionPower);
+        void pushMaterial(const glm::vec3 reflectionColor, const float shinyness, const float roughness);
+        void pushMaterial(const glm::vec3 reflectionColor,
+                          const glm::vec3 emissionColor,
+                          const float shinyness,
+                          const float roughness,
+                          const float emissionPower,
+                          const float attenuationRadius);
         void popSphere();
         Raytracing::Scene getScene();
         static Raytracing::Scene getDefaultScene();

@@ -16,7 +16,7 @@ Raytracing::Renderer::Renderer()
     : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 15 * g_pi / 16, 0, 500)
 {
     image = new ImageWrapper();
-    scene = Scene();
+    attenuationFormula = 1;
 }
 
 uint32_t Raytracing::Renderer::getWidth()
@@ -48,8 +48,8 @@ void Raytracing::Renderer::onResize(const uint32_t newWidth, const uint32_t newH
     accumulatedData = nullptr;
     // update dims
     imageData = new uint32_t[getWidth() * getHeight()];
-    accumulatedData = new glm::vec4[getWidth() * getHeight()];
-
+    accumulatedData = new glm::vec3[getWidth() * getHeight()];
+    FrameId = 0;
     image->setData(imageData);
 }
 
@@ -60,17 +60,16 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     if (FrameId == 1)
     {
         memset(accumulatedData, 0, getWidth() * getHeight() * sizeof(*accumulatedData));
-        std::cout << "reset" << std::endl;
     }
 
     scene = renderedScene;
     camera = renderingCamera;
     size_t x, y;
     const std::vector<glm::vec3> dirs = camera.getRayDirections();
-    // #pragma omp parallel for private(x) schedule(dynamic)
-    for (y = 0; y < getHeight(); y++)
+#pragma omp parallel for private(x) schedule(dynamic)
+    for (y = 0; y < getHeight(); y ++)
     {
-        for (x = 0; x < getWidth(); x++)
+        for (x = 0; x < getWidth(); x ++)
         {
             // helper for the pixel index
             const uint32_t pixelIndex = x + y * getWidth();
@@ -87,7 +86,6 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
             float shiny = 1.f;
 
             // iteration on bounce
-            ImColor debugColor;
             for (; ray.bounce <= BOUNCES; ray.bounce++)
             {
                 HitPayload payload = traceRay(&ray);
@@ -102,7 +100,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                     // light gray sky
                     const glm::vec3 skyColor(0.6f, 0.7f, 0.9f);
 #endif
-                    // light += skyColor;
+                    light += skyColor;
                     break;
                 }
 
@@ -112,34 +110,75 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 colorContribution = (1.f - shiny) * colorContribution + shiny * mat.reflection;
                 shiny *= mat.shinyness;
 
-
-                light += mat.getEmission();
+                // light attenuation
+                float att;
+                switch (attenuationFormula)
+                {
+                case 1:
+                    att = glm::max(0., 1. - (payload.hitDistance / mat.attenuationRadius) * (payload.hitDistance / mat.attenuationRadius));
+                    break;
+                case 2:
+                    att = glm::max(0., 1. - payload.hitDistance / mat.attenuationRadius);
+                    break;
+                case 3:
+                    att = glm::max(0., (1. - (payload.hitDistance / mat.attenuationRadius) * (payload.hitDistance / mat.attenuationRadius)) * (1. - (payload.hitDistance / mat.attenuationRadius) * (payload.hitDistance / mat.attenuationRadius)));
+                case 4:
+                    att = glm::exp(-(payload.hitDistance / mat.attenuationRadius) * (payload.hitDistance / mat.attenuationRadius));
+                    break;
+                default:
+                    att = 1.;
+                    break;
+                }
+                if (ray.bounce > 0)
+                    light += att * mat.getEmission();
+                else
+                    light += mat.getEmission();
 
                 // update the ray
                 ray.origin = payload.worldPosition + EPSILON * payload.worldNormal;
-                // diffuse ray
-                const glm::vec3 noise = glm::normalize(glm::vec3(
-                    2.0 * ((float)rand() / RAND_MAX) - 1.0,
-                    2.0 * ((float)rand() / RAND_MAX) - 1.0,
-                    2.0 * ((float)rand() / RAND_MAX) - 1.0
-                ));
-                ray.direction = glm::normalize(payload.worldNormal + noise);
+
+                const glm::vec3 noiseN = glm::normalize(glm::vec3(
+                    2.0 * ((float) rand() / RAND_MAX) - 1.0,
+                    2.0 * ((float) rand() / RAND_MAX) - 1.0,
+                    2.0 * ((float) rand() / RAND_MAX) - 1.0));
+
+                const glm::vec3 reflectRay = glm::normalize(glm::reflect(ray.direction, payload.worldNormal));
+                glm::vec3 noiseR = glm::normalize(glm::vec3(
+                    2.0 * ((float) rand() / RAND_MAX) - 1.0,
+                    2.0 * ((float) rand() / RAND_MAX) - 1.0,
+                    2.0 * ((float) rand() / RAND_MAX) - 1.0));
+                // while (glm::dot(reflectRay, noiseR) < glm::sin(glm::acos(glm::dot(reflectRay, payload.worldNormal))))
+                // {
+                //     noiseR = glm::normalize(glm::vec3(
+                //         2.0 * ((float) rand() / RAND_MAX) - 1.0,
+                //         2.0 * ((float) rand() / RAND_MAX) - 1.0,
+                //         2.0 * ((float) rand() / RAND_MAX) - 1.0));
+                // }
+                ray.direction = mat.roughness * glm::normalize(payload.worldNormal + noiseN) + (1 - mat.roughness) * glm::normalize(reflectRay + mat.roughness * noiseR);
             }
-            const glm::vec4 frameColor = glm::vec4(
-                (int)(glm::clamp(light.r * colorContribution.r * 255, 0.f, 255.f)),
-                (int)(glm::clamp(light.g * colorContribution.g * 255, 0.f, 255.f)),
-                (int)(glm::clamp(light.b * colorContribution.b * 255, 0.f, 255.f)),
-                255);
+            const glm::vec3 frameColor = glm::vec3(
+                (int)(light.r * colorContribution.r * 255),
+                (int)(light.g * colorContribution.g * 255),
+                (int)(light.b * colorContribution.b * 255));
 
             // draw the pixel
             accumulatedData[pixelIndex] += frameColor;
+
+            const glm::vec3 outColorVect = glm::clamp(accumulatedData[pixelIndex] / (float)FrameId, 0.f, 255.f);
+
             const ImColor outColor = IM_COL32(
-                accumulatedData[pixelIndex].r / (float)FrameId,
-                accumulatedData[pixelIndex].g / (float)FrameId,
-                accumulatedData[pixelIndex].b / (float)FrameId,
-                accumulatedData[pixelIndex].a / (float)FrameId);
-            const ImColor frameCol = IM_COL32(frameColor.r, frameColor.g, frameColor.b, frameColor.a);
+                outColorVect.r,
+                outColorVect.g,
+                outColorVect.b,
+                255);
+            // const ImColor frameCol = IM_COL32(frameColor.r, frameColor.g, frameColor.b, 255);
+            // if (FrameId == 1)
+            //     std :: cout << "outColor = " << outColor.Value.w << " "  << outColor.Value.x << " "  << outColor.Value.y << " "  << outColor.Value.z << std :: endl;
             imageData[pixelIndex] = outColor;
+            
+            // imageData[(x + 1) + y * getWidth()] = outColor;
+            // imageData[x + (y + 1) * getWidth()] = outColor;
+            // imageData[x + 1 + (y + 1) * getWidth()] = outColor;
         }
     }
 
@@ -149,6 +188,16 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
 void Raytracing::Renderer::resetAcc()
 {
     FrameId = 0;
+}
+
+void Raytracing::Renderer::setAttenuationFormula(const uint newFormula)
+{
+    attenuationFormula = newFormula;
+}
+
+uint Raytracing::Renderer::getAttenuationFormula() const
+{
+    return attenuationFormula;
 }
 
 Raytracing::HitPayload Raytracing::Renderer::traceRay(Ray *ray)
@@ -184,18 +233,16 @@ Raytracing::HitPayload Raytracing::Renderer::closestHit(Ray *ray, float hitDista
     const std::vector<Sphere> spheres = scene.getListSphere();
     payload.objectIndex = objectIndex;
 
+    const Sphere sphere = spheres[objectIndex];
     // compute the hit position
     payload.worldPosition = ray->origin + hitDistance * ray->direction;
 
-    payload.worldNormal = glm::normalize(payload.worldPosition - spheres[payload.objectIndex].center);
-    // if (payload.objectIndex <= 0)
-    // {
-    //     std ::cout << "------------------------------------------------" << std::endl;
-    //     std ::cout << "p.hitDist = " << payload.hitDistance << std::endl;
-    //     std ::cout << "p.pos = " << payload.worldPosition.x << " " << payload.worldPosition.y << " " << payload.worldPosition.z << std::endl;
-    //     std ::cout << "p.normal = " << payload.worldNormal.x << " " << payload.worldNormal.y << " " << payload.worldNormal.z << std::endl;
-    //     std ::cout << "------------------------------------------------" << std::endl;
-    // }
+    payload.worldNormal = glm::normalize(payload.worldPosition - sphere.center);
+    const glm::vec3 oc(ray->origin - sphere.center);
+    if (glm::sqrt(glm::dot(oc, oc)) < sphere.radius)
+        // revert the normal if the bounce is inside the sphere
+        payload.worldNormal *= -1;
+
     return payload;
 }
 

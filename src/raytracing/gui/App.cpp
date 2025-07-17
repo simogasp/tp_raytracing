@@ -1,31 +1,43 @@
-# include "App.hpp"
-# include "glm/gtc/type_ptr.hpp"
+#include "App.hpp"
+#include "glm/gtc/type_ptr.hpp"
 namespace Raytracing
 {
     App::App()
         : camera(), scene()
     {
-        // scene.addRandomSphereToScene();
+        // color helper
         const glm::vec3 black(0.f, 0.f, 0.f);
+        const glm::vec3 white(1.f, 1.f, 1.f);
         const glm::vec3 red(1.f, 0.f, 1.f);
-        const glm::vec3 blue(51.f/255, 77.f/255, 1.f);
+        const glm::vec3 blue(51.f / 255, 77.f / 255, 1.f);
         const glm::vec3 orange(0.8f, 0.5f, 0.2f);
+        const glm::vec3 gray(122.f / 255, 127.f / 255, 128.f / 255);
 
+        // position helper
         const glm::vec3 redPos(-1.f, 0.f, 0.f);
         const glm::vec3 floorPos(0.f, 1001.f, 0.f);
         const glm::vec3 lightPos(1.f, -10.f, -30.f);
+        const glm::vec3 camPos(-56.443f, -11.0f, 40.181f);
+        const glm::vec3 lookAtPos(-55.641f, -11.0f, 39.584f);
+        const glm::vec3 camPos2(-6.709, 0, 3.160);
+        const glm::vec3 lookAtPos2(-5.907, 0, 2.563);
+        const glm::vec3 camPos3(-56.443f, 11.0f, 40.181f);
+        const glm::vec3 lookAtPos3(-55.641f, 11.0f, 39.584f);
 
-        const float mat = 0.5f;
-        
+        // shinyness helper
+        const float mat = 0.0f;
+        const float midShiny = 0.5f;
+        const float shiny = 1.0f;
+
+        // roughness helper (roughness is useless for now)
         const float fullRoughness = 1.0f;
         const float midRoughness = .5f;
         const float noRoughness = 0.0f;
 
-
         // materials
-        scene.pushMaterial(red, black, mat, fullRoughness, 0.f);
-        scene.pushMaterial(blue, black, 1, fullRoughness, 0.f);
-        scene.pushMaterial(orange, orange, mat, fullRoughness, 15.f);
+        scene.pushMaterial(red, mat, fullRoughness);
+        scene.pushMaterial(gray, midShiny, midRoughness);
+        scene.pushMaterial(orange, orange, mat, fullRoughness, 1.f, 10000.f);
 
         // spheres
         scene.pushSphere(redPos, 1.f, 0);
@@ -33,21 +45,32 @@ namespace Raytracing
         scene.pushSphere(lightPos, 20.f, 2);
 
         // camera
-        camera.setCameraPosition(glm::vec3(-6.709, 0, 3.160));
-        camera.setLookAt(glm::vec3(-5.907, 0, 2.563));
+        camera.setCameraPosition(camPos2);
+        camera.setLookAt(lookAtPos2);
         camera.setDegreeHorizontalFOV(45);
         camera.setUpVector({0, 1, 0});
         camera.setNear(0.1);
         camera.setFar(10000);
     }
-    
+
     void App::OnUIRender()
     {
+        // position helper
+        const glm::vec3 redPos(-1.f, 0.f, 0.f);
+        const glm::vec3 floorPos(0.f, 1001.f, 0.f);
+        const glm::vec3 lightPos(1.f, -10.f, -30.f);
+        const glm::vec3 camPos(-56.443f, -11.0f, 40.181f);
+        const glm::vec3 lookAtPos(-55.641f, -11.0f, 39.584f);
+        const glm::vec3 camPos2(-6.709, 0, 3.160);
+        const glm::vec3 lookAtPos2(-5.907, 0, 2.563);
+        const glm::vec3 camPos3(-56.443f, 11.0f, 40.181f);
+        const glm::vec3 lookAtPos3(-55.641f, 11.0f, 39.584f);
+
         ImGuiIO &io = ImGui::GetIO();
-        
+
         // Dockspace Window
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
-        
+
         // Help panel
         ImGui::Begin("Help");
         if (ImGui::TreeNode("Move in the scene"))
@@ -75,15 +98,16 @@ namespace Raytracing
         for (ImGuiKey key = ImGuiKey_NamedKey_BEGIN; key < ImGuiKey_NamedKey_END; key = (ImGuiKey)(key + 1))
         {
             if (funcs::IsLegacyNativeDupe(key) || !ImGui::IsKeyDown(key))
-            continue;
+                continue;
             ImGui::SameLine();
             ImGui::Text((key < ImGuiKey_NamedKey_BEGIN) ? "\"%s\"" : "\"%s\" %d", ImGui::GetKeyName(key), key);
         }
-        
+
         ImGui::End();
-        
+
         // Settings panel
         ImGui::Begin("Settings");
+
         if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 0, 50))
         {
             camera.setDegreeHorizontalFOV(fovDegree);
@@ -102,40 +126,69 @@ namespace Raytracing
             renderer.resetAcc();
         }
 
+        int attenuationFormula = renderer.getAttenuationFormula();
+        if (ImGui::SliderInt("AttenuationFormula", &attenuationFormula, 1, 4))
+        {
+            renderer.setAttenuationFormula(attenuationFormula);
+        }
+
         if (ImGui::Button("Reset"))
         {
             renderer.resetAcc();
         }
-        
+
+
+        if (ImGui::SliderInt("Cam Setting", &camSetting, 1, 3))
+        {
+            switch (camSetting)
+            {
+            case 1:
+                camera.setCameraPosition(camPos);
+                camera.setLookAt(lookAtPos);
+                break;
+            case 2:
+                camera.setCameraPosition(camPos2);
+                camera.setLookAt(lookAtPos2);
+                break;
+            case 3:
+                camera.setCameraPosition(camPos3);
+                camera.setLookAt(lookAtPos3);
+                break;
+
+            default:
+                break;
+            }
+        }
+
         ImGui::End();
-        
+
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         // Dockspace Viewport
         ImGui::Begin("Viewport", NULL, ImGuiWindowFlags_NoScrollbar);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-        
+
         m_viewportWidth = ImGui::GetContentRegionAvail().x;
         m_viewportHeight = ImGui::GetContentRegionAvail().y;
-        
+
         // call the render
         Render();
-        
+
         // call the keyboard handler
         keyboardHandler();
         io.ClearInputKeys();
         io.ClearInputCharacters();
-        
+
         // if there is a image : draw it
         const GLuint imageTextureId = renderer.getTextureId();
         if (imageTextureId)
         {
             ImGui::Image((ImTextureID)imageTextureId,
-            ImVec2(renderer.getWidth(), renderer.getHeight()));
+                         ImVec2(renderer.getWidth(), renderer.getHeight()));
         }
         ImGui::End();
         ImGui::PopStyleVar();
     }
-    
+
     void App::Render()
     {
         // resize
@@ -210,6 +263,5 @@ namespace Raytracing
             camera.updateRay();
             renderer.resetAcc();
         }
-
     }
 } // namespace Raytracing

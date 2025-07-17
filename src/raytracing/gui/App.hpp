@@ -23,7 +23,7 @@ namespace Raytracing
         Renderer renderer;
 
         int fovDegree = 45;
-
+        int camSetting = 1;
     public:
         App();
 
