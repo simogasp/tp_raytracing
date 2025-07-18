@@ -40,13 +40,15 @@ namespace Raytracing
         void Render(const Scene &renderedScene, const Camera &renderingCamera);
         void resetAcc();
         void setAttenuationFormula(const uint newFormula);
-        [[ nodiscard ]]
+        [[nodiscard]]
         uint getAttenuationFormula() const;
+        char *getFormulatoString(const int i);
 
     private:
         Raytracing::HitPayload traceRay(Ray *ray);
         Raytracing::HitPayload closestHit(Ray *ray, float hitDistance, int ObjectIndex);
         Raytracing::HitPayload miss(Ray *ray);
+        float getAttenuation(const HitPayload payload, const Material mat);
     };
 
 }

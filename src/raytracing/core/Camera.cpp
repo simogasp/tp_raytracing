@@ -198,7 +198,7 @@ void Raytracing::Camera::updateRay()
     const float invScreenRatio = (float)height / width;
 
     uint32_t x, y;
-    // #pragma omp parallel for collapse(2)
+    #pragma omp parallel for collapse(2)
     for (y = 0; y < height; y++)
     {
         for (x = 0; x < width; x++)
@@ -227,10 +227,6 @@ void Raytracing::Camera::updateRay()
                 cosphi * costheta  // x nor
                 ));
             ;
-            if (x % (width / 3) == 0 && y % (height / 3) == 0)
-            {
-                // std::cout << rayDirections[x + y * width].x << " " << " " << rayDirections[x + y * width].y << " " << rayDirections[x + y * width].z << std::endl;
-            }
         }
     }
 }

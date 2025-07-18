@@ -17,12 +17,6 @@ namespace Raytracing
         const glm::vec3 redPos(-1.f, 0.f, 0.f);
         const glm::vec3 floorPos(0.f, 1001.f, 0.f);
         const glm::vec3 lightPos(1.f, -10.f, -30.f);
-        const glm::vec3 camPos(-56.443f, -11.0f, 40.181f);
-        const glm::vec3 lookAtPos(-55.641f, -11.0f, 39.584f);
-        const glm::vec3 camPos2(-6.709, 0, 3.160);
-        const glm::vec3 lookAtPos2(-5.907, 0, 2.563);
-        const glm::vec3 camPos3(-56.443f, 11.0f, 40.181f);
-        const glm::vec3 lookAtPos3(-55.641f, 11.0f, 39.584f);
 
         // shinyness helper
         const float mat = 0.0f;
@@ -36,7 +30,7 @@ namespace Raytracing
 
         // materials
         scene.pushMaterial(red, mat, fullRoughness);
-        scene.pushMaterial(gray, midShiny, midRoughness);
+        scene.pushMaterial(gray, shiny, noRoughness);
         scene.pushMaterial(orange, orange, mat, fullRoughness, 1.f, 10000.f);
 
         // spheres
@@ -108,6 +102,8 @@ namespace Raytracing
         // Settings panel
         ImGui::Begin("Settings");
 
+        ImGui::Text("Camera Settings");
+
         if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 0, 50))
         {
             camera.setDegreeHorizontalFOV(fovDegree);
@@ -126,39 +122,58 @@ namespace Raytracing
             renderer.resetAcc();
         }
 
-        int attenuationFormula = renderer.getAttenuationFormula();
-        if (ImGui::SliderInt("AttenuationFormula", &attenuationFormula, 1, 4))
-        {
-            renderer.setAttenuationFormula(attenuationFormula);
-        }
 
-        if (ImGui::Button("Reset"))
+        // cam preset part
+
+        int node_clicked = -1;
+
+        static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+
+        ImGuiTreeNodeFlags node_flags = base_flags;
+        // Items 3..5 are Tree Leaves
+        // The only reason we use TreeNode at all is to allow selection of the leaf. Otherwise we can
+        // use BulletText() or advance the cursor by GetTreeNodeToLabelSpacing() and call Text().
+        ImGui::PushID(0);
+        if (ImGui::TreeNodeEx((void *)(intptr_t)0, node_flags, "Cam Presets"))
+        {
+            for (int i = 1; i < 4; i++)
+            {
+                node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+                ImGui::TreeNodeEx((void *)(intptr_t)i, node_flags, "Cam %d", i);
+                if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+                {
+                    node_clicked = i;
+                }
+            }
+            ImGui::TreePop();
+        }
+        ImGui::PopID();
+
+        handleCamPreset(node_clicked);
+
+        if (ImGui::Button("Reset Accumulation"))
         {
             renderer.resetAcc();
         }
 
+        ImGui::Separator();
+        ImGui::Text("Scene Setting");
+        ImGui::PushID(1);
 
-        if (ImGui::SliderInt("Cam Setting", &camSetting, 1, 3))
-        {
-            switch (camSetting)
-            {
-            case 1:
-                camera.setCameraPosition(camPos);
-                camera.setLookAt(lookAtPos);
-                break;
-            case 2:
-                camera.setCameraPosition(camPos2);
-                camera.setLookAt(lookAtPos2);
-                break;
-            case 3:
-                camera.setCameraPosition(camPos3);
-                camera.setLookAt(lookAtPos3);
-                break;
-
-            default:
-                break;
-            }
-        }
+        // if (ImGui::TreeNodeEx((void *)(intptr_t) 0, node_flags, "Light Attenuation Formula"))
+        // {
+        //     for (int i = 1; i < 5; i++)
+        //     {
+        //         node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+        //         ImGui::TreeNodeEx((void *)(intptr_t)i, node_flags, renderer.getFormulatoString(i), i);
+        //         if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+        //         {
+        //             renderer.setAttenuationFormula(i);
+        //         }
+        //     }
+        //     ImGui::TreePop();
+        // }
+        ImGui::PopID();
 
         ImGui::End();
 
@@ -263,5 +278,28 @@ namespace Raytracing
             camera.updateRay();
             renderer.resetAcc();
         }
+    }
+
+    void App::handleCamPreset(const int node_clicked)
+    {
+        switch (node_clicked)
+        {
+        case 1:
+            camera.setCameraPosition(camPos);
+            camera.setLookAt(lookAtPos);
+            break;
+        case 2:
+            camera.setCameraPosition(camPos2);
+            camera.setLookAt(lookAtPos2);
+            break;
+        case 3:
+            camera.setCameraPosition(camPos3);
+            camera.setLookAt(lookAtPos3);
+            break;
+
+        default:
+            return;
+        }
+        renderer.resetAcc();
     }
 } // namespace Raytracing

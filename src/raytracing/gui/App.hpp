@@ -15,6 +15,12 @@ namespace Raytracing
     class App
     {
     private:
+        const glm::vec3 camPos = glm::vec3(-56.443f, -11.0f, 40.181f);
+        const glm::vec3 lookAtPos = glm::vec3(-55.641f, -11.0f, 39.584f);
+        const glm::vec3 camPos2 = glm::vec3(-6.709, 0, 3.160);
+        const glm::vec3 lookAtPos2 = glm::vec3(-5.907, 0, 2.563);
+        const glm::vec3 camPos3 = glm::vec3(-56.443f, 11.0f, 40.181f);
+        const glm::vec3 lookAtPos3 = glm::vec3(-55.641f, 11.0f, 39.584f);
         /* data */
         uint32_t m_viewportWidth = 0;
         uint32_t m_viewportHeight = 0;
@@ -30,10 +36,10 @@ namespace Raytracing
         ~App() = default;
 
         void OnUIRender();
+        
+    private:
         void Render();
-        
-
         void keyboardHandler();
-        
+        void handleCamPreset(const int node_clicked);
     };
 }

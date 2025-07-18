@@ -16,6 +16,7 @@ namespace Raytracing
         float roughness;
         float emissionPower = 0;
         float attenuationRadius = 100;
+        float refractiveIndex = 0;
 
         glm::vec3 getEmission() const {
             return emissionPower * emission;
