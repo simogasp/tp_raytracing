@@ -79,7 +79,6 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
             ray.origin = camera.getPosition();
             ray.direction = dirs[pixelIndex];
             ray.bounce = 0;
-            ray.refractiveIndex = 1; // start in air
 
             // final color by substraction method
             glm::vec3 light(0.f);
@@ -117,7 +116,6 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                     light += mat.getEmission();
 
                 // update the ray
-                ray.origin = payload.worldPosition + EPSILON * payload.worldNormal;
 
                 // noise around normal
                 const glm::vec3 noiseN = glm::normalize(glm::vec3(
@@ -135,26 +133,55 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                     2.0 * ((float)rand() / RAND_MAX) - 1.0));
 
                 // allow refraction
-                if ((mat.refractiveIndex < 1.f // nontransparent material
-                        || glm::sin(glm::acos(glm::dot(ray.direction, payload.worldNormal)) > mat.refractiveIndex / ray.refractiveIndex) // total reflexion
-                    )
-                    || rand() > RAND_MAX / 2) // else the ray can be refect or refract with a probability of 0.5
+                if (mat.refractiveIndex < 1.f) // nontransparent material
                 {
                     ray.direction = mat.roughness * glm::normalize(payload.worldNormal + noiseN) + (1 - mat.roughness) * glm::normalize(reflectRay + mat.roughness * noiseR);
-                } else {
-                    // the ray is refract
-                    // to enter in the sphere
-                    ray.direction = glm::refract(ray.direction, payload.worldNormal, ray.refractiveIndex / mat.refractiveIndex);
+                    ray.origin = payload.worldPosition + EPSILON * payload.worldNormal;
+                }
+                else
+                {
+                    const float cosi1 = glm::dot(ray.direction, - payload.worldNormal);
+                    const float i1 = glm::acos(cosi1);
+                    float n1;
+                    float n2;
                     if (payload.inside)
                     {
-                        ray.refractiveIndex = 1; // back to air
+                        // the ray is in the sphere
+                        n1 = mat.refractiveIndex;
+                        n2 = Material::AIR_REFRACTIVE_INDEX;
                     }
                     else
                     {
-                        ray.refractiveIndex = mat.refractiveIndex; // change to the material refract index
+                        n1 = Material::AIR_REFRACTIVE_INDEX;
+                        n2 = mat.refractiveIndex;
+                    }
+                    const float indexRatio = n2 / n1;
+                    // std::cout << "indexRatio = " << indexRatio << std :: endl;
+                    
+                    // random number
+                    const float randomf = (float) std::rand() / RAND_MAX;
+                    
+                    // schlick approximation (https://en.wikipedia.org/wiki/Schlick%27s_approximation)
+                    double r0 = (n1 - n2) / (n1 + n2);
+
+                    r0 *= r0;
+                    const float rTheta = r0 + (1 - r0) * glm::pow((1 - cosi1), 5);
+                    
+                    if (glm::sin(i1) > indexRatio || randomf < rTheta)
+                    {
+                        // there is total reflexion or the ray is just reflect
+                        ray.direction = mat.roughness * glm::normalize(payload.worldNormal + noiseN) + (1 - mat.roughness) * glm::normalize(reflectRay + mat.roughness * noiseR);
+                        ray.origin = payload.worldPosition + EPSILON * payload.worldNormal;
+                    }
+                    else
+                    {
+                        // the ray is refract
+                        ray.direction = glm::refract(ray.direction, payload.worldNormal, indexRatio);
+                        ray.origin = payload.worldPosition - EPSILON * payload.worldNormal;
                     }
                 }
             }
+            // the color of the current ray
             const glm::vec3 frameColor = glm::vec3(
                 (int)(light.r * colorContribution.r * 255),
                 (int)(light.g * colorContribution.g * 255),
@@ -199,19 +226,19 @@ uint Raytracing::Renderer::getAttenuationFormula() const
     return attenuationFormula;
 }
 
-char * Raytracing::Renderer::getFormulatoString(const int i)
+char *Raytracing::Renderer::getFormulatoString(const int i)
 {
     switch (i)
     {
     case 1:
-        return (char *) "max(0, 1 - d / r)";
+        return (char *)"max(0, 1 - d / r)";
     case 2:
-        return (char *) "max(0, 1 - (d / r)²)";
+        return (char *)"max(0, 1 - (d / r)²)";
     case 3:
         return (char *)"max(0, 1 - (d / r)²)";
     case 4:
         return (char *)"max(0, exp(- (d / r)²))";
-    
+
     default:
         return (char *)"bad index";
     }

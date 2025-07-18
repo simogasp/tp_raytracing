@@ -10,6 +10,8 @@ namespace Raytracing
 {
     struct Material
     {
+        static constexpr float AIR_REFRACTIVE_INDEX = 1.0f;
+
         glm::vec3 reflection;
         glm::vec3 emission = glm::vec3(0.f);
         float shinyness;

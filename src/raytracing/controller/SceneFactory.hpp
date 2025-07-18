@@ -21,7 +21,8 @@ namespace Raytracing
                           const float shinyness,
                           const float roughness,
                           const float emissionPower,
-                          const float attenuationRadius);
+                          const float attenuationRadius,
+                        const float refractiveIndex);
         void popSphere();
         Raytracing::Scene getScene();
         static Raytracing::Scene getDefaultScene();

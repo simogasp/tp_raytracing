@@ -17,26 +17,49 @@ namespace Raytracing
         const glm::vec3 redPos(-1.f, 0.f, 0.f);
         const glm::vec3 floorPos(0.f, 1001.f, 0.f);
         const glm::vec3 lightPos(1.f, -10.f, -30.f);
+        const glm::vec3 glassPos(1.f, 0.f, 0.f);
 
         // shinyness helper
         const float mat = 0.0f;
         const float midShiny = 0.5f;
         const float shiny = 1.0f;
 
-        // roughness helper (roughness is useless for now)
+        // roughness helper
         const float fullRoughness = 1.0f;
         const float midRoughness = .5f;
         const float noRoughness = 0.0f;
 
+        // emissionPower helper
+        const float noEmissionPower = 0.F;
+        const float normalEmissionPower = 1.F;
+        const float midEmissionPower = 2.f;
+        const float fullEmissionPower = 10.f;
+
+        // refractive index helper
+        const float noTranslucid = 0.f;
+        const float airTranslucid = 1.f;
+        const float waterTranslucid = 1.33f;
+        const float plexiGlassTranslucid = 1.5f;
+
+
+
         // materials
-        scene.pushMaterial(red, mat, fullRoughness);
-        scene.pushMaterial(gray, shiny, noRoughness);
-        scene.pushMaterial(orange, orange, mat, fullRoughness, 1.f, 10000.f);
+        scene.pushMaterial(red, shiny, fullRoughness);
+        scene.pushMaterial(gray, shiny, midRoughness);
+        scene.pushMaterial(orange, orange, mat, fullRoughness, normalEmissionPower, 1000.f, noTranslucid);
+        scene.pushMaterial(white,
+                white,
+                shiny,
+                noRoughness,
+                0.f,
+                0.f,
+                1.0f);
 
         // spheres
         scene.pushSphere(redPos, 1.f, 0);
         scene.pushSphere(floorPos, 1000.f, 1);
         scene.pushSphere(lightPos, 20.f, 2);
+        scene.pushSphere(glassPos, 1.f, 3);
 
         // camera
         camera.setCameraPosition(camPos2);
@@ -49,17 +72,6 @@ namespace Raytracing
 
     void App::OnUIRender()
     {
-        // position helper
-        const glm::vec3 redPos(-1.f, 0.f, 0.f);
-        const glm::vec3 floorPos(0.f, 1001.f, 0.f);
-        const glm::vec3 lightPos(1.f, -10.f, -30.f);
-        const glm::vec3 camPos(-56.443f, -11.0f, 40.181f);
-        const glm::vec3 lookAtPos(-55.641f, -11.0f, 39.584f);
-        const glm::vec3 camPos2(-6.709, 0, 3.160);
-        const glm::vec3 lookAtPos2(-5.907, 0, 2.563);
-        const glm::vec3 camPos3(-56.443f, 11.0f, 40.181f);
-        const glm::vec3 lookAtPos3(-55.641f, 11.0f, 39.584f);
-
         ImGuiIO &io = ImGui::GetIO();
 
         // Dockspace Window
@@ -136,7 +148,7 @@ namespace Raytracing
         ImGui::PushID(0);
         if (ImGui::TreeNodeEx((void *)(intptr_t)0, node_flags, "Cam Presets"))
         {
-            for (int i = 1; i < 4; i++)
+            for (int i = 1; i < 5; i++)
             {
                 node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
                 ImGui::TreeNodeEx((void *)(intptr_t)i, node_flags, "Cam %d", i);
@@ -295,6 +307,11 @@ namespace Raytracing
         case 3:
             camera.setCameraPosition(camPos3);
             camera.setLookAt(lookAtPos3);
+            break;
+
+        case 4:
+            camera.setCameraPosition(camPos4);
+            camera.setLookAt(lookAtPos4);
             break;
 
         default:
