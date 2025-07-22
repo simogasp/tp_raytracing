@@ -12,11 +12,9 @@
 #define BOUNCES 2
 
 // define the resolution
-# define RESON4 1
+#define RESON4 1
 // define the sky aspect
-# define GRADIENT_SKY 1
-
-
+#define GRADIENT_SKY 1
 
 Raytracing::Renderer::Renderer()
     : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 15 * g_pi / 16, 0, 500)
@@ -72,18 +70,19 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     camera = renderingCamera;
     const std::vector<glm::vec3> dirs = camera.getRayDirections();
     omp_set_num_threads(7);
-    #pragma omp parallel for
-    #if RESON4
-    for (size_t y = 0; y < getHeight(); y+=2)
-    {
-        for (size_t x = 0; x < getWidth(); x += 2)
-        {
-    #else
+#pragma omp parallel for
+#if RESON4
+    for (size_t y = 0; y < getHeight(); y += 2)
+#else
     for (size_t y = 0; y < getHeight(); y++)
+#endif
     {
+#if RESON4
+        for (size_t x = 0; x < getWidth(); x += 2)
+#else
         for (size_t x = 0; x < getWidth(); x++)
+#endif
         {
-    #endif
             // helper for the pixel index
             const uint32_t pixelIndex = x + y * getWidth();
 
@@ -217,11 +216,11 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
             // if (FrameId == 1)
             //     std :: cout << "outColor = " << outColor.Value.w << " "  << outColor.Value.x << " "  << outColor.Value.y << " "  << outColor.Value.z << std :: endl;
             imageData[pixelIndex] = outColor;
-# if RESON4
+#if RESON4
             imageData[(x + 1) + y * getWidth()] = outColor;
             imageData[x + (y + 1) * getWidth()] = outColor;
-            imageData[x + 1 + (y + 1) * getWidth()] = outColor;    
-# endif
+            imageData[x + 1 + (y + 1) * getWidth()] = outColor;
+#endif
         }
     }
 
