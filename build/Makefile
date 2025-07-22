@@ -19,10 +19,10 @@ UTILS_SRCS := $(wildcard $(RAYTRACING_DIR)/utils/*cpp)
 
 
 EXE = MyApp
-IMGUI_DIR = ..
+IMGUI_DIR = ../src/imgui/
 SOURCES = $(SRC)/main.cpp $(GUI_SRCS) $(CONTROLLER_SRCS) $(MODEL_SRCS) $(UTILS_SRCS) \
 	$(MODEL_HITABLE_SRCS)
-SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
+SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
 SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glut.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl2.cpp
 OBJS = $(SOURCES:.cpp=.o)
 UNAME_S := $(shell uname -s)
