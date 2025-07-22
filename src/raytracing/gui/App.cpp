@@ -22,7 +22,7 @@ namespace Raytracing
         // shinyness helper
         const float mat = 0.0f;
         const float midShiny = 0.5f;
-        const float shiny = 1.0f;
+        const float shiny = 1.f;
 
         // roughness helper
         const float fullRoughness = 1.0f;
@@ -44,26 +44,34 @@ namespace Raytracing
 
 
         // materials
-        scene.pushMaterial(red, shiny, fullRoughness);
+        scene.pushMaterial(red, mat, fullRoughness);
         scene.pushMaterial(gray, shiny, midRoughness);
         scene.pushMaterial(orange, orange, mat, fullRoughness, normalEmissionPower, 1000.f, noTranslucid);
         scene.pushMaterial(white,
                 white,
                 shiny,
+                0.0001f,
+                0.f,
+                0.f,
+                plexiGlassTranslucid);
+            scene.pushMaterial(white,
+                white,
+                shiny,
                 noRoughness,
                 0.f,
                 0.f,
-                1.0f);
+                airTranslucid);
 
         // spheres
         scene.pushSphere(redPos, 1.f, 0);
         scene.pushSphere(floorPos, 1000.f, 1);
         scene.pushSphere(lightPos, 20.f, 2);
         scene.pushSphere(glassPos, 1.f, 3);
+        // scene.pushSphere(glassPos, 0.8f, 4);
 
         // camera
-        camera.setCameraPosition(camPos2);
-        camera.setLookAt(lookAtPos2);
+        camera.setCameraPosition(camPos4);
+        camera.setLookAt(lookAtPos4);
         camera.setDegreeHorizontalFOV(45);
         camera.setUpVector({0, 1, 0});
         camera.setNear(0.1);
@@ -148,9 +156,9 @@ namespace Raytracing
         ImGui::PushID(0);
         if (ImGui::TreeNodeEx((void *)(intptr_t)0, node_flags, "Cam Presets"))
         {
+            node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
             for (int i = 1; i < 5; i++)
             {
-                node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
                 ImGui::TreeNodeEx((void *)(intptr_t)i, node_flags, "Cam %d", i);
                 if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
                 {
@@ -172,19 +180,21 @@ namespace Raytracing
         ImGui::Text("Scene Setting");
         ImGui::PushID(1);
 
-        // if (ImGui::TreeNodeEx((void *)(intptr_t) 0, node_flags, "Light Attenuation Formula"))
-        // {
-        //     for (int i = 1; i < 5; i++)
-        //     {
-        //         node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-        //         ImGui::TreeNodeEx((void *)(intptr_t)i, node_flags, renderer.getFormulatoString(i), i);
-        //         if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
-        //         {
-        //             renderer.setAttenuationFormula(i);
-        //         }
-        //     }
-        //     ImGui::TreePop();
-        // }
+        node_flags = base_flags;
+        if (ImGui::TreeNodeEx((void *)(intptr_t) 0, node_flags, "Light Attenuation Formula"))
+        {
+            node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+            for (int i = 1; i < 5; i++)
+            {
+                ImGui::TreeNodeEx((void *)(intptr_t)i, node_flags, renderer.getFormulatoString(i), i);
+                if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+                {
+                    renderer.setAttenuationFormula(i);
+                    renderer.resetAcc();
+                }
+            }
+            ImGui::TreePop();
+        }
         ImGui::PopID();
 
         ImGui::End();

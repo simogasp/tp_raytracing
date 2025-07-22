@@ -3,14 +3,20 @@
 #include "Renderer.hpp"
 #include "raytracing/core/Ray.hpp"
 #include "raytracing/core/HitPayload.hpp"
-#include "raytracing/core/Light.hpp"
 #include <stdio.h>
 #include <omp.h>
 #define GLM_ENABLE_EXPERIMENTAL 1
 #include <glm/gtx/string_cast.hpp>
 
 // number of bounce to made
-#define BOUNCES 5
+#define BOUNCES 2
+
+// define the resolution
+# define RESON4 0
+// define the sky aspect
+# define GRADIENT_SKY 1
+
+
 
 Raytracing::Renderer::Renderer()
     : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 15 * g_pi / 16, 0, 500)
@@ -49,28 +55,35 @@ void Raytracing::Renderer::onResize(const uint32_t newWidth, const uint32_t newH
     // update dims
     imageData = new uint32_t[getWidth() * getHeight()];
     accumulatedData = new glm::vec3[getWidth() * getHeight()];
-    FrameId = 0;
+    frameId = 0;
     image->setData(imageData);
 }
 
 // render every pixel of the screen.
 void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &renderingCamera)
 {
-    FrameId++;
-    if (FrameId == 1)
+    frameId++;
+    if (frameId == 1)
     {
         memset(accumulatedData, 0, getWidth() * getHeight() * sizeof(*accumulatedData));
     }
 
     scene = renderedScene;
     camera = renderingCamera;
-    size_t x, y;
     const std::vector<glm::vec3> dirs = camera.getRayDirections();
-#pragma omp parallel for private(x) schedule(dynamic)
-    for (y = 0; y < getHeight(); y++)
+    omp_set_num_threads(7);
+    #pragma omp parallel for
+    #if RESON4
+    for (size_t y = 0; y < getHeight(); y+=2)
     {
-        for (x = 0; x < getWidth(); x++)
+        for (size_t x = 0; x < getWidth(); x += 2)
         {
+    #else
+    for (size_t y = 0; y < getHeight(); y++)
+    {
+        for (size_t x = 0; x < getWidth(); x++)
+        {
+    #endif
             // helper for the pixel index
             const uint32_t pixelIndex = x + y * getWidth();
 
@@ -93,12 +106,13 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 if (payload.hitDistance < 0)
                 {
 // we missed all spheres
-#if 0
-                    const double rgColor = (1 - abs(ray.direction.y)) / 2 + 0.5;
+#if GRADIENT_SKY
+                    const double rgColor = (1 - abs(ray.direction.y)) / 2 + 0.3;
                     const glm::vec3 skyColor(rgColor, rgColor, 1);
 #else
                     // light gray sky
-                    const glm::vec3 skyColor(0.6f, 0.7f, 0.9f);
+                    // const glm::vec3 skyColor(0.6f, 0.7f, 0.9f);
+                    const glm::vec3 skyColor(0.0f);
 #endif
                     light += skyColor;
                     break;
@@ -115,7 +129,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 else
                     light += mat.getEmission();
 
-                // update the ray
+                // update the ray200
 
                 // noise around normal
                 const glm::vec3 noiseN = glm::normalize(glm::vec3(
@@ -133,14 +147,16 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                     2.0 * ((float)rand() / RAND_MAX) - 1.0));
 
                 // allow refraction
-                if (mat.refractiveIndex < 1.f) // nontransparent material
+                if (mat.refractiveIndex < EPSILON) // nontransparent material
                 {
                     ray.direction = mat.roughness * glm::normalize(payload.worldNormal + noiseN) + (1 - mat.roughness) * glm::normalize(reflectRay + mat.roughness * noiseR);
                     ray.origin = payload.worldPosition + EPSILON * payload.worldNormal;
                 }
                 else
                 {
-                    const float cosi1 = glm::dot(ray.direction, - payload.worldNormal);
+                    // don't count a  bounce on translucid
+                    ray.bounce--;
+                    const float cosi1 = glm::dot(ray.direction, -payload.worldNormal);
                     const float i1 = glm::acos(cosi1);
                     float n1;
                     float n2;
@@ -155,18 +171,18 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                         n1 = Material::AIR_REFRACTIVE_INDEX;
                         n2 = mat.refractiveIndex;
                     }
+
                     const float indexRatio = n2 / n1;
-                    // std::cout << "indexRatio = " << indexRatio << std :: endl;
-                    
+
                     // random number
-                    const float randomf = (float) std::rand() / RAND_MAX;
-                    
+                    const double randomf = (double)std::rand() / RAND_MAX;
+
                     // schlick approximation (https://en.wikipedia.org/wiki/Schlick%27s_approximation)
                     double r0 = (n1 - n2) / (n1 + n2);
-
                     r0 *= r0;
-                    const float rTheta = r0 + (1 - r0) * glm::pow((1 - cosi1), 5);
-                    
+
+                    const double rTheta = r0 + (1 - r0) * glm::pow((1 - cosi1), 5);
+
                     if (glm::sin(i1) > indexRatio || randomf < rTheta)
                     {
                         // there is total reflexion or the ray is just reflect
@@ -176,54 +192,51 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                     else
                     {
                         // the ray is refract
-                        ray.direction = glm::refract(ray.direction, payload.worldNormal, indexRatio);
+                        ray.direction = glm::refract(ray.direction, payload.worldNormal, n1 / n2);
                         ray.origin = payload.worldPosition - EPSILON * payload.worldNormal;
                     }
                 }
             }
             // the color of the current ray
             const glm::vec3 frameColor = glm::vec3(
-                (int)(light.r * colorContribution.r * 255),
-                (int)(light.g * colorContribution.g * 255),
-                (int)(light.b * colorContribution.b * 255));
+                light.r * colorContribution.r * 255,
+                light.g * colorContribution.g * 255,
+                light.b * colorContribution.b * 255);
 
             // draw the pixel
             accumulatedData[pixelIndex] += frameColor;
 
-            const glm::vec3 outColorVect = glm::clamp(accumulatedData[pixelIndex] / (float)FrameId, 0.f, 255.f);
+            const glm::vec3 outColorVect = glm::clamp(accumulatedData[pixelIndex] / (float)frameId, 0.f, 255.f);
 
             const ImColor outColor = IM_COL32(
                 outColorVect.r,
                 outColorVect.g,
                 outColorVect.b,
                 255);
-            // const ImColor frameCol = IM_COL32(frameColor.r, frameColor.g, frameColor.b, 255);
+            const ImColor frameCol = IM_COL32(frameColor.r, frameColor.g, frameColor.b, 255);
             // if (FrameId == 1)
             //     std :: cout << "outColor = " << outColor.Value.w << " "  << outColor.Value.x << " "  << outColor.Value.y << " "  << outColor.Value.z << std :: endl;
             imageData[pixelIndex] = outColor;
-
-            // imageData[(x + 1) + y * getWidth()] = outColor;
-            // imageData[x + (y + 1) * getWidth()] = outColor;
-            // imageData[x + 1 + (y + 1) * getWidth()] = outColor;
+# if RESON4
+            imageData[(x + 1) + y * getWidth()] = outColor;
+            imageData[x + (y + 1) * getWidth()] = outColor;
+            imageData[x + 1 + (y + 1) * getWidth()] = outColor;    
+# endif
         }
     }
 
     image->setData(imageData);
+    // sleep(20 * (frameId - 1));
 }
 
 void Raytracing::Renderer::resetAcc()
 {
-    FrameId = 0;
+    frameId = 0;
 }
 
 void Raytracing::Renderer::setAttenuationFormula(const uint newFormula)
 {
     attenuationFormula = newFormula;
-}
-
-uint Raytracing::Renderer::getAttenuationFormula() const
-{
-    return attenuationFormula;
 }
 
 char *Raytracing::Renderer::getFormulatoString(const int i)
@@ -235,7 +248,7 @@ char *Raytracing::Renderer::getFormulatoString(const int i)
     case 2:
         return (char *)"max(0, 1 - (d / r)²)";
     case 3:
-        return (char *)"max(0, 1 - (d / r)²)";
+        return (char *)"max(0, (1 - (d / r)²)²)";
     case 4:
         return (char *)"max(0, exp(- (d / r)²))";
 
@@ -301,16 +314,18 @@ Raytracing::HitPayload Raytracing::Renderer::miss(Ray *ray)
 float Raytracing::Renderer::getAttenuation(const HitPayload payload, const Material mat)
 {
     // light attenuation
+    const double dOnR = payload.hitDistance / mat.attenuationRadius;
+    const double a = (1. - dOnR * dOnR);
     switch (attenuationFormula)
     {
     case 1:
-        return glm::max(0., 1. - (payload.hitDistance / mat.attenuationRadius) * (payload.hitDistance / mat.attenuationRadius));
+        return glm::max(0., 1. - dOnR);
     case 2:
-        return glm::max(0., 1. - payload.hitDistance / mat.attenuationRadius);
+        return glm::max(0., a);
     case 3:
-        return glm::max(0., (1. - (payload.hitDistance / mat.attenuationRadius) * (payload.hitDistance / mat.attenuationRadius)) * (1. - (payload.hitDistance / mat.attenuationRadius) * (payload.hitDistance / mat.attenuationRadius)));
+        return glm::max(0., a * a);
     case 4:
-        return glm::exp(-(payload.hitDistance / mat.attenuationRadius) * (payload.hitDistance / mat.attenuationRadius));
+        return glm::exp(-dOnR * dOnR);
     default:
         return 1.;
     }
