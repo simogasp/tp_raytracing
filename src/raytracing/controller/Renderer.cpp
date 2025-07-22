@@ -12,7 +12,7 @@
 #define BOUNCES 2
 
 // define the resolution
-# define RESON4 0
+# define RESON4 1
 // define the sky aspect
 # define GRADIENT_SKY 1
 
