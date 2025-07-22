@@ -1,0 +1,18 @@
+# remove docs directory
+docs
+
+# ignore object files
+*.o
+
+# ignore executable files
+*.exe
+
+# ignore build directory
+build
+
+# ignore CMake files
+CMakeCache.txt
+CMakeFiles
+
+# ignore examples
+examples
