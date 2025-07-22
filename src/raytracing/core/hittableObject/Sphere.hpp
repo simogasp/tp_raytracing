@@ -1,7 +1,5 @@
 #pragma once
 
-#include "stdint.h"
-#include "raytracing/utils/vector.hpp"
 #include "raytracing/core/Ray.hpp"
 #include "raytracing/core/Camera.hpp"
 
@@ -11,10 +9,23 @@ namespace Raytracing
 {
     struct Sphere
     {
+        /**
+         * The center of the sphere.
+         */
         glm::vec3 center;
+        /**
+         * The radius of the radius.
+         */
         float radius;
+        /**
+         * The material Index.
+         */
         uint32_t materialIndex;
 
+        /**
+         * Returns the distance of intersections (-1 if don't intersect).
+         * @return the distance
+         */
         double intersect(const Camera *camera, const Ray *ray) const;
     };
 

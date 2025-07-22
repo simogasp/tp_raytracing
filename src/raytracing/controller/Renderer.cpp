@@ -17,7 +17,7 @@
 #define GRADIENT_SKY 1
 
 Raytracing::Renderer::Renderer()
-    : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 15 * g_pi / 16, 0, 500)
+    : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 15 * glm::pi<float>() / 16, 0, 500)
 {
     image = new ImageWrapper();
     attenuationFormula = 1;
@@ -146,7 +146,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                     2.0 * ((float)rand() / RAND_MAX) - 1.0));
 
                 // allow refraction
-                if (mat.refractiveIndex < EPSILON) // nontransparent material
+                if (mat.refractionIndex < EPSILON) // nontransparent material
                 {
                     ray.direction = mat.roughness * glm::normalize(payload.worldNormal + noiseN) + (1 - mat.roughness) * glm::normalize(reflectRay + mat.roughness * noiseR);
                     ray.origin = payload.worldPosition + EPSILON * payload.worldNormal;
@@ -162,13 +162,13 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                     if (payload.inside)
                     {
                         // the ray is in the sphere
-                        n1 = mat.refractiveIndex;
-                        n2 = Material::AIR_REFRACTIVE_INDEX;
+                        n1 = mat.refractionIndex;
+                        n2 = Material::AIR_REFRACTION_INDEX;
                     }
                     else
                     {
-                        n1 = Material::AIR_REFRACTIVE_INDEX;
-                        n2 = mat.refractiveIndex;
+                        n1 = Material::AIR_REFRACTION_INDEX;
+                        n2 = mat.refractionIndex;
                     }
 
                     const float indexRatio = n2 / n1;

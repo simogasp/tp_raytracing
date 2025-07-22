@@ -23,9 +23,10 @@ void Raytracing::Scene::addMaterial(const Raytracing::Material& material)
 void Raytracing::Scene::addRandomSphere()
 {
     Sphere sphere;
-    sphere.radius = (float) rand() / RAND_MAX * 1.3f + 0.2f;
-    sphere.center = glm::vec3(0.f, 0.f, 0.f);
-    sphere.materialIndex = 0;
+    sphere.radius = (float) rand() / RAND_MAX * 2.8f + 0.2f;
+    sphere.center = glm::vec3(rand() / RAND_MAX * 10.f, rand() / RAND_MAX * 10.f, rand() / RAND_MAX * 10.f);
+    sphere.materialIndex = rand() / RAND_MAX * materialList.size();
+    // create a green material if no one exist.
     if (materialList.size() == 0)
     {
         Material mat;

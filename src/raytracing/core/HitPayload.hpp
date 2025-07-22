@@ -6,15 +6,15 @@ namespace Raytracing
 {
     struct HitPayload
     {
-        // the hit distance
+        /** The hit distance. */
         float hitDistance;
-        // the bounce position
+        /** The bounce position. */
         glm::vec3 worldPosition;
-        // the bounce normal
+        /** The bounce normal */
         glm::vec3 worldNormal;
-        // te objectIndex
+        /** The objectIndex */
         uint32_t objectIndex;
-        // wether the bounce is inside the box or notww
+        /** Wether the bounce is inside the box or not. */
         bool inside;
     };
     

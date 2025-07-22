@@ -5,7 +5,7 @@
 
 Raytracing::Camera Raytracing::CameraFactory::getDefaultCamera()
 {
-    return Camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 180, 0.0001, 100);
+    return Camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 45, 0.0001, 1000);
 }
 
 void Raytracing::CameraFactory::createNewCamera()

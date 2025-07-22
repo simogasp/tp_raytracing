@@ -35,7 +35,7 @@ namespace Raytracing
         const float midEmissionPower = 2.f;
         const float fullEmissionPower = 10.f;
 
-        // refractive index helper
+        // refraction index helper
         const float noTranslucid = 0.f;
         const float airTranslucid = 1.f;
         const float waterTranslucid = 1.33f;

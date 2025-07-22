@@ -1,6 +1,7 @@
 #include "Camera.hpp"
 #include "Ray.hpp"
-#include "raytracing/utils/math.hpp"
+# include "glm/glm.hpp"
+# include "glm/gtc/constants.hpp"
 
 Raytracing::Camera::Camera(const glm::vec3 &positionCamera, const glm::vec3 &lookAtCamera,
                            const glm::vec3 &upCamera, const float fieldOfViewCamera,
@@ -9,7 +10,7 @@ Raytracing::Camera::Camera(const glm::vec3 &positionCamera, const glm::vec3 &loo
     position = positionCamera;
     lookAt = lookAtCamera;
     upVector = upCamera;
-    fieldOfView = std::clamp((double)fieldOfViewCamera, 0.0, 2.0 * g_pi);
+    fieldOfView = glm::clamp(fieldOfViewCamera, 0.0f, 2.0f * glm::pi<float>());
     near = nearCamera;
     far = farCamera;
 
@@ -237,9 +238,5 @@ void Raytracing::Camera::computeBase()
     z = glm::normalize(lookAt - position);
     x = glm::normalize(glm::cross(upVector, z));
     y = glm::cross(z, x);
-    // std::cout << "c x = " << x.x << " " << x.y << " " << x.z << std::endl;
-    // std::cout << "c y = " << y.x << " " << y.y << " " << y.z << std::endl;
-    // std::cout << "c z = " << z.x << " " << z.y << " " << z.z << std::endl;
-
     updateRay();
 }
