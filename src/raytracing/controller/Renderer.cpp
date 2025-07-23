@@ -213,8 +213,6 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 outColorVect.b,
                 255);
             const ImColor frameCol = IM_COL32(frameColor.r, frameColor.g, frameColor.b, 255);
-            // if (FrameId == 1)
-            //     std :: cout << "outColor = " << outColor.Value.w << " "  << outColor.Value.x << " "  << outColor.Value.y << " "  << outColor.Value.z << std :: endl;
             imageData[pixelIndex] = outColor;
 #if RESON4
             imageData[(x + 1) + y * getWidth()] = outColor;
@@ -225,7 +223,6 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     }
 
     image->setData(imageData);
-    // sleep(20 * (frameId - 1));
 }
 
 void Raytracing::Renderer::resetAcc()

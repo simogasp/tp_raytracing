@@ -15,8 +15,8 @@ namespace Raytracing
 
         // position helper
         const glm::vec3 redPos(-1.f, 0.f, 0.f);
-        const glm::vec3 floorPos(0.f, 1001.f, 0.f);
-        const glm::vec3 lightPos(1.f, -10.f, -30.f);
+        const glm::vec3 floorPos(0.f, -1001.f, 0.f);
+        const glm::vec3 lightPos(0.f, 10.f, 30.f);
         const glm::vec3 glassPos(1.f, 0.f, 0.f);
 
         // shinyness helper
@@ -45,7 +45,7 @@ namespace Raytracing
 
         // materials
         scene.pushMaterial(red, mat, fullRoughness);
-        scene.pushMaterial(gray, shiny, midRoughness);
+        scene.pushMaterial(gray, shiny, noRoughness);
         scene.pushMaterial(orange, orange, mat, fullRoughness, normalEmissionPower, 1000.f, noTranslucid);
         scene.pushMaterial(white,
                 white,
@@ -85,8 +85,8 @@ namespace Raytracing
             ImGui::Text("S to move backward");
             ImGui::Text("D to move right");
             ImGui::Text("Q to move right");
-            ImGui::Text("A to rotate camera Anti clockwise");
-            ImGui::Text("E to rotate camera clockwise");
+            ImGui::Text("A to rotate camera clockwise");
+            ImGui::Text("E to rotate camera Anti clockwise");
             ImGui::Text("Space to move Up");
             ImGui::Text("Ctrl to move Down");
             ImGui::Text("ArrowLeft to look left");
@@ -102,7 +102,7 @@ namespace Raytracing
 
         ImGui::Text("Camera Settings");
 
-        if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 0, 50))
+        if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 5, 50))
         {
             camera.setDegreeHorizontalFOV(fovDegree);
             renderer.resetAcc();
@@ -254,12 +254,12 @@ namespace Raytracing
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_A))
         {
-            camera.rotateAntiClockWise();
+            camera.rotateClockWise();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_E))
         {
-            camera.rotateClockWise();
+            camera.rotateAntiClockWise();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_UpArrow))

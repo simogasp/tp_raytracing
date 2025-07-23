@@ -2,6 +2,9 @@
 #include "Ray.hpp"
 # include "glm/glm.hpp"
 # include "glm/gtc/constants.hpp"
+# include <iostream>
+# define GLM_ENABLE_EXPERIMENTAL
+# include <glm/gtx/string_cast.hpp>
 
 Raytracing::Camera::Camera(const glm::vec3 &positionCamera, const glm::vec3 &lookAtCamera,
                            const glm::vec3 &upCamera, const float fieldOfViewCamera,
@@ -49,13 +52,6 @@ float Raytracing::Camera::getFar() const
 std::vector<glm::vec3> Raytracing::Camera::getRayDirections() const
 {
     return rayDirections;
-}
-
-glm::vec3 Raytracing::Camera::baseChangment(glm::vec3 vect)
-{
-    glm::mat3 mat(x, y, z);
-    glm::vec3 res(glm::mat3(x, y, z) * vect);
-    return res;
 }
 
 void Raytracing::Camera::setFov(const double newValue)
@@ -106,41 +102,29 @@ void Raytracing::Camera::backward()
 
 void Raytracing::Camera::left()
 {
-    position -= speed * x;
-    lookAt -= speed * x;
-}
-
-void Raytracing::Camera::right()
-{
     position += speed * x;
     lookAt += speed * x;
 }
 
-void Raytracing::Camera::up()
+void Raytracing::Camera::right()
 {
-    position -= speed * y;
-    lookAt -= speed * y;
+    position -= speed * x;
+    lookAt -= speed * x;
 }
 
-void Raytracing::Camera::down()
+void Raytracing::Camera::up()
 {
     position += speed * y;
     lookAt += speed * y;
 }
 
-void Raytracing::Camera::lookUp()
+void Raytracing::Camera::down()
 {
-    glm::mat3 rot(
-        1, 0, 0,
-        0, cosRotationSpeed, - sinRotationSpeed,
-        0, sinRotationSpeed, cosRotationSpeed);
-    upVector = rot * upVector;
-    z = rot * z;
-    y = rot * y;
-    lookAt = position + z;
+    position -= speed * y;
+    lookAt -= speed * y;
 }
 
-void Raytracing::Camera::lookDown()
+void Raytracing::Camera::lookUp()
 {
     glm::mat3 rot(
         1, 0, 0,
@@ -152,12 +136,24 @@ void Raytracing::Camera::lookDown()
     lookAt = position + z;
 }
 
+void Raytracing::Camera::lookDown()
+{
+    glm::mat3 rot(
+        1, 0, 0,
+        0, cosRotationSpeed, - sinRotationSpeed,
+        0, sinRotationSpeed, cosRotationSpeed);
+    upVector = rot * upVector;
+    z = rot * z;
+    y = rot * y;
+    lookAt = position + z;
+}
+
 void Raytracing::Camera::lookLeft()
 {
     glm::mat3 rot(
-        cosRotationSpeed, 0, sinRotationSpeed,
+        cosRotationSpeed, 0, - sinRotationSpeed,
         0, 1, 0,
-        -sinRotationSpeed, 0, cosRotationSpeed);
+        sinRotationSpeed, 0, cosRotationSpeed);
     x = rot * x;
     z = rot * z;
     lookAt = position + z;
@@ -166,9 +162,9 @@ void Raytracing::Camera::lookLeft()
 void Raytracing::Camera::lookRight()
 {
     glm::mat3 rot(
-        cosRotationSpeed, 0, -sinRotationSpeed,
+        cosRotationSpeed, 0, sinRotationSpeed,
         0, 1, 0,
-        sinRotationSpeed, 0, cosRotationSpeed);
+        - sinRotationSpeed, 0, cosRotationSpeed);
     x = rot * x;
     z = rot * z;
     lookAt = position + z;
@@ -177,8 +173,8 @@ void Raytracing::Camera::lookRight()
 void Raytracing::Camera::rotateClockWise()
 {
     glm::mat3 rot(
-        cosRotationSpeed, -sinRotationSpeed, 0,
-        sinRotationSpeed, cosRotationSpeed, 0,
+        cosRotationSpeed, sinRotationSpeed, 0,
+        -sinRotationSpeed, cosRotationSpeed, 0,
         0, 0, 1);
     upVector = rot * upVector;
     computeBase();
@@ -187,8 +183,8 @@ void Raytracing::Camera::rotateClockWise()
 void Raytracing::Camera::rotateAntiClockWise()
 {
     glm::mat3 rot(
-        cosRotationSpeed, sinRotationSpeed, 0,
-        -sinRotationSpeed, cosRotationSpeed, 0,
+        cosRotationSpeed, -sinRotationSpeed, 0,
+        sinRotationSpeed, cosRotationSpeed, 0,
         0, 0, 1);
     upVector = rot * upVector;
     computeBase();
@@ -216,8 +212,8 @@ void Raytracing::Camera::updateRay()
         for (x = 0; x < width; x++)
         {
             // relative placement on the screen of the pixel
-            const float relativeX = 2 * (float)x / (width - 1) - 1;
-            const float relativeY = 2 * (float)y / (height - 1) - 1;
+            const float relativeX = - 2 * (float)x / (width - 1) + 1;
+            const float relativeY = - 2 * (float)y / (height - 1) + 1;
 
             // rotation angle
             const float fovOn2 = fieldOfView / 2;
@@ -241,6 +237,13 @@ void Raytracing::Camera::updateRay()
             ;
         }
     }
+}
+
+glm::vec3 Raytracing::Camera::baseChangment(glm::vec3 vect)
+{
+    glm::mat3 mat(x, y, z);
+    glm::vec3 res(mat * vect);
+    return res;
 }
 
 // compute base
