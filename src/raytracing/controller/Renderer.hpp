@@ -48,7 +48,7 @@ namespace Raytracing
     class Renderer
     {
     public:
-        const float EPSILON = 1e-3;
+        const float EPSILON = 1e-2;
 
     private:
         /**
@@ -87,6 +87,7 @@ namespace Raytracing
          * Creates a Renderer.
          */
         Renderer();
+        
         /**
          * Destroys a Renderer.
          */
@@ -98,29 +99,35 @@ namespace Raytracing
          * @return the width
          */
         uint32_t getWidth();
+        
         /**
          * Gets the height of the image.
          * @return the height
          */
         uint32_t getHeight();
+        
         /**
          * Gets the GPU texture ID to load the image.
          * @return the texture id
          */
         GLuint getTextureId();
 
+        
         /**
          * Handles a resive of the screen.
          */
         void onResize(const uint32_t newWidth, const uint32_t newHeight);
+        
         /**
          * Create a Render of the screen.
          */
         void Render(const Scene &renderedScene, const Camera &renderingCamera);
+        
         /**
          * Reset the accumulator.
          */
         void resetAcc();
+        
         /**
          * Change the light attenuation Formula.
          */

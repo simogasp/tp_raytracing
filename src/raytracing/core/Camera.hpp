@@ -141,27 +141,32 @@ namespace Raytracing
          * @param newValue the new fov
          */
         void setFov(const double newValue);
+        
         /**
          * Sets the up vector to the given one.
          * @param newUp the new up vector
          */
         void setUpVector(const glm::vec3& newUp);
+        
         /**
          * Sets the position of the camera.
          * @param newPosition the new position of the camera
          */
         void setPosition(const glm::vec3& newPosition);
+        
         /**
          * Sets the lookAt vector of the camera.
          * @param newLookAt the new lookAt vector.
          */
         void setLookAt(const glm::vec3& newLookAt);
 
+        
         /**
          * Sets the near value.
          * @param newNear the new value
          */
         void setNear(const double newNear);
+        
         /**
          * Sets the far value.
          * @param newFar the new value
@@ -175,22 +180,27 @@ namespace Raytracing
          * Moves the camera forward.
          */
         void forward();
+        
         /**
          * Moves the camera backward.
          */
         void backward();
+        
         /**
          * Moves the camera to the left.
          */
         void left();
+        
         /**
          * Moves the camera to the right.
          */
         void right();
+        
         /**
          * Moves the camera upward.
          */
         void up();
+        
         /**
          * Moves the camera downward.
          */
@@ -198,17 +208,30 @@ namespace Raytracing
         
         // rotation of the camera
         /**
+         * Rotate to look up.
+         */
+        void lookUp();
+
+        /**
+         * Rotate to look down.
+         */
+        void lookDown();
+        
+        /**
          * Rotates the camera to the left.
          */
         void lookLeft();
+        
         /**
          * Rotates the camera to the right.
          */
         void lookRight();
+        
         /**
          * Rotates the camera clock wise.
          */
         void rotateClockWise();
+        
         /**
          * Rotates the camera anti clock wise.
          */

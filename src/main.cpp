@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 #endif
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_MULTISAMPLE);
     glutInitWindowSize(1280, 720);
-    glutCreateWindow("Dear ImGui GLUT+OpenGL2 Example");
+    glutCreateWindow("Raytracing");
 
     // Setup GLUT display function
     // We will also call ImGui_ImplGLUT_InstallFuncs() to get all the other functions installed for us,

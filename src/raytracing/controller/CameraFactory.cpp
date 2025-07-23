@@ -78,6 +78,16 @@ void Raytracing::CameraFactory::down()
     currentCamera.down();
 }
 
+void Raytracing::CameraFactory::lookUp()
+{
+    currentCamera.lookUp();
+}
+
+void Raytracing::CameraFactory::lookDown()
+{
+    currentCamera.lookDown();
+}
+
 void Raytracing::CameraFactory::lookLeft()
 {
     currentCamera.lookLeft();

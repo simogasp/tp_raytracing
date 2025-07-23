@@ -15,8 +15,8 @@ namespace Raytracing
 
         // position helper
         const glm::vec3 redPos(-1.f, 0.f, 0.f);
-        const glm::vec3 floorPos(0.f, 1001.f, 0.f);
-        const glm::vec3 lightPos(1.f, -10.f, -30.f);
+        const glm::vec3 floorPos(0.f, -1001.f, 0.f);
+        const glm::vec3 lightPos(0.f, 10.f, 30.f);
         const glm::vec3 glassPos(1.f, 0.f, 0.f);
 
         // shinyness helper
@@ -45,33 +45,25 @@ namespace Raytracing
 
         // materials
         scene.pushMaterial(red, mat, fullRoughness);
-        scene.pushMaterial(gray, shiny, midRoughness);
+        scene.pushMaterial(gray, shiny, noRoughness);
         scene.pushMaterial(orange, orange, mat, fullRoughness, normalEmissionPower, 1000.f, noTranslucid);
         scene.pushMaterial(white,
                 white,
                 shiny,
-                0.0001f,
+                0.0005f,
                 0.f,
                 0.f,
                 plexiGlassTranslucid);
-            scene.pushMaterial(white,
-                white,
-                shiny,
-                noRoughness,
-                0.f,
-                0.f,
-                airTranslucid);
 
         // spheres
         scene.pushSphere(redPos, 1.f, 0);
         scene.pushSphere(floorPos, 1000.f, 1);
         scene.pushSphere(lightPos, 20.f, 2);
         scene.pushSphere(glassPos, 1.f, 3);
-        // scene.pushSphere(glassPos, 0.8f, 4);
 
         // camera
-        camera.setCameraPosition(camPos4);
-        camera.setLookAt(lookAtPos4);
+        camera.setCameraPosition(camPos5);
+        camera.setLookAt(lookAtPos5);
         camera.setDegreeHorizontalFOV(45);
         camera.setUpVector({0, 1, 0});
         camera.setNear(0.1);
@@ -89,34 +81,20 @@ namespace Raytracing
         ImGui::Begin("Help");
         if (ImGui::TreeNode("Move in the scene"))
         {
-            // int id = 0;
-            // ImGui::PushID(id++);
             ImGui::Text("Z to move forward");
             ImGui::Text("S to move backward");
             ImGui::Text("D to move right");
             ImGui::Text("Q to move right");
-            ImGui::Text("A to rotate camera Anti clockwise");
-            ImGui::Text("E to rotate camera clockwise");
+            ImGui::Text("A to rotate camera clockwise");
+            ImGui::Text("E to rotate camera Anti clockwise");
             ImGui::Text("Space to move Up");
             ImGui::Text("Ctrl to move Down");
-            ImGui::Text("ArrowLeft to look left side Down");
-            ImGui::Text("ArrowRight to look right side Down");
-            // ImGui::PopID();
+            ImGui::Text("ArrowLeft to look left");
+            ImGui::Text("ArrowUp to look up");
+            ImGui::Text("ArrowDown to look down");
+            ImGui::Text("ArrowRight to look right");
             ImGui::TreePop();
         }
-        ImGui::Text("Keys down:");
-        struct funcs
-        {
-            static bool IsLegacyNativeDupe(ImGuiKey) { return false; }
-        };
-        for (ImGuiKey key = ImGuiKey_NamedKey_BEGIN; key < ImGuiKey_NamedKey_END; key = (ImGuiKey)(key + 1))
-        {
-            if (funcs::IsLegacyNativeDupe(key) || !ImGui::IsKeyDown(key))
-                continue;
-            ImGui::SameLine();
-            ImGui::Text((key < ImGuiKey_NamedKey_BEGIN) ? "\"%s\"" : "\"%s\" %d", ImGui::GetKeyName(key), key);
-        }
-
         ImGui::End();
 
         // Settings panel
@@ -124,7 +102,7 @@ namespace Raytracing
 
         ImGui::Text("Camera Settings");
 
-        if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 0, 50))
+        if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 5, 50))
         {
             camera.setDegreeHorizontalFOV(fovDegree);
             renderer.resetAcc();
@@ -157,7 +135,7 @@ namespace Raytracing
         if (ImGui::TreeNodeEx((void *)(intptr_t)0, node_flags, "Cam Presets"))
         {
             node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-            for (int i = 1; i < 5; i++)
+            for (int i = 1; i <= 5; i++)
             {
                 ImGui::TreeNodeEx((void *)(intptr_t)i, node_flags, "Cam %d", i);
                 if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
@@ -184,7 +162,7 @@ namespace Raytracing
         if (ImGui::TreeNodeEx((void *)(intptr_t) 0, node_flags, "Light Attenuation Formula"))
         {
             node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-            for (int i = 1; i < 5; i++)
+            for (int i = 1; i < 4; i++)
             {
                 ImGui::TreeNodeEx((void *)(intptr_t)i, node_flags, renderer.getFormulatoString(i), i);
                 if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
@@ -276,12 +254,22 @@ namespace Raytracing
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_A))
         {
-            camera.rotateAntiClockWise();
+            camera.rotateClockWise();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_E))
         {
-            camera.rotateClockWise();
+            camera.rotateAntiClockWise();
+            updateRays = true;
+        }
+        if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_UpArrow))
+        {
+            camera.lookUp();
+            updateRays = true;
+        }
+        if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_DownArrow))
+        {
+            camera.lookDown();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_LeftArrow))
@@ -322,6 +310,11 @@ namespace Raytracing
         case 4:
             camera.setCameraPosition(camPos4);
             camera.setLookAt(lookAtPos4);
+            break;
+
+        case 5:
+            camera.setCameraPosition(camPos5);
+            camera.setLookAt(lookAtPos5);
             break;
 
         default:
