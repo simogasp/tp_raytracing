@@ -247,8 +247,6 @@ char *Raytracing::Renderer::getFormulatoString(const int i)
     case 2:
         return (char *)"max(0, 1 - (d / r)²)";
     case 3:
-        return (char *)"max(0, (1 - (d / r)²)²)";
-    case 4:
         return (char *)"max(0, exp(- (d / r)²))";
 
     default:
@@ -321,8 +319,6 @@ float Raytracing::Renderer::getAttenuation(const HitPayload payload, const Mater
         return glm::max(0., 1. - dOnR);
     case 2:
         return glm::max(0., a);
-    case 3:
-        return glm::max(0., a * a);
     case 4:
         return glm::exp(-dOnR * dOnR);
     default:

@@ -53,22 +53,8 @@ std::vector<glm::vec3> Raytracing::Camera::getRayDirections() const
 
 glm::vec3 Raytracing::Camera::baseChangment(glm::vec3 vect)
 {
-    // std ::cout << "x " << x.x << " " << x.y << " " << x.z << std::endl;
-    // std ::cout << "y " << y.x << " " << y.y << " " << y.z << std::endl;
-    // std ::cout << "z " << z.x << " " << z.y << " " << z.z << std::endl;
-    // std ::cout << vect.x << " " << vect.y << " " << vect.z << std::endl;
     glm::mat3 mat(x, y, z);
-    for (size_t i = 0; i < 3; i++)
-    {
-        for (size_t j = 0; j < 3; j++)
-        {
-            // std::cout << mat[i][j] << " " << std::ends;
-        }
-        // std ::cout << std::endl;
-    }
-
     glm::vec3 res(glm::mat3(x, y, z) * vect);
-    // std ::cout << res.x << " " << res.y << " " << res.z << std::endl;
     return res;
 }
 
@@ -142,6 +128,30 @@ void Raytracing::Camera::down()
     lookAt += speed * y;
 }
 
+void Raytracing::Camera::lookUp()
+{
+    glm::mat3 rot(
+        1, 0, 0,
+        0, cosRotationSpeed, - sinRotationSpeed,
+        0, sinRotationSpeed, cosRotationSpeed);
+    upVector = rot * upVector;
+    z = rot * z;
+    y = rot * y;
+    lookAt = position + z;
+}
+
+void Raytracing::Camera::lookDown()
+{
+    glm::mat3 rot(
+        1, 0, 0,
+        0, cosRotationSpeed, sinRotationSpeed,
+        0, - sinRotationSpeed, cosRotationSpeed);
+    upVector = rot * upVector;
+    z = rot * z;
+    y = rot * y;
+    lookAt = position + z;
+}
+
 void Raytracing::Camera::lookLeft()
 {
     glm::mat3 rot(
@@ -152,6 +162,7 @@ void Raytracing::Camera::lookLeft()
     z = rot * z;
     lookAt = position + z;
 }
+
 void Raytracing::Camera::lookRight()
 {
     glm::mat3 rot(
