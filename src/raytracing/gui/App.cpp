@@ -21,24 +21,24 @@ namespace Raytracing
 
         // shinyness helper
         const float mat = 0.0f;
-        const float midShiny = 0.5f;
+        // const float midShiny = 0.5f;
         const float shiny = 1.f;
 
         // roughness helper
         const float fullRoughness = 1.0f;
-        const float midRoughness = .5f;
+        // const float midRoughness = .5f;
         const float noRoughness = 0.0f;
 
         // emissionPower helper
-        const float noEmissionPower = 0.F;
+        // const float noEmissionPower = 0.F;
         const float normalEmissionPower = 1.F;
-        const float midEmissionPower = 2.f;
-        const float fullEmissionPower = 10.f;
+        // const float midEmissionPower = 2.f;
+        // const float fullEmissionPower = 10.f;
 
         // refraction index helper
         const float noTranslucid = 0.f;
-        const float airTranslucid = 1.f;
-        const float waterTranslucid = 1.33f;
+        // const float airTranslucid = 1.f;
+        // const float waterTranslucid = 1.33f;
         const float plexiGlassTranslucid = 1.5f;
 
 
@@ -184,26 +184,28 @@ namespace Raytracing
         // Dockspace Viewport
         ImGui::Begin("Viewport", NULL, ImGuiWindowFlags_NoScrollbar);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+        ImGui::Text("%u samples", renderer.getFrameId());
 
         m_viewportWidth = ImGui::GetContentRegionAvail().x;
         m_viewportHeight = ImGui::GetContentRegionAvail().y;
 
+        // if there is a image : draw it
+        const GLuint imageTextureId = renderer.getTextureId();
+        if (imageTextureId != 0)
+        {
+            ImGui::Image((ImTextureID)imageTextureId,
+                         ImVec2(renderer.getWidth(), renderer.getHeight()));
+        }
+        ImGui::End();
+
         // call the render
-        // Render();
+        Render();
 
         // call the keyboard handler
         keyboardHandler();
         io.ClearInputKeys();
         io.ClearInputCharacters();
 
-        // if there is a image : draw it
-        const GLuint imageTextureId = renderer.getTextureId();
-        if (imageTextureId)
-        {
-            ImGui::Image((ImTextureID)imageTextureId,
-                         ImVec2(renderer.getWidth(), renderer.getHeight()));
-        }
-        ImGui::End();
         ImGui::PopStyleVar();
     }
 
