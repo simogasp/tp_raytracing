@@ -77,6 +77,10 @@ namespace Raytracing
         // Dockspace Window
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
 
+        // Hide panel
+        ImGui :: Begin("Hide Viewport");
+        ImGui :: End();
+
         // Help panel
         ImGui::Begin("Help");
         if (ImGui::TreeNode("Move in the scene"))
@@ -98,9 +102,7 @@ namespace Raytracing
         ImGui::End();
 
         // Settings panel
-        ImGui::Begin("Settings");
-
-        ImGui::Text("Camera Settings");
+        ImGui::Begin("Camera Settings");
 
         if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 5, 50))
         {
@@ -131,7 +133,6 @@ namespace Raytracing
         // Items 3..5 are Tree Leaves
         // The only reason we use TreeNode at all is to allow selection of the leaf. Otherwise we can
         // use BulletText() or advance the cursor by GetTreeNodeToLabelSpacing() and call Text().
-        ImGui::PushID(0);
         if (ImGui::TreeNodeEx((void *)(intptr_t)0, node_flags, "Cam Presets"))
         {
             node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
@@ -145,18 +146,16 @@ namespace Raytracing
             }
             ImGui::TreePop();
         }
-        ImGui::PopID();
 
         handleCamPreset(node_clicked);
+
+        ImGui::End();
+        ImGui::Begin("Render Settings");
 
         if (ImGui::Button("Reset Accumulation"))
         {
             renderer.resetAcc();
         }
-
-        ImGui::Separator();
-        ImGui::Text("Scene Setting");
-        ImGui::PushID(1);
 
         node_flags = base_flags;
         if (ImGui::TreeNodeEx((void *)(intptr_t) 0, node_flags, "Light Attenuation Formula"))
@@ -173,7 +172,11 @@ namespace Raytracing
             }
             ImGui::TreePop();
         }
-        ImGui::PopID();
+
+        ImGui :: End();
+        
+        ImGui::Begin("Scene Setting");
+
 
         ImGui::End();
 
@@ -186,7 +189,7 @@ namespace Raytracing
         m_viewportHeight = ImGui::GetContentRegionAvail().y;
 
         // call the render
-        Render();
+        // Render();
 
         // call the keyboard handler
         keyboardHandler();
