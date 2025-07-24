@@ -151,6 +151,7 @@ namespace Raytracing
 
         ImGui::End();
         ImGui::Begin("Render Settings");
+        ImGui::Text("%u samples", renderer.getFrameId());
 
         if (ImGui::Button("Reset Accumulation"))
         {
@@ -184,7 +185,6 @@ namespace Raytracing
         // Dockspace Viewport
         ImGui::Begin("Viewport", NULL, ImGuiWindowFlags_NoScrollbar);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-        ImGui::Text("%u samples", renderer.getFrameId());
 
         m_viewportWidth = ImGui::GetContentRegionAvail().x;
         m_viewportHeight = ImGui::GetContentRegionAvail().y;
