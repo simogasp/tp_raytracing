@@ -98,28 +98,42 @@ namespace Raytracing
          * Gets the width of the image.
          * @return the width
          */
-        uint32_t getWidth();
+        [[nodiscard]]
+        uint32_t getWidth() const;
         
         /**
          * Gets the height of the image.
          * @return the height
          */
-        uint32_t getHeight();
+        [[nodiscard]]
+        uint32_t getHeight() const;
         
         /**
          * Gets the GPU texture ID to load the image.
          * @return the texture id
          */
-        GLuint getTextureId();
+        [[nodiscard]]
+        GLuint getTextureId() const;
+
+        /**
+         * Gets the Frame Id.
+         * @return the frame id
+         */
+        [[nodiscard]]
+        uint getFrameId() const;
 
         
         /**
-         * Handles a resive of the screen.
+         * Handles a resize of the screen.
+         * @param newWidth the new width value
+         * @param newHeight the new height value
          */
         void onResize(const uint32_t newWidth, const uint32_t newHeight);
         
         /**
          * Create a Render of the screen.
+         * @param renderedScene the rendered scene
+         * @param renderingCamera the camera which is used to render
          */
         void Render(const Scene &renderedScene, const Camera &renderingCamera);
         

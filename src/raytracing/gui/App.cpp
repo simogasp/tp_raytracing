@@ -57,9 +57,9 @@ namespace Raytracing
 
         // spheres
         scene.pushSphere(redPos, 1.f, 0);
-        scene.pushSphere(floorPos, 1000.f, 1);
-        scene.pushSphere(lightPos, 20.f, 2);
-        scene.pushSphere(glassPos, 1.f, 3);
+        // scene.pushSphere(floorPos, 1000.f, 1);
+        // scene.pushSphere(lightPos, 20.f, 2);
+        // scene.pushSphere(glassPos, 1.f, 3);
 
         // camera
         camera.setCameraPosition(camPos5);

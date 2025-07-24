@@ -23,19 +23,24 @@ Raytracing::Renderer::Renderer()
     attenuationFormula = 1;
 }
 
-uint32_t Raytracing::Renderer::getWidth()
+uint32_t Raytracing::Renderer::getWidth() const
 {
     return image->getWidth();
 }
 
-uint32_t Raytracing::Renderer::getHeight()
+uint32_t Raytracing::Renderer::getHeight() const
 {
     return image->getHeight();
 }
 
-GLuint Raytracing::Renderer::getTextureId()
+GLuint Raytracing::Renderer::getTextureId() const
 {
     return image->getTextureId();
+}
+
+uint Raytracing::Renderer::getFrameId() const
+{
+    return frameId;
 }
 
 void Raytracing::Renderer::onResize(const uint32_t newWidth, const uint32_t newHeight)
@@ -57,7 +62,6 @@ void Raytracing::Renderer::onResize(const uint32_t newWidth, const uint32_t newH
     image->setData(imageData);
 }
 
-// render every pixel of the screen.
 void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &renderingCamera)
 {
     frameId++;
@@ -128,7 +132,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 else
                     light += mat.getEmission();
 
-                // update the ray200
+                // update the ray
 
                 // noise around normal
                 const glm::vec3 noiseN = glm::normalize(glm::vec3(
@@ -212,7 +216,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 outColorVect.g,
                 outColorVect.b,
                 255);
-            const ImColor frameCol = IM_COL32(frameColor.r, frameColor.g, frameColor.b, 255);
+            // const ImColor frameCol = IM_COL32(frameColor.r, frameColor.g, frameColor.b, 255);
             imageData[pixelIndex] = outColor;
 #if RESON4
             imageData[(x + 1) + y * getWidth()] = outColor;
