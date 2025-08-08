@@ -6,6 +6,12 @@ option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_SHARED_LIBS "Build shared libs" ON)
 option(ENABLE_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
 
+#########################################################
+# SET COMPILATION FLAGS FOR C++17
+#########################################################
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 if(BUILD_SHARED_LIBS)
     if(WIN32)
         # export all symbols on a windows build of dynamic libs
@@ -131,12 +137,6 @@ target_include_directories(
 )
 target_compile_definitions(imgui PUBLIC IMGUI_DISABLE_DEMO_WINDOWS)
 target_link_libraries(imgui PUBLIC OpenGL::GL OpenGL::GLU GLUT::GLUT)
-
-#########################################################
-# SET COMPILATION FLAGS FOR C++17
-#########################################################
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #########################################################
 # BUILD RAYTRACER LIBRARIES AND APPLICATION
