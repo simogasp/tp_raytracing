@@ -17,6 +17,6 @@ namespace Raytracing
         /**
          * The number of bounces that the ray have done.
          */
-        uint bounce = 0;
+        unsigned int bounce = 0;
     };
 } // namespace Raytracing
