@@ -1,5 +1,6 @@
 #include "App.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "imgui/imgui.h"
 namespace Raytracing
 {
     App::App()
