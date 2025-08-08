@@ -68,7 +68,7 @@ namespace Raytracing
         /**
          * The id of the rendered Framed.
          */
-        uint frameId;
+        unsigned int frameId;
         /**
          * The last scene given to render.
          */
