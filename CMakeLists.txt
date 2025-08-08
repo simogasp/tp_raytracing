@@ -181,3 +181,4 @@ target_link_libraries(raytracer gui controller core imgui OpenGL::GL OpenGL::GLU
 target_compile_options(raytracer PRIVATE ${MY_COMPILE_OPTIONS})
 target_compile_definitions(raytracer PUBLIC ${MY_COMPILE_DEFINITIONS})
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/imgui.ini ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
