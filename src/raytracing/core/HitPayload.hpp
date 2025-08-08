@@ -1,6 +1,6 @@
-# pragma once
+#pragma once
 
-# include "hittableObject/Sphere.hpp"
+#include "hittableObject/Sphere.hpp"
 
 namespace Raytracing
 {

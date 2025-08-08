@@ -1,9 +1,9 @@
-# pragma once
+#pragma once
 
-# include "stdint.h"
-# include "raytracing/core/Ray.hpp"
+#include "stdint.h"
+#include "raytracing/core/Ray.hpp"
 
-# define EPSILON_SPHERE 1e-4
+#define EPSILON_SPHERE 1e-4
 
 namespace Raytracing
 {

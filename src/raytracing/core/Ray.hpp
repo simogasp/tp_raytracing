@@ -1,7 +1,6 @@
 # pragma once
 
-# include "imgui.h"
-# include "glm/glm.hpp"
+#include "glm/glm.hpp"
 
 namespace Raytracing
 {
@@ -18,6 +17,6 @@ namespace Raytracing
         /**
          * The number of bounces that the ray have done.
          */
-        uint bounce = 0;
+        unsigned int bounce = 0;
     };
 } // namespace Raytracing

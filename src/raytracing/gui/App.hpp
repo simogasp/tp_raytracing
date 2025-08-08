@@ -1,13 +1,13 @@
 /**
  * This is the App We wants to build with a raytracing.
  */
-# pragma once
+#pragma once
 
-# include "raytracing/controller/Renderer.hpp"
-# include "raytracing/controller/CameraFactory.hpp"
-# include "raytracing/controller/SceneFactory.hpp"
+#include "raytracing/controller/Renderer.hpp"
+#include "raytracing/controller/CameraFactory.hpp"
+#include "raytracing/controller/SceneFactory.hpp"
 
-# include "glm/glm.hpp"
+#include "glm/glm.hpp"
 
 namespace Raytracing
 {
@@ -68,12 +68,12 @@ namespace Raytracing
 
     public:
         /**
-         * Creates a App.
+         * Creates an App.
          */
         App();
 
         /**
-         * Destroy a App.
+         * Destroy an App.
          */
         ~App() = default;
 

@@ -3,8 +3,9 @@
 #include "Renderer.hpp"
 #include "raytracing/core/Ray.hpp"
 #include "raytracing/core/HitPayload.hpp"
-#include <stdio.h>
+#if defined(TRACER_WITH_OPENMP)
 #include <omp.h>
+#endif
 #define GLM_ENABLE_EXPERIMENTAL 1
 #include <glm/gtx/string_cast.hpp>
 
@@ -69,7 +70,9 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     scene = renderedScene;
     camera = renderingCamera;
     const std::vector<glm::vec3> dirs = camera.getRayDirections();
+#if defined(TRACER_WITH_OPENMP)
     omp_set_num_threads(7);
+#endif
 #pragma omp parallel for
 #if RESON4
     for (size_t y = 0; y < getHeight(); y += 2)

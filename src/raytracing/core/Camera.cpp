@@ -1,10 +1,10 @@
 #include "Camera.hpp"
 #include "Ray.hpp"
-# include "glm/glm.hpp"
-# include "glm/gtc/constants.hpp"
-# include <iostream>
-# define GLM_ENABLE_EXPERIMENTAL
-# include <glm/gtx/string_cast.hpp>
+#include "glm/glm.hpp"
+#include "glm/gtc/constants.hpp"
+#include <iostream>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
 
 Raytracing::Camera::Camera(const glm::vec3 &positionCamera, const glm::vec3 &lookAtCamera,
                            const glm::vec3 &upCamera, const float fieldOfViewCamera,
