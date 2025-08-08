@@ -2,6 +2,7 @@
 
 #include "glm/glm.hpp"
 #include <vector>
+#include <cmath>
 
 namespace Raytracing
 {
@@ -65,11 +66,11 @@ namespace Raytracing
         /**
          * The cosine of the rotation speed.
          */
-        float cosRotationSpeed = cos(rotationSpeed);
+        float cosRotationSpeed = std::cos(rotationSpeed);
         /**
          * The sine of the rotation speed.
          */
-        float sinRotationSpeed = sin(rotationSpeed);
+        float sinRotationSpeed = std::sin(rotationSpeed);
         /**
          * The ray directions.
          */
