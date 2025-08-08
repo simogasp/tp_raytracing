@@ -60,7 +60,7 @@ namespace Raytracing
         /**
          * The rotation speed.
          */
-        float rotationSpeed = 0.1;
+        float rotationSpeed = .1f;
         
         /**
          * The cosine of the rotation speed.
