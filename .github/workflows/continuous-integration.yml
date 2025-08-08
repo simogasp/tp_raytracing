@@ -1,0 +1,127 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      matrix:
+        config: [ Debug, Release ]
+    env:
+      BUILD_DIR: build_${{ matrix.config }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Install dependencies
+      run: |
+        # Install CMake
+        sudo apt-get update
+        # Install OpenGL dependencies
+        sudo apt-get install cmake libglu1-mesa-dev freeglut3-dev mesa-common-dev libglm-dev libglew-dev
+    - name: Configure
+      run: |
+        mkdir ${{ env.BUILD_DIR }}
+        cd ${{ env.BUILD_DIR }}
+        cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DENABLE_WARNINGS_AS_ERRORS:BOOL=OFF
+
+#    - name: Initialize CodeQL
+#      uses: github/codeql-action/init@v3
+
+    - name: Build
+      working-directory: ./${{ env.BUILD_DIR }}
+      run: |
+        cmake --build .
+    # test that the version shipped to the students is working
+#    - name: Test studentipy
+#      run: |
+#        ./generateStudent.py -w test_student --skip-cleaning --skip-packaging --archive-name tpogl
+#        mkdir test_student/tpogl/${{ env.BUILD_DIR }}
+#        cd test_student/tpogl/${{ env.BUILD_DIR }}
+#        cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+#        cmake --build .
+
+#    - name: Perform CodeQL Analysis
+#      uses: github/codeql-action/analyze@v3
+
+  build_windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        config: [ Debug, Release ]
+    env:
+      buildDir: '${{ github.workspace }}\build_${{ matrix.config }}\'
+      vcpkgDir: '${{ github.workspace }}\e\vcpkg'
+      # commit for version 2025.02.14
+      COMMIT_ID: ea2a964f9303270322cf3f2d51c265ba146c422d
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    - name: Install latest CMake.
+      uses: lukka/get-cmake@latest
+
+    # Restore from cache the previously built ports. If a "cache miss" occurs, then vcpkg is bootstrapped. Since a the vcpkg.json is being used later on to install the packages when run-cmake runs, no packages are installed at this time and the input 'setupOnly:true' is mandatory.
+    - name: vcpkg - Setup dependencies
+      uses: lukka/run-vcpkg@v7
+      with:
+        # Just install vcpkg for now, do not install any ports in this step yet.
+        setupOnly: false
+        # Location of the vcpkg submodule in the Git repository.
+        vcpkgDirectory: ${{ env.vcpkgDir }}
+        vcpkgGitCommitId: ${{ env.COMMIT_ID }}
+        vcpkgArguments: freeglut glew glm
+        vcpkgTriplet: x64-windows
+        # doNotCache: true
+        # This is used to unbreak cached artifacts if for some reason dependencies fail to build,
+        # the action does not notice it and saves broken artifacts.
+        appendedCacheKey: cache001
+
+    - name: vcpkg - Display installed packages
+      run:
+          ${{ env.vcpkgDir }}\vcpkg.exe list
+
+    - name: Build
+      uses: lukka/run-cmake@v3
+      with:
+        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+        buildDirectory: ${{ env.buildDir }}
+#        cmakeGenerator: VS16Win64
+        cmakeAppendedArgs: -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=OFF -DVCPKG_TARGET_TRIPLET=x64-windows -A x64 -T host=x64 -DENABLE_WARNINGS_AS_ERRORS:BOOL=OFF
+        # This input tells run-cmake to consume the vcpkg.cmake toolchain file set by run-vcpkg.
+        cmakeBuildType: ${{ matrix.config }}
+        useVcpkgToolchainFile: true
+        buildWithCMake: true
+        buildWithCMakeArgs: -j1 --config ${{ matrix.config }}
+
+# glm on homebrew is broken when loading the cmake
+  build_macos:
+    runs-on: macos-latest
+    env:
+      BUILD_DIR: build_release
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Install dependencies
+      run: |
+        # Install Homebrew
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+        # Install CMake and OpenGL dependencies
+        export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK="ON"
+        brew install cmake freeglut glm glew
+    - name: Build
+      run: |
+        mkdir ${{ env.BUILD_DIR }}
+        cd ${{ env.BUILD_DIR }}
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DENABLE_WARNINGS_AS_ERRORS:BOOL=OFF
+        cmake --build .

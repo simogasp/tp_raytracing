@@ -76,7 +76,7 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/g-truc/glm.git
     GIT_TAG 1.0.1
     # this allow to first check if find_package(glm) can find it
-    FIND_PACKAGE_ARGS
+    FIND_PACKAGE_ARGS CONFIG
 )
 FetchContent_MakeAvailable(glm)
 
@@ -149,7 +149,7 @@ set(RAYTRACER_CORE_SOURCES
 
 add_library(core ${RAYTRACER_CORE_SOURCES})
 target_include_directories(core PUBLIC $<BUILD_INTERFACE:${RAYTRACER_INCLUDE_DIR}>)
-target_link_libraries(core glm)
+target_link_libraries(core glm::glm)
 target_compile_options(core PRIVATE ${MY_COMPILE_OPTIONS})
 target_compile_definitions(core PUBLIC ${MY_COMPILE_DEFINITIONS})
 
@@ -161,7 +161,7 @@ set(RAYTRACER_CONTROLLER_SOURCES
 
 add_library(controller ${RAYTRACER_CONTROLLER_SOURCES})
 target_include_directories(controller PUBLIC $<BUILD_INTERFACE:${RAYTRACER_INCLUDE_DIR}>)
-target_link_libraries(controller core glm imgui OpenGL::GL OpenGL::GLU GLUT::GLUT)
+target_link_libraries(controller core glm::glm imgui OpenGL::GL OpenGL::GLU GLUT::GLUT)
 if(OpenMP_CXX_FOUND)
     target_link_libraries(controller OpenMP::OpenMP_CXX)
 endif()
@@ -171,7 +171,7 @@ target_compile_definitions(controller PUBLIC ${MY_COMPILE_DEFINITIONS})
 set(RAYTRACER_GUI_SOURCES src/raytracing/gui/App.cpp)
 add_library(gui ${RAYTRACER_GUI_SOURCES})
 target_include_directories(gui PUBLIC $<BUILD_INTERFACE:${RAYTRACER_INCLUDE_DIR}>)
-target_link_libraries(gui core controller glm imgui)
+target_link_libraries(gui core controller glm::glm imgui)
 target_compile_options(gui PRIVATE ${MY_COMPILE_OPTIONS})
 target_compile_definitions(gui PUBLIC ${MY_COMPILE_DEFINITIONS})
 
