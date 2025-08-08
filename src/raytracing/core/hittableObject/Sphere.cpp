@@ -1,7 +1,7 @@
 #include "Sphere.hpp"
-# define GLM_ENABLE_EXPERIMENTAL
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
-# include <glm/gtx/norm.hpp>
+#include <glm/gtx/norm.hpp>
 
 
 
