@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include <iostream>
 
-uint Raytracing::ImageWrapper::getWidth() const
+unsigned int Raytracing::ImageWrapper::getWidth() const
 {
     return width;
 }
 
-uint Raytracing::ImageWrapper::getHeight() const
+unsigned int Raytracing::ImageWrapper::getHeight() const
 {
     return height;
 }

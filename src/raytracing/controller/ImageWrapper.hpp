@@ -30,7 +30,6 @@ namespace Raytracing
         uint32_t *imageData;
 
     public:
-        using uint = unsigned int;
 
         /**
          * Creates a imageWrapper.
@@ -48,12 +47,12 @@ namespace Raytracing
          * Gets the width of the image.
          * @return the width
          */
-        uint getWidth() const;
+        unsigned int getWidth() const;
         /**
          * Gets the height of the image.
          * @return the height
          */
-        uint getHeight() const;
+        unsigned int getHeight() const;
         /**
          * Gets the texture Id.
          * @return the texture id
