@@ -1,5 +1,5 @@
 
-# include <stdint.h>
+#include <cstdint>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -30,6 +30,8 @@ namespace Raytracing
         uint32_t *imageData;
 
     public:
+        using uint = unsigned int;
+
         /**
          * Creates a imageWrapper.
          */

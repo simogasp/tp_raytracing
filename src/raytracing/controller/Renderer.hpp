@@ -4,7 +4,7 @@
 #include "raytracing/core/Scene.hpp"
 #include "raytracing/core/Camera.hpp"
 #include "raytracing/core/HitPayload.hpp"
-#include <stdint.h>
+#include <cstdint>
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -48,7 +48,7 @@ namespace Raytracing
     class Renderer
     {
     public:
-        const float EPSILON = 1e-2;
+        const float EPSILON = 1e-2f;
 
     private:
         /**
