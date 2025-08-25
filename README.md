@@ -6,6 +6,12 @@
 - [The GUI](#the-gui)
 - [Build](#build)
 
+## Table of Content
+
+- [Introduction](#introduction)
+- [The GUI](#the-gui)
+- [Build](#build)
+
 ## Introduction
 
 The goal of the project is to build your first simple ray tracer on CPU.
