@@ -241,8 +241,8 @@ void Raytracing::Camera::updateRay()
 
 glm::vec3 Raytracing::Camera::baseChangment(glm::vec3 vect)
 {
-    glm::mat3 mat(x, y, z);
-    glm::vec3 res(mat * vect);
+    const glm::mat3 mat(x, y, z);
+    const glm::vec3 res(mat * vect);
     return res;
 }
 
