@@ -50,10 +50,14 @@ $$
 
 We compute the ray direction of the screen pixel by using the change of basis from a geographical coordinates to a cannonical cartesian basis. At this point we get the orientation vector but in the camera referential and we need to change of basis to get a direction in the real world reference.
 
-#### Astuce
+#### Hint
 
 - [geographical coordonates](https://fr.wikipedia.org/wiki/Coordonn%C3%A9es_sph%C3%A9riques#Convention_rayon-longitude-latitude)
 - la méthode baseChangement change the given vector from the camera axis to the world axis.
+
+### Intersection with sphere
+
+We now have to find if the ray
 
 ## Build
 
