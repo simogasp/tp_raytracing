@@ -18,42 +18,51 @@ namespace Raytracing
          * The lookAt vector.
          */
         glm::vec3 lookAt;
+        
         /**
          * the up vector.
          */
         glm::vec3 upVector;
+        
         /**
          * the x axis of the camera.
          */
         glm::vec3 x;
+        
         /**
          * the y axis of the camera.
          */
         glm::vec3 y;
+        
         /**
          * The z axis of the camera.
          */
         glm::vec3 z;
+        
         /**
          * the width of the screen.
          */
         uint32_t width;
+        
         /**
          * The height of the screen.
          */
         uint32_t height;
+        
         /**
          * the near value.
          */
         float near;
+        
         /**
          * The far value.
          */
         float far;
+
         /**
-         * The horizontal field of view.
+         * The camera focal.
          */
-        float fieldOfView;
+        float focal;
         /**
          * The movement speed.
          */
@@ -111,7 +120,7 @@ namespace Raytracing
          * @return the field of view
          */
         [[ nodiscard ]]
-        float getFieldOfView() const;
+        float getFocal() const;
 
         /**
          * Gets the near value.
@@ -141,7 +150,7 @@ namespace Raytracing
          * Sets the horizontal fov.
          * @param newValue the new fov
          */
-        void setFov(const double newValue);
+        void setFocal(const double newValue);
         
         /**
          * Sets the up vector to the given one.
