@@ -7,16 +7,15 @@
 #include <glm/gtx/string_cast.hpp>
 
 Raytracing::Camera::Camera(const glm::vec3 &positionCamera, const glm::vec3 &lookAtCamera,
-                           const glm::vec3 &upCamera, const float fieldOfViewCamera,
+                           const glm::vec3 &upCamera, const float focalCamera,
                            const float nearCamera, const float farCamera)
 {
     position = positionCamera;
     lookAt = lookAtCamera;
     upVector = upCamera;
-    fieldOfView = glm::clamp(fieldOfViewCamera, 0.0f, 2.0f * glm::pi<float>());
+    focal = focalCamera;
     near = nearCamera;
     far = farCamera;
-
     computeBase();
 }
 
@@ -34,9 +33,9 @@ glm::vec3 Raytracing::Camera::getLookAt() const
     return lookAt;
 }
 
-float Raytracing::Camera::getFieldOfView() const
+float Raytracing::Camera::getFocal() const
 {
-    return fieldOfView;
+    return focal;
 }
 
 float Raytracing::Camera::getNear() const
@@ -54,9 +53,9 @@ std::vector<glm::vec3> Raytracing::Camera::getRayDirections() const
     return rayDirections;
 }
 
-void Raytracing::Camera::setFov(const double newValue)
+void Raytracing::Camera::setFocal(const float newValue)
 {
-    fieldOfView = newValue;
+    focal = newValue;
     updateRay();
 }
 
@@ -205,44 +204,27 @@ void Raytracing::Camera::updateRay()
 {
     const float invScreenRatio = (float)height / (float)width;
 
-    uint32_t x, y;
+    const glm::vec3 screenPos = focal * glm::normalize(lookAt - position);
+
     #pragma omp parallel for collapse(2)
-    for (y = 0; y < height; y++)
+    for (uint32_t py = 0; py < height; py++)
     {
-        for (x = 0; x < width; x++)
+        for (uint32_t px = 0; px < width; px++)
         {
             // relative placement on the screen of the pixel
-            const float relativeX = - 2 * (float)x / (float)(width - 1) + 1;
-            const float relativeY = - 2 * (float)y / (float)(height - 1) + 1;
+            const float relativeX = - 2 * (float)px / (float)(width - 1) + 1;
+            const float relativeY = - 2 * (float)py / (float)(height - 1) + 1;
 
-            // rotation angle
-            const float fovOn2 = fieldOfView / 2;
-
-            const float theta = fovOn2 * relativeX;
-            const float phi = fovOn2 * relativeY * invScreenRatio;
-
-            const float sintheta = sin(theta);
-            const float costheta = cos(theta);
-
-            const float sinphi = sin(phi);
-            const float cosphi = cos(phi);
-
-            // point on the screen is also
-
-            rayDirections[x + y * width] = baseChangment(glm::vec3(
-                cosphi * sintheta, // y nor
-                sinphi,            // z nor
-                cosphi * costheta  // x nor
-                ));
-            ;
+            rayDirections[px + width * py] = glm::normalize(screenPos + relativeX * x + relativeY * y * invScreenRatio);
         }
+
     }
 }
 
 glm::vec3 Raytracing::Camera::baseChangment(glm::vec3 vect)
 {
-    glm::mat3 mat(x, y, z);
-    glm::vec3 res(mat * vect);
+    const glm::mat3 mat(x, y, z);
+    const glm::vec3 res(mat * vect);
     return res;
 }
 

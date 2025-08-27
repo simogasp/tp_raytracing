@@ -6,9 +6,6 @@ namespace Raytracing
     App::App()
         : camera(), scene()
     {
-        
-
-
         // materials
         scene.pushMaterial(red, mat, fullRoughness);
         scene.pushMaterial(gray, shiny, noRoughness);
@@ -28,9 +25,10 @@ namespace Raytracing
         scene.pushSphere(glassPos, 1.f, 3);
 
         // camera
-        camera.setCameraPosition(camPos5);
-        camera.setLookAt(lookAtPos5);
-        camera.setDegreeHorizontalFOV(45);
+        camera.createNewCamera();
+        camera.setCameraPosition(camPos4);
+        camera.setLookAt(lookAtPos4);
+        camera.setCameraFocal(2.f);
         camera.setUpVector({0, 1, 0});
         camera.setNear(0.1);
         camera.setFar(10000);
@@ -54,7 +52,7 @@ namespace Raytracing
             ImGui::Text("A to rotate camera clockwise");
             ImGui::Text("E to rotate camera Anti clockwise");
             ImGui::Text("Space to move Up");
-            ImGui::Text("Ctrl to move Down");
+            ImGui::Text("Left Ctrl to move Down");
             ImGui::Text("ArrowLeft to look left");
             ImGui::Text("ArrowUp to look up");
             ImGui::Text("ArrowDown to look down");
@@ -68,15 +66,16 @@ namespace Raytracing
 
         ImGui::Text("Camera Settings");
 
-        if (ImGui::SliderInt("Camera Horizontal Fov", &fovDegree, 5, 50))
+        if (ImGui::SliderFloat("Camera focal", &focal, 0.5, 10))
         {
-            camera.setDegreeHorizontalFOV(fovDegree);
+            camera.setCameraFocal(focal);
             renderer.resetAcc();
         }
-        glm::vec3 pos = camera.getCamera().getPosition();
-        if (ImGui::DragFloat3("Camera position", glm::value_ptr(pos)))
+
+        glm::vec3 position = camera.getCamera().getPosition();
+        if (ImGui::DragFloat3("Camera position", glm::value_ptr(position)))
         {
-            camera.setCameraPosition(pos);
+            camera.setCameraPosition(position);
             renderer.resetAcc();
         }
         glm::vec3 lookAt = camera.getCamera().getLookAt();
@@ -188,63 +187,70 @@ namespace Raytracing
         }
 
         bool updateRays = false;
+        bool resetAcc = false;
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Z))
         {
             camera.forward();
-            updateRays = true;
+            resetAcc = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
         {
+            resetAcc = true;
             camera.backward();
-            updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Q))
         {
+            resetAcc = true;
             camera.left();
-            updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_D))
         {
+            resetAcc = true;
             camera.right();
-            updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Space))
         {
+            resetAcc = true;
             camera.up();
-            updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_LeftCtrl))
         {
+            resetAcc = true;
             camera.down();
-            updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_A))
         {
+            resetAcc = true;
             camera.rotateClockWise();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_E))
         {
+            resetAcc = true;
             camera.rotateAntiClockWise();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_UpArrow))
         {
+            resetAcc = true;
             camera.lookUp();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_DownArrow))
         {
+            resetAcc = true;
             camera.lookDown();
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_LeftArrow))
         {
             camera.lookLeft();
+            resetAcc = true;
             updateRays = true;
         }
         if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_RightArrow))
         {
+            resetAcc = true;
             camera.lookRight();
             updateRays = true;
         }
@@ -252,6 +258,9 @@ namespace Raytracing
         if (updateRays)
         {
             camera.updateRay();
+        }
+        if (resetAcc)
+        {            
             renderer.resetAcc();
         }
     }

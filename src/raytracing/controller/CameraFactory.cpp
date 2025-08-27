@@ -23,16 +23,6 @@ void Raytracing::CameraFactory::setLookAt(const glm::vec3& lookAt)
     currentCamera.setLookAt(lookAt);
 }
 
-void Raytracing::CameraFactory::setRadiansHorizontalFOV(const double fov)
-{
-    currentCamera.setFov(fov);
-}
-
-void Raytracing::CameraFactory::setDegreeHorizontalFOV(const double fov)
-{
-    currentCamera.setFov(glm::radians(fov));
-}
-
 void Raytracing::CameraFactory::setNear(const double near)
 {
     currentCamera.setNear(near);
@@ -41,6 +31,11 @@ void Raytracing::CameraFactory::setNear(const double near)
 void Raytracing::CameraFactory::setFar(const double far)
 {
     currentCamera.setFar(far);
+}
+
+void Raytracing::CameraFactory::setCameraFocal(const float newFocal) 
+{
+    currentCamera.setFocal(newFocal);
 }
 
 void Raytracing::CameraFactory::setUpVector(const glm::vec3 up)
@@ -108,7 +103,7 @@ void Raytracing::CameraFactory::rotateClockWise()
     currentCamera.rotateClockWise();
 }
 
-Raytracing::Camera Raytracing::CameraFactory::getCamera()
+Raytracing::Camera Raytracing::CameraFactory::getCamera() const
 {
     return currentCamera;
 }

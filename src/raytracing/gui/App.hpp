@@ -125,7 +125,7 @@ namespace Raytracing
         Renderer renderer;
 
         /** The field of View of the Camera. */
-        int fovDegree = 45;
+        float focal = 2.f;
 
     public:
         /**

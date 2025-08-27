@@ -71,6 +71,11 @@ namespace Raytracing
         void setFar(const double far);
         
         /**
+         * Sets the focal of the camera
+         */
+        void setCameraFocal(const float newFocal);
+        
+        /**
          * Sets the up vector of the camera.
          * @param up the new upVector
          */
@@ -151,6 +156,6 @@ namespace Raytracing
          * Returns the camera made.
          * @return the camera
          */
-        Raytracing::Camera getCamera();
+        Raytracing::Camera getCamera() const;
     };
 } // namespace Raytracing
