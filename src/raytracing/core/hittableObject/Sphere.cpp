@@ -71,3 +71,8 @@ double Raytracing::Sphere::intersect(const Camera *camera, const Ray *ray) const
     // the sphere is clipped
     return -1;
 }
+
+glm::vec3 Raytracing::Sphere::getNormal(const glm::vec3 position) const
+{
+    return glm::normalize(position - center);
+}

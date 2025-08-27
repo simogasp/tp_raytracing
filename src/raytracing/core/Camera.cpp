@@ -80,12 +80,12 @@ void Raytracing::Camera::setLookAt(const glm::vec3 &newLookAt)
 
 void Raytracing::Camera::setNear(const double newNear)
 {
-    near = newNear;
+    near = (float) newNear;
 }
 
 void Raytracing::Camera::setFar(const double newFar)
 {
-    far = newFar;
+    far = (float) newFar;
 }
 
 void Raytracing::Camera::forward()
@@ -203,7 +203,7 @@ void Raytracing::Camera::onResize(const uint32_t newWidth, const uint32_t newHei
 
 void Raytracing::Camera::updateRay()
 {
-    const float invScreenRatio = (float)height / width;
+    const float invScreenRatio = (float)height / (float)width;
 
     uint32_t x, y;
     #pragma omp parallel for collapse(2)
@@ -212,8 +212,8 @@ void Raytracing::Camera::updateRay()
         for (x = 0; x < width; x++)
         {
             // relative placement on the screen of the pixel
-            const float relativeX = - 2 * (float)x / (width - 1) + 1;
-            const float relativeY = - 2 * (float)y / (height - 1) + 1;
+            const float relativeX = - 2 * (float)x / (float)(width - 1) + 1;
+            const float relativeY = - 2 * (float)y / (float)(height - 1) + 1;
 
             // rotation angle
             const float fovOn2 = fieldOfView / 2;

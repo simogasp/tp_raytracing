@@ -6,42 +6,7 @@ namespace Raytracing
     App::App()
         : camera(), scene()
     {
-        // color helper
-        const glm::vec3 black(0.f, 0.f, 0.f);
-        const glm::vec3 white(1.f, 1.f, 1.f);
-        const glm::vec3 red(1.f, 0.f, 1.f);
-        const glm::vec3 blue(51.f / 255, 77.f / 255, 1.f);
-        const glm::vec3 orange(0.8f, 0.5f, 0.2f);
-        const glm::vec3 gray(122.f / 255, 127.f / 255, 128.f / 255);
-
-        // position helper
-        const glm::vec3 redPos(-1.f, 0.f, 0.f);
-        const glm::vec3 floorPos(0.f, -1001.f, 0.f);
-        const glm::vec3 lightPos(0.f, 10.f, 30.f);
-        const glm::vec3 glassPos(1.f, 0.f, 0.f);
-
-        // shinyness helper
-        const float mat = 0.0f;
-        const float midShiny = 0.5f;
-        const float shiny = 1.f;
-
-        // roughness helper
-        const float fullRoughness = 1.0f;
-        const float midRoughness = .5f;
-        const float noRoughness = 0.0f;
-
-        // emissionPower helper
-        const float noEmissionPower = 0.F;
-        const float normalEmissionPower = 1.F;
-        const float midEmissionPower = 2.f;
-        const float fullEmissionPower = 10.f;
-
-        // refraction index helper
-        const float noTranslucid = 0.f;
-        const float airTranslucid = 1.f;
-        const float waterTranslucid = 1.33f;
-        const float plexiGlassTranslucid = 1.5f;
-
+        
 
 
         // materials
@@ -163,7 +128,7 @@ namespace Raytracing
         if (ImGui::TreeNodeEx((void *)(intptr_t) 0, node_flags, "Light Attenuation Formula"))
         {
             node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-            for (int i = 1; i < 4; i++)
+            for (uint i = 1; i < 4; i++)
             {
                 ImGui::TreeNodeEx((void *)(intptr_t)i, node_flags, renderer.getFormulatoString(i), i);
                 if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
@@ -183,8 +148,8 @@ namespace Raytracing
         ImGui::Begin("Viewport", NULL, ImGuiWindowFlags_NoScrollbar);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 
-        m_viewportWidth = ImGui::GetContentRegionAvail().x;
-        m_viewportHeight = ImGui::GetContentRegionAvail().y;
+        m_viewportWidth = (uint32_t) ImGui::GetContentRegionAvail().x;
+        m_viewportHeight = (uint32_t) ImGui::GetContentRegionAvail().y;
 
         // call the render
         Render();
@@ -199,7 +164,7 @@ namespace Raytracing
         if (imageTextureId)
         {
             ImGui::Image((ImTextureID)imageTextureId,
-                         ImVec2(renderer.getWidth(), renderer.getHeight()));
+                        ImVec2((float) renderer.getWidth(), (float) renderer.getHeight()));
         }
         ImGui::End();
         ImGui::PopStyleVar();
