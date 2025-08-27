@@ -75,6 +75,12 @@ namespace Raytracing
          * @return the height
          */
         uint32_t getHeight() const;
+
+        /**
+         * Gets the FrameId of the image.
+         * @return the FrameId
+         */
+        uint32_t getFrameId() const;
         
         /**
          * Gets the GPU texture ID to load the image.

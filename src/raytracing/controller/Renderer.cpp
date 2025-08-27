@@ -33,6 +33,11 @@ uint32_t Raytracing::Renderer::getHeight() const
     return image->getHeight();
 }
 
+uint32_t Raytracing::Renderer::getFrameId() const 
+{ 
+    return frameId;
+}
+
 GLuint Raytracing::Renderer::getTextureId() const
 {
     return image->getTextureId();

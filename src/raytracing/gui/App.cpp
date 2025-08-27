@@ -64,6 +64,10 @@ namespace Raytracing
         // Settings panel
         ImGui::Begin("Settings");
 
+        ImGui::Text("Render Statistique : %d samples", renderer.getFrameId());
+
+        ImGui::Separator();
+
         ImGui::Text("Camera Settings");
 
         if (ImGui::SliderFloat("Camera focal", &focal, 0.5, 10))
@@ -93,9 +97,6 @@ namespace Raytracing
         static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 
         ImGuiTreeNodeFlags node_flags = base_flags;
-        // Items 3..5 are Tree Leaves
-        // The only reason we use TreeNode at all is to allow selection of the leaf. Otherwise we can
-        // use BulletText() or advance the cursor by GetTreeNodeToLabelSpacing() and call Text().
         ImGui::PushID(0);
         if (ImGui::TreeNodeEx((void *)(intptr_t)0, node_flags, "Cam Presets"))
         {
