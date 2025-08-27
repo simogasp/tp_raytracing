@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include <iostream>
 
-uint Raytracing::ImageWrapper::getWidth() const
+unsigned int Raytracing::ImageWrapper::getWidth() const
 {
     return width;
 }
 
-uint Raytracing::ImageWrapper::getHeight() const
+unsigned int Raytracing::ImageWrapper::getHeight() const
 {
     return height;
 }
@@ -29,7 +29,7 @@ void Raytracing::ImageWrapper::setData(uint32_t *newData)
 {
     imageData = newData;
     glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, newData);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int) width, (int) height, 0, GL_RGBA, GL_UNSIGNED_BYTE, newData);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 

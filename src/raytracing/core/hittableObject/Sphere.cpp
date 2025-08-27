@@ -1,7 +1,7 @@
 #include "Sphere.hpp"
-# define GLM_ENABLE_EXPERIMENTAL
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
-# include <glm/gtx/norm.hpp>
+#include <glm/gtx/norm.hpp>
 
 
 
@@ -70,4 +70,9 @@ double Raytracing::Sphere::intersect(const Camera *camera, const Ray *ray) const
 
     // the sphere is clipped
     return -1;
+}
+
+glm::vec3 Raytracing::Sphere::getNormal(const glm::vec3 position) const
+{
+    return glm::normalize(position - center);
 }

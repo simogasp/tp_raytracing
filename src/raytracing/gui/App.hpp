@@ -1,13 +1,13 @@
 /**
  * This is the App We wants to build with a raytracing.
  */
-# pragma once
+#pragma once
 
-# include "raytracing/controller/Renderer.hpp"
-# include "raytracing/controller/CameraFactory.hpp"
-# include "raytracing/controller/SceneFactory.hpp"
+#include "raytracing/controller/Renderer.hpp"
+#include "raytracing/controller/CameraFactory.hpp"
+#include "raytracing/controller/SceneFactory.hpp"
 
-# include "glm/glm.hpp"
+#include "glm/glm.hpp"
 
 namespace Raytracing
 {
@@ -40,6 +40,67 @@ namespace Raytracing
         /** LookAt 5 position */
         const glm::vec3 lookAtPos5 = glm::vec3(0.f);
         
+        // color helper
+        /**Black color. */
+        const glm::vec3 black = glm::vec3(0.f, 0.f, 0.f);
+        /**White color. */
+        const glm::vec3 white = glm::vec3(1.f, 1.f, 1.f);
+        /**Red color. */
+        const glm::vec3 red = glm::vec3(1.f, 0.f, 1.f);
+        /**Blue color. */
+        const glm::vec3 blue = glm::vec3(51.f / 255, 77.f / 255, 1.f);
+        /**Orange color. */
+        const glm::vec3 orange = glm::vec3(0.8f, 0.5f, 0.2f);
+        /**Gray color. */
+        const glm::vec3 gray = glm::vec3(122.f / 255, 127.f / 255, 128.f / 255);
+
+        // position helper
+        /**Red sphere position. */
+        const glm::vec3 redPos = glm::vec3(-1.f, 0.f, 0.f);
+        /**Floor sphere position. */
+        const glm::vec3 floorPos = glm::vec3(0.f, -1001.f, 0.f);
+        /**Light / sun sphere position. */
+        const glm::vec3 lightPos = glm::vec3(0.f, 10.f, 30.f);
+        /**Glass sphere position. */
+        const glm::vec3 glassPos = glm::vec3(1.f, 0.f, 0.f);
+
+        // shinyness helper
+        /**A full mat shinyness. */
+        const float mat = 0.0f;
+        /**A middle shinyness. */
+        const float midShiny = 0.5f;
+        /**A full shiny material. */
+        const float shiny = 1.f;
+
+        // roughness helper
+        /**A full roughness material. */
+        const float fullRoughness = 1.0f;
+        /**A middle roughness material */
+        const float midRoughness = .5f;
+        /**A material without roughness. */
+        const float noRoughness = 0.0f;
+
+        // emissionPower helper
+        /**A non-emissive material. */
+        const float noEmissionPower = 0.F;
+        /**A normal emissive material. */
+        const float normalEmissionPower = 1.F;
+        /**A brightness emissive material. */
+        const float midEmissionPower = 2.f;
+        /**A very bright emissive material. */
+        const float fullEmissionPower = 10.f;
+
+        // refraction index helper
+        /**A opaque material. */
+        const float noTranslucid = 0.f;
+        /**A air material. */
+        const float airTranslucid = 1.f;
+        /**A water material. */
+        const float waterTranslucid = 1.33f;
+        /**A plexiglass material material. */
+        const float plexiGlassTranslucid = 1.5f;
+
+        
         /* data */
         /** 
          * The viewPort width.
@@ -68,12 +129,12 @@ namespace Raytracing
 
     public:
         /**
-         * Creates a App.
+         * Creates an App.
          */
         App();
 
         /**
-         * Destroy a App.
+         * Destroy an App.
          */
         ~App() = default;
 

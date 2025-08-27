@@ -1,7 +1,8 @@
-# pragma once
+#pragma once
 
-# include "glm/glm.hpp"
-# include <vector>
+#include "glm/glm.hpp"
+#include <vector>
+#include <cmath>
 
 namespace Raytracing
 {
@@ -60,16 +61,16 @@ namespace Raytracing
         /**
          * The rotation speed.
          */
-        float rotationSpeed = 0.1;
+        float rotationSpeed = .1f;
         
         /**
          * The cosine of the rotation speed.
          */
-        float cosRotationSpeed = cos(rotationSpeed);
+        float cosRotationSpeed = std::cos(rotationSpeed);
         /**
          * The sine of the rotation speed.
          */
-        float sinRotationSpeed = sin(rotationSpeed);
+        float sinRotationSpeed = std::sin(rotationSpeed);
         /**
          * The ray directions.
          */

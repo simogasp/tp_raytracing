@@ -27,6 +27,12 @@ namespace Raytracing
          * @return the distance
          */
         double intersect(const Camera *camera, const Ray *ray) const;
+
+        /**
+         * Returns the normal for a position around the the sphere.
+         * @return the normal
+         */
+        glm::vec3 getNormal(const glm::vec3 position) const;
     };
 
 } // namespace Raytracing
