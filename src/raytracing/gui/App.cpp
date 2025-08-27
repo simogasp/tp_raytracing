@@ -7,9 +7,9 @@ namespace Raytracing
         : camera(), scene()
     {
         // materials
-        scene.pushMaterial(red, mat, fullRoughness);
+        scene.pushMaterial(magenta, mat, fullRoughness);
         scene.pushMaterial(gray, shiny, noRoughness);
-        scene.pushMaterial(orange, orange, mat, fullRoughness, normalEmissionPower, 1000.f, noTranslucid);
+        scene.pushMaterial(orange, orange, mat, fullRoughness, normalEmissionPower, 1000.f, opaque);
         scene.pushMaterial(white,
                 white,
                 shiny,
@@ -17,7 +17,7 @@ namespace Raytracing
                 0.f,
                 0.f,
                 plexiGlassTranslucid);
-
+                
         // spheres
         scene.pushSphere(redPos, 1.f, 0);
         scene.pushSphere(floorPos, 1000.f, 1);
