@@ -8,12 +8,12 @@ namespace Raytracing
 {
     class Camera
     {
-    public:
+    private:
         /**
          * The camera Position.
          */
         glm::vec3 position;
-    private:
+        
         /**
          * The lookAt vector.
          */
@@ -150,7 +150,7 @@ namespace Raytracing
          * Sets the horizontal fov.
          * @param newValue the new fov
          */
-        void setFocal(const double newValue);
+        void setFocal(const float newValue);
         
         /**
          * Sets the up vector to the given one.

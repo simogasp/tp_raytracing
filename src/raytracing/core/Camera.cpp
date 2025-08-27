@@ -53,7 +53,7 @@ std::vector<glm::vec3> Raytracing::Camera::getRayDirections() const
     return rayDirections;
 }
 
-void Raytracing::Camera::setFocal(const double newValue)
+void Raytracing::Camera::setFocal(const float newValue)
 {
     focal = newValue;
     updateRay();

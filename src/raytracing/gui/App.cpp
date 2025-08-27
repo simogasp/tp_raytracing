@@ -20,14 +20,15 @@ namespace Raytracing
 
         // spheres
         scene.pushSphere(redPos, 1.f, 0);
-        // scene.pushSphere(floorPos, 1000.f, 1);
-        // scene.pushSphere(lightPos, 20.f, 2);
-        // scene.pushSphere(glassPos, 1.f, 3);
+        scene.pushSphere(floorPos, 1000.f, 1);
+        scene.pushSphere(lightPos, 20.f, 2);
+        scene.pushSphere(glassPos, 1.f, 3);
 
         // camera
-        camera.setPosition(camPos5);
-        camera.setLookAt(lookAtPos5);
-        camera.setFocal(0.02);
+        camera.createNewCamera();
+        camera.setCameraPosition(camPos4);
+        camera.setLookAt(lookAtPos4);
+        camera.setCameraFocal(2.f);
         camera.setUpVector({0, 1, 0});
         camera.setNear(0.1);
         camera.setFar(10000);
@@ -65,16 +66,19 @@ namespace Raytracing
 
         ImGui::Text("Camera Settings");
 
-        if (ImGui::SliderFloat("Camera focal", &focal, 0.001, 50))
+        if (ImGui::SliderFloat("Camera focal", &focal, 0.5, 10))
         {
-            camera.setFocal(focal);
+            camera.setCameraFocal(focal);
             renderer.resetAcc();
         }
-        if (ImGui::DragFloat3("Camera position", glm::value_ptr(camera.position)))
+
+        glm::vec3 position = camera.getCamera().getPosition();
+        if (ImGui::DragFloat3("Camera position", glm::value_ptr(position)))
         {
+            camera.setCameraPosition(position);
             renderer.resetAcc();
         }
-        glm::vec3 lookAt = camera.getLookAt();
+        glm::vec3 lookAt = camera.getCamera().getLookAt();
         if (ImGui::DragFloat3("Camera lookAt", glm::value_ptr(lookAt)))
         {
             camera.setLookAt(lookAt);
@@ -172,7 +176,7 @@ namespace Raytracing
         renderer.onResize(m_viewportWidth, m_viewportHeight);
 
         // render
-        renderer.Render(scene.getScene(), camera);
+        renderer.Render(scene.getScene(), camera.getCamera());
     }
 
     void App::keyboardHandler()
@@ -266,25 +270,25 @@ namespace Raytracing
         switch (node_clicked)
         {
         case 1:
-            camera.position = camPos;
+            camera.setCameraPosition(camPos);
             camera.setLookAt(lookAtPos);
             break;
         case 2:
-            camera.position = camPos2;
+            camera.setCameraPosition(camPos2);
             camera.setLookAt(lookAtPos2);
             break;
         case 3:
-            camera.position = camPos3;
+            camera.setCameraPosition(camPos3);
             camera.setLookAt(lookAtPos3);
             break;
 
         case 4:
-            camera.position = camPos4;
+            camera.setCameraPosition(camPos4);
             camera.setLookAt(lookAtPos4);
             break;
 
         case 5:
-            camera.position = camPos5;
+            camera.setCameraPosition(camPos5);
             camera.setLookAt(lookAtPos5);
             break;
 

@@ -114,7 +114,7 @@ namespace Raytracing
         /**
          * The Camera used in the viewPort.
          */
-        Camera camera;
+        CameraFactory camera;
         /**
          * The scene rendered in the viewport.
          */

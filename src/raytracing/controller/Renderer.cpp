@@ -6,8 +6,7 @@
 #if defined(TRACER_WITH_OPENMP)
 #include <omp.h>
 #endif
-#define GLM_ENABLE_EXPERIMENTAL 1
-#include <glm/gtx/string_cast.hpp>
+# include <glm/gtc/constants.hpp>
 
 // number of bounce to made
 #define BOUNCES 2
