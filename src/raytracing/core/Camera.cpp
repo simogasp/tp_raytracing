@@ -202,6 +202,8 @@ void Raytracing::Camera::onResize(const uint32_t newWidth, const uint32_t newHei
 
 void Raytracing::Camera::updateRay()
 {
+    //++ //TODO : orient the ray depending on the focal
+    //<!!
     const float invScreenRatio = (float)height / (float)width;
 
     const glm::vec3 screenPos = focal * glm::normalize(lookAt - position);
@@ -219,6 +221,7 @@ void Raytracing::Camera::updateRay()
         }
 
     }
+    //>!!
 }
 
 glm::vec3 Raytracing::Camera::baseChangment(glm::vec3 vect)
