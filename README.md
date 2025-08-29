@@ -27,7 +27,7 @@ On the Gui, you have the real-time render in the panel Viewport, the help explai
 
 ### Orient the ray
 
- <span style="color:blue">First of all, in [Camera.cpp](src/raytracing/core/Camera.cpp), in `Raytracing::Camera::updateRay` we have to build our rays.</span>
+ <span style="color:blue">First of all, in [Camera.cpp](src/raytracing/core/Camera.cpp), in `Raytracing::Camera::updateRay` we have to build our rays and store it in `rayDirections` table.</span>
  
  We have a camera point, a lookAt point and a horizontal Field Of View (FOV). Pixel have (x, y) coordinated from (0, 0) to (width, height) from top left to bottom right. First, we compute a relative value from the (x, y) to a value from (1, 1) (top left) to (-1, -1) (bottom right).
 
