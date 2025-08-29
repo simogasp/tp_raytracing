@@ -66,6 +66,7 @@ void Raytracing::Renderer::onResize(const uint32_t newWidth, const uint32_t newH
 void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &renderingCamera)
 {
     frameId++;
+    // reset the accumulator
     if (frameId == 1)
     {
         memset(accumulatedData, 0, getWidth() * getHeight() * sizeof(*accumulatedData));
@@ -153,7 +154,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                     2.0 * ((float) rand() / (float) RAND_MAX) - 1.0));
 
                 // allow refraction
-                if (mat.refractionIndex < EPSILON) // nontransparent material
+                if (mat.refractionIndex < EPSILON) // opaque material
                 {
                     ray.direction = mat.roughness * glm::normalize(payload.worldNormal + noiseN) + (1 - mat.roughness) * glm::normalize(reflectRay + mat.roughness * noiseR);
                     ray.origin = payload.worldPosition + EPSILON * payload.worldNormal;
