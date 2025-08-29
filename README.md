@@ -79,7 +79,7 @@ A solution to this equation mean a hit from the ray to the sphere. If the soluti
 <span style="color:blue">In [App.cpp](src/raytracing/gui/App.cpp), in the constructor, you have to add a first material to your and then scene the sphere you want.</span>
 
 
-Now, <span style="color:blue">in [Renderer.cpp](src/raytracing/controller/Renderer.cpp), modify the render script to check the intersection between rays and the sphere</span>.
+Now, <span style="color:blue">in [Renderer.cpp](src/raytracing/controller/Renderer.cpp), modify the render script to check the intersection between rays and the sphere.</span>
 
 The list of Sphere is available by the call of `getListSphere()`.
 
@@ -97,7 +97,7 @@ After the Call of TraceRay you have to handle the returned payload. If the paylo
 
 <span style="color:blue">Move the intersection test in `Raytracing::Render::TraceRay` function in [Renderer.cpp](src/raytracing/controller/Renderer.cpp).</span>
 
-<span style="color:blue">Fill the payload in ̀̀`Raytracing::Renderer::ClosestHit` and `Raytracing::Renderer::Miss`.
+<span style="color:blue">Fill the payload in ̀̀`Raytracing::Renderer::ClosestHit` and `Raytracing::Renderer::Miss`, use object method as `getNormal`.</span>
 
 ### Render with a simple bounce
 
