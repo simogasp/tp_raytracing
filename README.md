@@ -62,9 +62,9 @@ h \in S(O_{\text{sphere}}, r_{\text{sphere}})
     &\iff < h - O_{\text{sphere}}| h- O_{\text{sphere}} > - r_{\text{sphere}}^2 = 0 \\
     &\iff <O_{\text{ray}} + t\cdot D_{\text{ray}} - O_{\text{sphere}}| O_{\text{ray}} + t\cdot D_{\text{ray}}- O_{\text{sphere}}> - r_{\text{sphere}}^2 = 0 \\
     &\iff <t\cdot D_{\text{ray}} + O_{\text{ray}} - O_{\text{sphere}}| t\cdot D_{\text{ray}} + O_{\text{ray}} - O_{\text{sphere}}> - r_{\text{sphere}}^2  = 0 \\
-    &\iff <t\cdot D_{\text{ray}} | t\cdot D_{\text{ray}}> + <O_{\text{ray}} - O_{\text{sphere}} | O_{\text{ray}} - O_{\text{sphere}}> - r_{\text{sphere}}^2  = 0 \\
-    &\iff <t\cdot D_{\text{ray}} | t\cdot D_{\text{ray}}> + <O_{\text{ray}} - O_{\text{sphere}} | O_{\text{ray}} - O_{\text{sphere}}> - r_{\text{sphere}}^2  = 0 \\
-    & \iff t^2 || D_{\text{ray}}||^2 + || \overrightarrow{O_{\text{ray}}O_{\text{sphere}}}||^2 - r_{\text{sphere}}^2 = 0 \\
+    &\iff <t\cdot D_{\text{ray}} | t\cdot D_{\text{ray}}> + 2 t \cdot <D_{\text{ray}} |  O_{\text{ray}} - O_{\text{sphere}}> + <O_{\text{ray}} - O_{\text{sphere}} | O_{\text{ray}} - O_{\text{sphere}}> - r_{\text{sphere}}^2  = 0 \\
+    &\iff <t\cdot D_{\text{ray}} | t\cdot D_{\text{ray}}> + 2 t \cdot <D_{\text{ray}} |  O_{\text{ray}} - O_{\text{sphere}}> + <O_{\text{ray}} - O_{\text{sphere}} | O_{\text{ray}} - O_{\text{sphere}}> - r_{\text{sphere}}^2  = 0 \\
+    & \iff t^2 || D_{\text{ray}}||^2 + 2 t \cdot <D_{\text{ray}} | \overrightarrow{O_{\text{ray}}O_{\text{sphere}}}>  + || \overrightarrow{O_{\text{ray}}O_{\text{sphere}}}||^2 - r_{\text{sphere}}^2 = 0 \\
 \end{split}
 $$
 
