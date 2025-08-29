@@ -202,7 +202,7 @@ void Raytracing::Camera::onResize(const uint32_t newWidth, const uint32_t newHei
 
 void Raytracing::Camera::updateRay()
 {
-    //++ //TODO : orient the ray depending on the focal
+    //++ // TODO : orient the ray depending on the focal
     //<!!
     const float invScreenRatio = (float)height / (float)width;
 
