@@ -40,13 +40,18 @@ namespace Raytracing
         /** LookAt 5 position */
         const glm::vec3 lookAtPos5 = glm::vec3(0.f);
         
+        /**Starting Camera. */
+        const glm::vec3 startingCamera = glm::vec3(0.f, 0.f, -3.f);
+        /**Starting LookAt. */
+        const glm::vec3 startingLookAt = glm::vec3(-1.f, 0.f, 0.f);
+
         // color helper
         /**Black color. */
         const glm::vec3 black = glm::vec3(0.f, 0.f, 0.f);
         /**White color. */
         const glm::vec3 white = glm::vec3(1.f, 1.f, 1.f);
         /**Red color. */
-        const glm::vec3 red = glm::vec3(1.f, 0.f, 1.f);
+        const glm::vec3 magenta = glm::vec3(1.f, 0.f, 1.f);
         /**Blue color. */
         const glm::vec3 blue = glm::vec3(51.f / 255, 77.f / 255, 1.f);
         /**Orange color. */
@@ -73,12 +78,12 @@ namespace Raytracing
         const float shiny = 1.f;
 
         // roughness helper
-        /**A full roughness material. */
-        const float fullRoughness = 1.0f;
-        /**A middle roughness material */
-        const float midRoughness = .5f;
         /**A material without roughness. */
         const float noRoughness = 0.0f;
+        /**A middle roughness material */
+        const float midRoughness = .5f;
+        /**A full roughness material. */
+        const float fullRoughness = 1.0f;
 
         // emissionPower helper
         /**A non-emissive material. */
@@ -90,9 +95,9 @@ namespace Raytracing
         /**A very bright emissive material. */
         const float fullEmissionPower = 10.f;
 
-        // refraction index helper
+        // refractive index helper
         /**A opaque material. */
-        const float noTranslucid = 0.f;
+        const float opaque = 0.f;
         /**A air material. */
         const float airTranslucid = 1.f;
         /**A water material. */

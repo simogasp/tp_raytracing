@@ -3,18 +3,13 @@
 #include "Renderer.hpp"
 #include "raytracing/core/Ray.hpp"
 #include "raytracing/core/HitPayload.hpp"
-#if defined(TRACER_WITH_OPENMP)
-#include <omp.h>
-#endif
 # include <glm/gtc/constants.hpp>
 
 // number of bounce to made
 #define BOUNCES 2
 
-// define the resolution
-#define RESON4 1
-// define the sky aspect
-#define GRADIENT_SKY 1
+// devide the resolution by 4 to accelerate the computation
+#define RESON4 0
 
 Raytracing::Renderer::Renderer()
     : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 15 * glm::pi<float>() / 16, 0, 500)
@@ -62,21 +57,23 @@ void Raytracing::Renderer::onResize(const uint32_t newWidth, const uint32_t newH
     image->setData(imageData);
 }
 
-// render every pixel of the screen.
 void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &renderingCamera)
 {
+    // render every pixel of the screen.
+
     frameId++;
+    // reset the accumulator
     if (frameId == 1)
     {
         memset(accumulatedData, 0, getWidth() * getHeight() * sizeof(*accumulatedData));
     }
 
+    // store the given scene and camera
     scene = renderedScene;
     camera = renderingCamera;
+
+    // get the computed ray direction from camera
     const std::vector<glm::vec3> dirs = camera.getRayDirections();
-#if defined(TRACER_WITH_OPENMP)
-    omp_set_num_threads(7);
-#endif
 #pragma omp parallel for
 #if RESON4
     for (size_t y = 0; y < getHeight(); y += 2)
@@ -92,7 +89,10 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
         {
             // helper for the pixel index
             const uint32_t pixelIndex = (uint32_t) (x + y * getWidth());
-
+            
+            //++ // TODO : handle the display of each pixel
+            
+            //<!!
             // ray construction
             Ray ray;
             ray.origin = camera.getPosition();
@@ -111,15 +111,9 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
 
                 if (payload.hitDistance < 0)
                 {
-// we missed all spheres
-#if GRADIENT_SKY
+                    // we missed all spheres
                     const double rgColor = (1 - abs(ray.direction.y)) / 2 + 0.3;
                     const glm::vec3 skyColor(rgColor, rgColor, 1);
-#else
-                    // light gray sky
-                    // const glm::vec3 skyColor(0.6f, 0.7f, 0.9f);
-                    const glm::vec3 skyColor(0.0f);
-#endif
                     light += skyColor;
                     break;
                 }
@@ -153,7 +147,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                     2.0 * ((float) rand() / (float) RAND_MAX) - 1.0));
 
                 // allow refraction
-                if (mat.refractionIndex < EPSILON) // nontransparent material
+                if (mat.refractionIndex < EPSILON) // opaque material
                 {
                     ray.direction = mat.roughness * glm::normalize(payload.worldNormal + noiseN) + (1 - mat.roughness) * glm::normalize(reflectRay + mat.roughness * noiseR);
                     ray.origin = payload.worldPosition + EPSILON * payload.worldNormal;
@@ -220,6 +214,8 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 outColorVect.b,
                 255);
             imageData[pixelIndex] = outColor;
+            //>!!
+            //++ imageData[pixelIndex] = IM_COL32((int) ((double) x / (double) getWidth() * 255), (int) ((1. - (double) y / (double) getHeight()) * 255), 0, 255);
 #if RESON4
             imageData[(x + 1) + y * getWidth()] = outColor;
             imageData[x + (y + 1) * getWidth()] = outColor;
@@ -259,6 +255,9 @@ char *Raytracing::Renderer::getFormulatoString(const uint32_t i) const
 
 Raytracing::HitPayload Raytracing::Renderer::traceRay(Ray *ray) const
 {
+    //++ // TODO : check intersection with spheres  
+
+    //<!!
     // index
     uint32_t index = 0;
     bool found = false;
@@ -282,57 +281,72 @@ Raytracing::HitPayload Raytracing::Renderer::traceRay(Ray *ray) const
         return miss();
     // handle if a object has been hit
     return closestHit(ray, (float) hitDistance, index);
+    //>!!
+    //++ return HitPayload();
 }
 
 Raytracing::HitPayload Raytracing::Renderer::closestHit(Ray *ray, float hitDistance, uint32_t objectIndex) const
 {
+    //++ // TODO : return payload with data
     // returned struct
     HitPayload payload;
     
     // set the hitDistance
-    payload.hitDistance = hitDistance;
+    payload.hitDistance = hitDistance; //!!
 
     // set the hit sphere
+    //<!!
     const std::vector<Sphere> spheres = scene.getListSphere();
     payload.objectIndex = objectIndex;
     const Sphere sphere = spheres[objectIndex];
+    //>!!
 
     // compute the hit position
-    payload.worldPosition = ray->origin + hitDistance * ray->direction;
+    payload.worldPosition = ray->origin + hitDistance * ray->direction; //!!
     
     // compute the hit normal (/!\ correct only for sphere).
+    //<!!
     payload.worldNormal = glm::normalize(payload.worldPosition - sphere.center);
     const glm::vec3 oc(ray->origin - sphere.center);
     payload.inside = glm::sqrt(glm::dot(oc, oc)) < sphere.radius;
+    //>!!
+    
+    // revert the normal if the bounce is inside the sphere
+    //<!!
     if (payload.inside)
-        // revert the normal if the bounce is inside the sphere
         payload.worldNormal *= -1;
+    //>!!
 
     return payload;
 }
 
 Raytracing::HitPayload Raytracing::Renderer::miss() const
 {
+    //++ // TODO : return a empty (or with negative distance) payload
     // returned the payload
     Raytracing::HitPayload payload;
-    // 
-    payload.hitDistance = -1;
+    payload.hitDistance = -1; //!!
     return payload;
 }
 
 float Raytracing::Renderer::getAttenuation(const HitPayload payload, const Material mat) const
 {
     // light attenuation
+    //++ // TODO : fit the getFormulatoString to add a light attenuation phenomen
+    //<!!
     const double dOnR = payload.hitDistance / mat.attenuationRadius;
     const double a = (1. - dOnR * dOnR);
+    //>!!
     switch (attenuationFormula)
     {
+    //<!!
     case 1:
         return glm::max(0.f, (float) (1. - dOnR));
     case 2:
         return glm::max(0.f, (float) a);
     case 4:
         return glm::exp((float) (-dOnR * dOnR));
+    //>!!
     default:
         return 1.;
     }
