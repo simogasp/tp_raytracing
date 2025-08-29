@@ -280,7 +280,7 @@ Raytracing::HitPayload Raytracing::Renderer::traceRay(Ray *ray) const
     if (!found)
         return miss();
     // handle if a object has been hit
-    // return closestHit(ray, (float) hitDistance, index);
+    return closestHit(ray, (float) hitDistance, index);
     //>!!
     //++ return HitPayload();
 }
