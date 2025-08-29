@@ -20,6 +20,9 @@ double Raytracing::Sphere::intersect(const Camera *camera, const Ray *ray) const
     // Solutions
     // t = (- 2 * d . (o - p) +- 2 * sqrt(D)) / (2 * (d . d))
     // <=> t = dop +- sqrt(D)
+
+    //++ // TODO : check if the ray intersect this sphere
+    //<!!
     const glm::vec3 op = center - ray->origin;
     const double dop = glm::dot(ray->direction, op);
     const double D = dop * dop - glm::dot(op, op) + radius * radius;
@@ -69,10 +72,12 @@ double Raytracing::Sphere::intersect(const Camera *camera, const Ray *ray) const
     }
 
     // the sphere is clipped
+    //>!!
     return -1;
 }
 
 glm::vec3 Raytracing::Sphere::getNormal(const glm::vec3 position) const
 {
-    return glm::normalize(position - center);
+    return glm::normalize(position - center); //!!
+    //++ return glm::vec3(0.f);
 }
