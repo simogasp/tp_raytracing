@@ -89,6 +89,9 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
         {
             // helper for the pixel index
             const uint32_t pixelIndex = (uint32_t) (x + y * getWidth());
+            
+            //++ TODO : handle the display of each pixel
+            
             //<!!
             // ray construction
             Ray ray;
