@@ -85,7 +85,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
             // helper for the pixel index
             const uint32_t pixelIndex = (uint32_t) (x + y * getWidth());
             
-            //++ TODO : handle the display of each pixel
+            //++ // TODO : handle the display of each pixel
             
             //<!!
             // ray construction
@@ -250,7 +250,7 @@ char *Raytracing::Renderer::getFormulatoString(const uint32_t i) const
 
 Raytracing::HitPayload Raytracing::Renderer::traceRay(Ray *ray) const
 {
-    //++ TODO : check intersection with spheres  
+    //++ // TODO : check intersection with spheres  
 
     //<!!
     // index
@@ -282,7 +282,7 @@ Raytracing::HitPayload Raytracing::Renderer::traceRay(Ray *ray) const
 
 Raytracing::HitPayload Raytracing::Renderer::closestHit(Ray *ray, float hitDistance, uint32_t objectIndex) const
 {
-    //++ TODO : return payload with data
+    //++ // TODO : return payload with data
     // returned struct
     HitPayload payload;
     
@@ -317,7 +317,7 @@ Raytracing::HitPayload Raytracing::Renderer::closestHit(Ray *ray, float hitDista
 
 Raytracing::HitPayload Raytracing::Renderer::miss() const
 {
-    //++ TODO : return a empty (or with negative distance) payload
+    //++ // TODO : return a empty (or with negative distance) payload
     // returned the payload
     Raytracing::HitPayload payload;
     payload.hitDistance = -1; //!!
@@ -327,7 +327,7 @@ Raytracing::HitPayload Raytracing::Renderer::miss() const
 float Raytracing::Renderer::getAttenuation(const HitPayload payload, const Material mat) const
 {
     // light attenuation
-    //++ TODO : fit the getFormulatoString to add a light attenuation phenomen
+    //++ // TODO : fit the getFormulatoString to add a light attenuation phenomen
     //<!!
     const double dOnR = payload.hitDistance / mat.attenuationRadius;
     const double a = (1. - dOnR * dOnR);
