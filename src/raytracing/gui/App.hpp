@@ -40,6 +40,11 @@ namespace Raytracing
         /** LookAt 5 position */
         const glm::vec3 lookAtPos5 = glm::vec3(0.f);
         
+        /**Starting Camera. */
+        const glm::vec3 startingCamera = glm::vec3(0.f, 0.f, -3.f);
+        /**Starting LookAt. */
+        const glm::vec3 startingLookAt = glm::vec3(-1.f, 0.f, 0.f);
+
         // color helper
         /**Black color. */
         const glm::vec3 black = glm::vec3(0.f, 0.f, 0.f);
