@@ -48,7 +48,7 @@ Now, you have rays directions for your camera, now it's time to render your firs
 
 ### Intersection with sphere
 
-<span style="color:blue">In [Sphere.cpp](src/raytracing/core/hittableObject/Sphere.cpp), we now have to find if the ray instersect a sphere</span>.
+<span style="color:blue">In [Sphere.cpp](src/raytracing/core/hittableObject/Sphere.cpp), we now have to find if the ray instersect a sphere, fill the `intersect` function which return the distance of the hit, a negative one if does not hit the sphere.</span>
 
 We suppose the point $h = O_{\text{ray}} + t\cdot D_{\text{ray}}$ where $O_{\text{ray}}$ is the origin of the ray and $D_{\text{ray}}$ is the direction of the ray (uniform).
 
