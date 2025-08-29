@@ -97,6 +97,8 @@ After the Call of TraceRay you have to handle the returned payload. If the paylo
 
 <span style="color:blue">Move the intersection test in `Raytracing::Render::TraceRay` function in [Renderer.cpp](src/raytracing/controller/Renderer.cpp).</span>
 
+<span style="color:blue">Fill the payload in ̀̀`Raytracing::Renderer::ClosestHit` and `Raytracing::Renderer::Miss`.
+
 ### Render with a simple bounce
 
 we want to see interaction between the two sphere. We are going to use the constants define `BOUNCES` to known how many bounce a ray should do. So, we should create a bounce.
@@ -162,8 +164,6 @@ To determine if a ray should be reflect or be refract we are going to use the [S
 Then, a ray is reflect if the angle of incidence is above the limit angle of total reflection or if a random tirage is under $r_\theta$. Else it is refract.
 
 See [GLM Functions](#glm-most-useful-functions) below may help you.
-
-
 
 ## GLM Most Useful functions
 
