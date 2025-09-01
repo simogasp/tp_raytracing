@@ -37,7 +37,7 @@ namespace Raytracing
          */
         ImageWrapper();
         /**
-         * Destroys a imageWrapper.
+         * Destroys an imageWrapper.
          */
         ~ImageWrapper() = default;
         /**
