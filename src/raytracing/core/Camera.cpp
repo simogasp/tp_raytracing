@@ -19,10 +19,6 @@ Raytracing::Camera::Camera(const glm::vec3 &positionCamera, const glm::vec3 &loo
     computeBase();
 }
 
-Raytracing::Camera::~Camera()
-{
-}
-
 glm::vec3 Raytracing::Camera::getPosition() const
 {
     return position;

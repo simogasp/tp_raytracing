@@ -99,7 +99,7 @@ namespace Raytracing
         /**
          * Destroys a Camera.
          */
-        ~Camera();
+        ~Camera() = default;
 
         /**
          * Get the position of the camera.
