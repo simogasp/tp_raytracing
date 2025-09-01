@@ -23,17 +23,17 @@ void Raytracing::CameraFactory::setLookAt(const glm::vec3& lookAt)
     currentCamera.setLookAt(lookAt);
 }
 
-void Raytracing::CameraFactory::setNear(const double near)
+void Raytracing::CameraFactory::setNear(double near)
 {
     currentCamera.setNear(near);
 }
 
-void Raytracing::CameraFactory::setFar(const double far)
+void Raytracing::CameraFactory::setFar(double far)
 {
     currentCamera.setFar(far);
 }
 
-void Raytracing::CameraFactory::setCameraFocal(const float newFocal) 
+void Raytracing::CameraFactory::setCameraFocal(float newFocal)
 {
     currentCamera.setFocal(newFocal);
 }

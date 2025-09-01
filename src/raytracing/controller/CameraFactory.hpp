@@ -27,7 +27,7 @@ namespace Raytracing
         /**
          * Returns a camera with starting value.
          */
-        static Raytracing::Camera getDefaultCamera();
+        static Camera getDefaultCamera();
 
         // properties
         /**
@@ -62,24 +62,24 @@ namespace Raytracing
          * Sets the near value of the camera.
          * @param near the near value
          */
-        void setNear(const double near);
+        void setNear(double near);
         
         /**
          * Sets the far value of the camera.
          * @param far the far value
          */
-        void setFar(const double far);
+        void setFar(double far);
         
         /**
          * Sets the focal of the camera
          */
-        void setCameraFocal(const float newFocal);
+        void setCameraFocal(float newFocal);
         
         /**
          * Sets the up vector of the camera.
          * @param up the new upVector
          */
-        void setUpVector(const glm::vec3 up);
+        void setUpVector(glm::vec3 up);
 
         // movement
         /**
