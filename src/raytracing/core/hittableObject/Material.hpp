@@ -19,11 +19,11 @@ namespace Raytracing
          */
         glm::vec3 reflection;
         /**
-         * The emision color of the material.
+         * The emission color of the material.
          */
         glm::vec3 emission = glm::vec3(0.f);
         /**
-         * The shinyness of the material.
+         * The shininess of the material.
          */
         float shinyness;
         /**
