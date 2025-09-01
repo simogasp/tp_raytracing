@@ -263,6 +263,7 @@ namespace Raytracing
         /**
          * Change a vector to camera base.
          * @param vect the vector to change
+         * @return the vector in camera base
          */
         [[ nodiscard ]]
         glm::vec3 baseChangment(glm::vec3 vect) const;
