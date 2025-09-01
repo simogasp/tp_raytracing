@@ -48,17 +48,17 @@ namespace Raytracing
          * Gets the width of the image.
          * @return the width
          */
-        unsigned int getWidth() const;
+        [[nodiscard]] unsigned int getWidth() const;
         /**
          * Gets the height of the image.
          * @return the height
          */
-        unsigned int getHeight() const;
+        [[nodiscard]] unsigned int getHeight() const;
         /**
          * Gets the texture Id.
          * @return the texture id
          */
-        GLuint getTextureId();
+        [[nodiscard]] GLuint getTextureId() const;
         
         // render procedure.
         /**
