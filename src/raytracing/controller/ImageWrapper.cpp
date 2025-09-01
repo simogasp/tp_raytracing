@@ -33,7 +33,7 @@ void Raytracing::ImageWrapper::setData(uint32_t *newData)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
-void Raytracing::ImageWrapper::resize(const uint32_t newWidth, const uint32_t newHeight)
+void Raytracing::ImageWrapper::resize(uint32_t newWidth, uint32_t newHeight)
 {
     if (width == newWidth && newHeight == height)
     {

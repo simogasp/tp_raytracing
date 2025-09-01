@@ -64,7 +64,7 @@ namespace Raytracing
         /**
          * Handles a viewport resize action.
          */
-        void resize(const uint32_t newWidth, const uint32_t newHeight); 
+        void resize(uint32_t newWidth, uint32_t newHeight);
 
     };
 
