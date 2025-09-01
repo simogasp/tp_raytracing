@@ -162,6 +162,6 @@ namespace Raytracing
          * Changes the camera to the given preset id.
          * @param node_clicked the id of the preset
          */
-        void handleCamPreset(const int node_clicked);
+        void handleCamPreset(int node_clicked);
     };
 }

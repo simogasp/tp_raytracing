@@ -266,7 +266,7 @@ namespace Raytracing
         }
     }
 
-    void App::handleCamPreset(const int node_clicked)
+    void App::handleCamPreset(int node_clicked)
     {
         switch (node_clicked)
         {
