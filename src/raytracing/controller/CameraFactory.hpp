@@ -150,7 +150,7 @@ namespace Raytracing
         /**
          * Handle a resize of the viewport.
          */
-        void onResize(const uint32_t width, const uint32_t height);
+        void onResize(uint32_t width, uint32_t height);
         
         /**
          * Returns the camera made.

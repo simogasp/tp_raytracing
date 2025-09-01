@@ -113,7 +113,7 @@ void Raytracing::CameraFactory::updateRay()
     currentCamera.updateRay();
 }
 
-void Raytracing::CameraFactory::onResize(const uint32_t width, const uint32_t height)
+void Raytracing::CameraFactory::onResize(uint32_t width, uint32_t height)
 {
     currentCamera.onResize(width, height);
 
