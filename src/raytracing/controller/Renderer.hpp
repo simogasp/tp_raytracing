@@ -68,13 +68,13 @@ namespace Raytracing
          * Gets the width of the image.
          * @return the width
          */
-        uint32_t getWidth() const;
+        [[nodiscard]] uint32_t getWidth() const;
         
         /**
          * Gets the height of the image.
          * @return the height
          */
-        uint32_t getHeight() const;
+        [[nodiscard]] uint32_t getHeight() const;
 
         /**
          * Gets the FrameId of the image.
@@ -86,7 +86,7 @@ namespace Raytracing
          * Gets the GPU texture ID to load the image.
          * @return the texture id
          */
-        GLuint getTextureId() const;
+        [[nodiscard]] GLuint getTextureId() const;
 
 
         /**
@@ -135,13 +135,13 @@ namespace Raytracing
          * Creates a payload for ray with any hit.
          * @return the payload.
          */
-        Raytracing::HitPayload miss() const;
+        [[nodiscard]] HitPayload miss() const;
         
         /**
          * Gets the attenuation factor for a object light.
          * @return the attenuation
          */
-        float getAttenuation(const HitPayload payload, const Material mat) const;
+        [[nodiscard]] float getAttenuation(const HitPayload payload, const Material mat) const;
     };
 
 }
