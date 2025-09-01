@@ -12,40 +12,40 @@ namespace Raytracing
         /**
          * The camera Position.
          */
-        glm::vec3 position;
+        glm::vec3 position{};
         
         /**
          * The lookAt vector.
          */
-        glm::vec3 lookAt;
+        glm::vec3 lookAt{.0f, .0f, -1.f};
         
         /**
          * the up vector.
          */
-        glm::vec3 upVector;
+        glm::vec3 upVector{.0f, 1.f, .0f};
         
         /**
          * the x axis of the camera.
          */
-        glm::vec3 x;
+        glm::vec3 x{1.f, .0f, .0f};
         
         /**
          * the y axis of the camera.
          */
-        glm::vec3 y;
+        glm::vec3 y{.0f, 1.f, .0f};
         
         /**
          * The z axis of the camera.
          */
-        glm::vec3 z;
+        glm::vec3 z{.0f, .0f, 1.f};
         
         /**
-         * the width of the screen.
+         * the width of the image.
          */
         uint32_t width;
         
         /**
-         * The height of the screen.
+         * The height of the image.
          */
         uint32_t height;
         
@@ -66,20 +66,20 @@ namespace Raytracing
         /**
          * The movement speed.
          */
-        float speed = 1;
+        float speed{1};
         /**
          * The rotation speed.
          */
-        float rotationSpeed = .1f;
+        float rotationSpeed{.1f};
         
         /**
          * The cosine of the rotation speed.
          */
-        float cosRotationSpeed = std::cos(rotationSpeed);
+        float cosRotationSpeed{std::cos(rotationSpeed)};
         /**
          * The sine of the rotation speed.
          */
-        float sinRotationSpeed = std::sin(rotationSpeed);
+        float sinRotationSpeed{std::sin(rotationSpeed)};
         /**
          * The ray directions.
          */
@@ -91,7 +91,7 @@ namespace Raytracing
          */
         Camera(const glm::vec3& positionCamera, const glm::vec3& lookAtCamera, 
             const glm::vec3& upCamera, 
-            const float fieldOfViewCamera, const float nearCamera, const float farCamera);
+            float fieldOfViewCamera, float nearCamera, float farCamera);
         /**
          * Creates a Camera.
          */
@@ -99,7 +99,7 @@ namespace Raytracing
         /**
          * Destroys a Camera.
          */
-        ~Camera();
+        ~Camera() = default;
 
         /**
          * Get the position of the camera.
@@ -150,7 +150,7 @@ namespace Raytracing
          * Sets the horizontal fov.
          * @param newValue the new fov
          */
-        void setFocal(const float newValue);
+        void setFocal(float newValue);
         
         /**
          * Sets the up vector to the given one.
@@ -175,17 +175,17 @@ namespace Raytracing
          * Sets the near value.
          * @param newNear the new value
          */
-        void setNear(const double newNear);
+        void setNear(double newNear);
         
         /**
          * Sets the far value.
          * @param newFar the new value
          */
-        void setFar(const double newFar);
+        void setFar(double newFar);
 
 
 
-        // mouvement of the camera
+        // movement of the camera
         /**
          * Moves the camera forward.
          */
@@ -253,7 +253,7 @@ namespace Raytracing
          * @param newWidth the new width
          * @param newHeight the new height
          */
-        void onResize(const uint32_t newWidth, const uint32_t newHeight);
+        void onResize(uint32_t newWidth, uint32_t newHeight);
         /**
          * Compute the ray directions.
          */
@@ -263,9 +263,10 @@ namespace Raytracing
         /**
          * Change a vector to camera base.
          * @param vect the vector to change
+         * @return the vector in camera base
          */
         [[ nodiscard ]]
-        glm::vec3 baseChangment(glm::vec3 vect);
+        glm::vec3 baseChangment(glm::vec3 vect) const;
         /**
          * Computes the bases from the LookAt and up vector.
          */

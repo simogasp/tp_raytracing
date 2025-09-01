@@ -7,7 +7,7 @@ namespace Raytracing
     struct Ray
     {
         /**
-         * The orgin of the ray.
+         * The origin of the ray.
          */
         glm::vec3 origin;
         /**

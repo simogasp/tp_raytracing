@@ -6,21 +6,20 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 
-Raytracing::Camera::Camera(const glm::vec3 &positionCamera, const glm::vec3 &lookAtCamera,
-                           const glm::vec3 &upCamera, const float focalCamera,
-                           const float nearCamera, const float farCamera)
+Raytracing::Camera::Camera(const glm::vec3& positionCamera,
+                           const glm::vec3& lookAtCamera,
+                           const glm::vec3& upCamera,
+                           float focalCamera,
+                           float nearCamera,
+                           float farCamera)
+  : position(positionCamera)
+  , lookAt(lookAtCamera)
+  , upVector(upCamera)
+  , near(nearCamera)
+  , far(farCamera)
+  , focal(focalCamera)
 {
-    position = positionCamera;
-    lookAt = lookAtCamera;
-    upVector = upCamera;
-    focal = focalCamera;
-    near = nearCamera;
-    far = farCamera;
     computeBase();
-}
-
-Raytracing::Camera::~Camera()
-{
 }
 
 glm::vec3 Raytracing::Camera::getPosition() const
@@ -53,7 +52,7 @@ std::vector<glm::vec3> Raytracing::Camera::getRayDirections() const
     return rayDirections;
 }
 
-void Raytracing::Camera::setFocal(const float newValue)
+void Raytracing::Camera::setFocal(float newValue)
 {
     focal = newValue;
     updateRay();
@@ -77,12 +76,12 @@ void Raytracing::Camera::setLookAt(const glm::vec3 &newLookAt)
     computeBase();
 }
 
-void Raytracing::Camera::setNear(const double newNear)
+void Raytracing::Camera::setNear(double newNear)
 {
     near = (float) newNear;
 }
 
-void Raytracing::Camera::setFar(const double newFar)
+void Raytracing::Camera::setFar(double newFar)
 {
     far = (float) newFar;
 }
@@ -189,7 +188,7 @@ void Raytracing::Camera::rotateAntiClockWise()
     computeBase();
 }
 
-void Raytracing::Camera::onResize(const uint32_t newWidth, const uint32_t newHeight)
+void Raytracing::Camera::onResize(uint32_t newWidth, uint32_t newHeight)
 {
 
     if (width == newWidth && height == newHeight)
@@ -202,7 +201,9 @@ void Raytracing::Camera::onResize(const uint32_t newWidth, const uint32_t newHei
 
 void Raytracing::Camera::updateRay()
 {
-    const float invScreenRatio = (float)height / (float)width;
+    //++ // TODO : orient the ray depending on the focal
+    //<!!
+    const float invScreenRatio =  static_cast<float>(height) / static_cast<float>(width);
 
     const glm::vec3 screenPos = focal * glm::normalize(lookAt - position);
 
@@ -212,16 +213,17 @@ void Raytracing::Camera::updateRay()
         for (uint32_t px = 0; px < width; px++)
         {
             // relative placement on the screen of the pixel
-            const float relativeX = - 2 * (float)px / (float)(width - 1) + 1;
-            const float relativeY = - 2 * (float)py / (float)(height - 1) + 1;
+            const float relativeX = - 2 * static_cast<float>(px) / static_cast<float>(width - 1) + 1;
+            const float relativeY = - 2 * static_cast<float>(py) / static_cast<float>(height - 1) + 1;
 
             rayDirections[px + width * py] = glm::normalize(screenPos + relativeX * x + relativeY * y * invScreenRatio);
         }
 
     }
+    //>!!
 }
 
-glm::vec3 Raytracing::Camera::baseChangment(glm::vec3 vect)
+glm::vec3 Raytracing::Camera::baseChangment(glm::vec3 vect) const
 {
     const glm::mat3 mat(x, y, z);
     const glm::vec3 res(mat * vect);

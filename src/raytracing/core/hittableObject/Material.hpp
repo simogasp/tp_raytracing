@@ -19,11 +19,11 @@ namespace Raytracing
          */
         glm::vec3 reflection;
         /**
-         * The emision color of the material.
+         * The emission color of the material.
          */
         glm::vec3 emission = glm::vec3(0.f);
         /**
-         * The shinyness of the material.
+         * The shininess of the material.
          */
         float shinyness;
         /**
@@ -47,7 +47,7 @@ namespace Raytracing
          * Gets the emissionPower times the emissions color.
          * @return a vector of color
          */
-        glm::vec3 getEmission() const {
+        [[nodiscard]] glm::vec3 getEmission() const {
             return emissionPower * emission;
         }
     };

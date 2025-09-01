@@ -1,3 +1,4 @@
+#pragma once
 
 #include <cstdint>
 #ifdef __APPLE__
@@ -36,7 +37,7 @@ namespace Raytracing
          */
         ImageWrapper();
         /**
-         * Destroys a imageWrapper.
+         * Destroys an imageWrapper.
          */
         ~ImageWrapper() = default;
         /**
@@ -47,23 +48,23 @@ namespace Raytracing
          * Gets the width of the image.
          * @return the width
          */
-        unsigned int getWidth() const;
+        [[nodiscard]] unsigned int getWidth() const;
         /**
          * Gets the height of the image.
          * @return the height
          */
-        unsigned int getHeight() const;
+        [[nodiscard]] unsigned int getHeight() const;
         /**
          * Gets the texture Id.
          * @return the texture id
          */
-        GLuint getTextureId();
+        [[nodiscard]] GLuint getTextureId() const;
         
         // render procedure.
         /**
          * Handles a viewport resize action.
          */
-        void resize(const uint32_t newWidth, const uint32_t newHeight); 
+        void resize(uint32_t newWidth, uint32_t newHeight);
 
     };
 

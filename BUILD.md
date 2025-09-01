@@ -24,8 +24,8 @@ Not necessary if you already did the previous tp, but to recall:
 
   - install instructions here: <https://docs.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=vs-2019>
 
-> [!IMPORTANT]
-> install the "Desktop development with C++"
+  > [!IMPORTANT]
+  > install the "Desktop development with C++"
   
   - If you have VS already installed, you can go in **Tools** --> **Get Tools and Features...** to install "Desktop development with C++" if it is missing.
 
@@ -65,7 +65,7 @@ This step enables you to create the project file to load inside VS:
 
 - execute the code:  
 
-  - Select the project you want to run (e.g. `lumiere`), right click on it and select **Set as Startup Project** 
+  - Select the project you want to run (e.g. `lumiere`), right click on it and select **Set as Startup Project**
   
   - On the menu bar, choose **Debug** --> **Start without debugging**.
 
@@ -112,7 +112,7 @@ sudo ./cmake-X.YY.Z-Linux-x86_64.sh --prefix=/usr/local/ --skip-license
   
 ### Build
 
-To compile and build the code you do 
+To compile and build the code you do
 
  ```shell
  mkdir build && cd build

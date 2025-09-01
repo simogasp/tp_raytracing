@@ -7,9 +7,9 @@ namespace Raytracing
         : camera(), scene()
     {
         // materials
-        scene.pushMaterial(red, mat, fullRoughness);
+        scene.pushMaterial(magenta, mat, fullRoughness);
         scene.pushMaterial(gray, shiny, noRoughness);
-        scene.pushMaterial(orange, orange, mat, fullRoughness, normalEmissionPower, 1000.f, noTranslucid);
+        scene.pushMaterial(orange, orange, mat, fullRoughness, normalEmissionPower, 1000.f, opaque);
         scene.pushMaterial(white,
                 white,
                 shiny,
@@ -17,7 +17,7 @@ namespace Raytracing
                 0.f,
                 0.f,
                 plexiGlassTranslucid);
-
+                
         // spheres
         scene.pushSphere(redPos, 1.f, 0);
         scene.pushSphere(floorPos, 1000.f, 1);
@@ -64,7 +64,7 @@ namespace Raytracing
         // Settings panel
         ImGui::Begin("Settings");
 
-        ImGui::Text("Render Statistique : %d samples", renderer.getFrameId());
+        ImGui::Text("Render Statistics : %d samples", renderer.getFrameId());
 
         ImGui::Separator();
 
@@ -76,14 +76,12 @@ namespace Raytracing
             renderer.resetAcc();
         }
 
-        glm::vec3 position = camera.getCamera().getPosition();
-        if (ImGui::DragFloat3("Camera position", glm::value_ptr(position)))
+        if (glm::vec3 position = camera.getCamera().getPosition(); ImGui::DragFloat3("Camera position", glm::value_ptr(position)))
         {
             camera.setCameraPosition(position);
             renderer.resetAcc();
         }
-        glm::vec3 lookAt = camera.getCamera().getLookAt();
-        if (ImGui::DragFloat3("Camera lookAt", glm::value_ptr(lookAt)))
+        if (glm::vec3 lookAt = camera.getCamera().getLookAt(); ImGui::DragFloat3("Camera lookAt", glm::value_ptr(lookAt)))
         {
             camera.setLookAt(lookAt);
             renderer.resetAcc();
@@ -145,7 +143,7 @@ namespace Raytracing
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         // Dockspace Viewport
-        ImGui::Begin("Viewport", NULL, ImGuiWindowFlags_NoScrollbar);
+        ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoScrollbar);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 
         m_viewportWidth = (uint32_t) ImGui::GetContentRegionAvail().x;
@@ -160,11 +158,10 @@ namespace Raytracing
         io.ClearInputCharacters();
 
         // if there is a image : draw it
-        const GLuint imageTextureId = renderer.getTextureId();
-        if (imageTextureId)
+        if (const GLuint imageTextureId = renderer.getTextureId())
         {
             ImGui::Image((ImTextureID)imageTextureId,
-                        ImVec2((float) renderer.getWidth(), (float) renderer.getHeight()));
+                        ImVec2(static_cast<float>(renderer.getWidth()), static_cast<float>(renderer.getHeight())));
         }
         ImGui::End();
         ImGui::PopStyleVar();
@@ -266,7 +263,7 @@ namespace Raytracing
         }
     }
 
-    void App::handleCamPreset(const int node_clicked)
+    void App::handleCamPreset(int node_clicked)
     {
         switch (node_clicked)
         {
