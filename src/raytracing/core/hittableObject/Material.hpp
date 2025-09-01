@@ -47,7 +47,7 @@ namespace Raytracing
          * Gets the emissionPower times the emissions color.
          * @return a vector of color
          */
-        glm::vec3 getEmission() const {
+        [[nodiscard]] glm::vec3 getEmission() const {
             return emissionPower * emission;
         }
     };
