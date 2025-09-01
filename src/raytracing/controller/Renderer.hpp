@@ -120,7 +120,7 @@ namespace Raytracing
          * Traces the given ray.
          * @return a hit payload with usefull information.
          */
-        Raytracing::HitPayload traceRay(Ray *ray) const;
+        HitPayload traceRay(Ray *ray) const;
 
         /**
          * Creates a payload according to the closest hit of the ray.
@@ -129,7 +129,7 @@ namespace Raytracing
          * @param ObjectIndex the object index hit
          * @return the payload with the hit information
          */
-        Raytracing::HitPayload closestHit(Ray *ray, float hitDistance, uint32_t ObjectIndex) const;
+        HitPayload closestHit(Ray *ray, float hitDistance, uint32_t ObjectIndex) const;
 
         /**
          * Creates a payload for ray with any hit.
