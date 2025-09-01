@@ -8,7 +8,7 @@
 - [Step to Reach](#step-to-reach)
 - [GLM Most Useful functions](#glm-most-useful-functions)
 - [To improve your render](#to-improve-your-render)
-- [Helpful Ressource](#helpful-ressources)
+- [Helpful Resources](#helpful-resources)
 
 ## Introduction
 
@@ -22,13 +22,12 @@ Exercise are written in <span style="color:blue">blue</span>.
 
 On the Gui, you have the real-time render in the panel Viewport, the help explained How to move in the scene with the camera. The settings panel allow you to move the camera by cursor or to choose some preset.
 
-
 ## Step to Reach
 
 ### Orient the ray
 
  <span style="color:blue">First of all, in [Camera.cpp](src/raytracing/core/Camera.cpp), in `Raytracing::Camera::updateRay` we have to build our rays and store it in `rayDirections` table.</span>
- 
+
  We have a camera point, a lookAt point and a horizontal Field Of View (FOV). Pixel have (x, y) coordinated from (0, 0) to (width, height) from top left to bottom right. First, we compute a relative value from the (x, y) to a value from (1, 1) (top left) to (-1, -1) (bottom right).
 
 x relative : $
@@ -44,7 +43,6 @@ The ray direction of the screen pixel is given by the uniform vector from the ca
 ### Manage rays
 
 Now, you have rays directions for your camera, now it's time to render your first scene. <span style="color:blue"> In [renderer.cpp](src/raytracing/controller/Renderer.cpp), fill the double for loop to manage each ray/pixel of the screen, in this first step you have to fill it in the same color </span> (we will considere it has the sky #019CE0 for example). This color will be render if nothing is render.
-
 
 ### Intersection with sphere
 
@@ -68,16 +66,13 @@ h \in S(O_{\text{sphere}}, r_{\text{sphere}})
 \end{split}
 $$
 
-As $ D_{\text{ray}} $ is uniform, we can ignore it. The rest is a quadratic equation. 
+As $ D_{\text{ray}} $ is uniform, we can ignore it. The rest is a quadratic equation.
 
 A solution to this equation mean a hit from the ray to the sphere. If the solution is negative, it means that the sphere is behind the camera.
 
-
 ### Render your first sphere
 
-
 <span style="color:blue">In [App.cpp](src/raytracing/gui/App.cpp), in the constructor, you have to add a first material to your and then scene the sphere you want.</span>
-
 
 Now, <span style="color:blue">in [Renderer.cpp](src/raytracing/controller/Renderer.cpp), modify the render script to check the intersection between rays and the sphere.</span>
 
@@ -85,7 +80,7 @@ The list of Sphere is available by the call of `getListSphere()`.
 
 ### Render a second sphere (maybe a floor)
 
-To simulate the presence of a floor, we can add a material to the scene in [App.cpp](src/raytracing/gui/App.cpp) (color example : gray, shinyness : midShinyness, roughness : fullRoughness) and a floor sphere at `floorPos` and a radius of 1000.
+To simulate the presence of a floor, we can add a material to the scene in [App.cpp](src/raytracing/gui/App.cpp) (color example : gray, shininess : midshininess, roughness : fullRoughness) and a floor sphere at `floorPos` and a radius of 1000.
 
 ### Introduction to Ray tracer pipeline
 
@@ -109,22 +104,19 @@ For the first modelisation of a bounce we are going to ignore the roughness char
 
 Then we change the ray origin to the hit position <span style="color:red">shifted by an epsilon times the normal</span> to not hit the same sphere again. The new direction of the ray can be computed by the function `glm::reflect(incident vector, normal vector)`.
 
-
 <span style="color:blue">Adapt the `Raytracing::Renderer::Render` in [Renderer.cpp](src/raytracing/controller/Renderer.cpp) to add a bounce reaction to your ray.</span>
 
-To know the color of a ray, we start with a white color and a shiny multiplier. At each hit sphere we multiply the current ray color by the shiny multiplier and the color of the hit material. Then we mutiply the shiny multiplier by the hit material shinyness. Like that, a mat material will not be affect by the next hit color and a shiny material will be fully affect by the next hit.
+To know the color of a ray, we start with a white color and a shiny multiplier. At each hit sphere we multiply the current ray color by the shiny multiplier and the color of the hit material. Then we mutiply the shiny multiplier by the hit material shininess. Like that, a mat material will not be affect by the next hit color and a shiny material will be fully affect by the next hit.
 
 ### First Lighting
 
 We want now to add lighting effect in our scene.
 
-<span style="color:blue">Add a light effect in `Raytracing::Renderer::Render` in [Renderer.cpp](src/raytracing/controller/Renderer.cpp) the light is fully add by the sky for now but to prepare to next improvement, we should add a modifier as color or shiny multiplier to controle the light.</span>
+<span style="color:blue">Add a light effect in `Raytracing::Renderer::Render` in [Renderer.cpp](src/raytracing/controller/Renderer.cpp) the light is fully add by the sky for now but to prepare to next improvement, we should add a modifier as color or shiny multiplier to control the light.</span>
 
 Just like in real life, the light should have 3 components for Red, Green and Blue. the sky should have a white light independently to its color, so when a ray does not hit anything (the sky), we add to the light component the $\begin{pmatrix}1 & 1 & 1\end{pmatrix}$ vector.
 
-
 ### Improve a bounce
-
 
 <span style="color:blue">In [Renderer.cpp](src/raytracing/controller/Renderer.cpp), add a random component for our bounce depending on the roughness of the material.</span>
 
@@ -144,8 +136,7 @@ We want to stabilize the image using a accumulator. The field `accumulatedData` 
 
 <span style="color:blue">Use `accumulatedData` in [Renderer.cpp](src/raytracing/controller/Renderer.cpp) to get a smoother image.</span>
 
-
-### Add emmissive material
+### Add emissive material
 
 <span style="color:blue">Fill the `Raytracing::Renderer::getAttenuation` in [Renderer.cpp](src/raytracing/controller/Renderer.cpp) function to fit with the `Raytracing::Renderer::getFormulatoString` function.</span>
 
@@ -161,29 +152,29 @@ We should add some translucid object as plexiglass in our scene. But to do this,
 
 To determine if a ray should be reflect or be refract we are going to use the [Schlick approximation](https://en.wikipedia.org/wiki/Schlick%27s_approximation).
 
-Then, a ray is reflect if the angle of incidence is above the limit angle of total reflection or if a random tirage is under $r_\theta$. Else it is refract.
+Then, a ray is reflect if the angle of incidence is above the limit angle of total reflection or if a random draw is under $r_\theta$. Else it is refract.
 
 See [GLM Functions](#glm-most-useful-functions) below may help you.
 
 ## GLM Most Useful functions
 
- - `glm::vec3` : vector of size 3
- - `glm::normalize` : normalize a vector
- - `glm::reflect` : reflect a incident vector according to a normal
- - `glm::refract` : refract a incident vector according to a normal and $\frac{n_1}{n_2}$
- - `glm::to_string` after add `#define GLM_ENABLE_EXPERIMENTAL` and `#include <glm/gtx/string_cast.hpp>` in the header : print a vector (use : `std :: cout << glm::to_string(glm::vec3(0)) << std :: endl;` prints the 0 vector of dimension 3).
-
+- `glm::vec3` : vector of size 3
+- `glm::normalize` : normalize a vector
+- `glm::reflect` : reflect a incident vector according to a normal
+- `glm::refract` : refract a incident vector according to a normal and $\frac{n_1}{n_2}$
+- `glm::to_string` after add `#define GLM_ENABLE_EXPERIMENTAL` and `#include <glm/gtx/string_cast.hpp>` in the header : print a vector (use : `std :: cout << glm::to_string(glm::vec3(0)) << std :: endl;` prints the 0 vector of dimension 3).
 
 ## To improve your render
 
 You can test to replace the floor material by a metalic mirror with the modifiers :
- - color : gray
- - shiny : shiny
- - roughness : noRoughness
+
+- color : gray
+- shiny : shiny
+- roughness : noRoughness
 
 You can add a sky blue gradient color according to the y direction of the ray.
 $$
-\text{color} = 
+\text{color} =
 \begin{pmatrix}
 \frac{(1 - |y_{\text{ray}}|)} 2 + 0.3
 & \frac{(1 - |y_{\text{ray}}|)} 2 + 0.3
@@ -191,10 +182,9 @@ $$
 \end{pmatrix}
 $$
 
-
 You can implement other surface type as torus or plan.
 
-## Helpful ressources
+## Helpful resources
 
- - A youtube video serie : [Raytracing serie](https://www.youtube.com/watch?v=gfW1Fhd9u9Q&list=PLlrATfBNZ98edc5GshdBtREv5asFW3yXl)
- - A good website : [Raytracing in One Week-end](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
+- A youtube video serie : [Raytracing serie](https://www.youtube.com/watch?v=gfW1Fhd9u9Q&list=PLlrATfBNZ98edc5GshdBtREv5asFW3yXl)
+- A good website : [Raytracing in One Week-end](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
