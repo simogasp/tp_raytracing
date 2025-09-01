@@ -265,7 +265,7 @@ namespace Raytracing
          * @param vect the vector to change
          */
         [[ nodiscard ]]
-        glm::vec3 baseChangment(glm::vec3 vect);
+        glm::vec3 baseChangment(glm::vec3 vect) const;
         /**
          * Computes the bases from the LookAt and up vector.
          */
