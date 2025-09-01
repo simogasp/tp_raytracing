@@ -118,7 +118,7 @@ jobs:
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
         # Install CMake and OpenGL dependencies
         export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK="ON"
-        brew install cmake freeglut glm glew
+        brew install freeglut glm glew
     - name: Build
       run: |
         mkdir ${{ env.BUILD_DIR }}
