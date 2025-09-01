@@ -69,10 +69,10 @@ namespace Raytracing
         /**Glass sphere position. */
         const glm::vec3 glassPos = glm::vec3(1.f, 0.f, 0.f);
 
-        // shinyness helper
-        /**A full mat shinyness. */
+        // shininess helper
+        /**A full mat shininess. */
         const float mat = 0.0f;
-        /**A middle shinyness. */
+        /**A middle shininess. */
         const float midShiny = 0.5f;
         /**A full shiny material. */
         const float shiny = 1.f;

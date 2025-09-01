@@ -64,7 +64,7 @@ namespace Raytracing
         // Settings panel
         ImGui::Begin("Settings");
 
-        ImGui::Text("Render Statistique : %d samples", renderer.getFrameId());
+        ImGui::Text("Render Statistics : %d samples", renderer.getFrameId());
 
         ImGui::Separator();
 
