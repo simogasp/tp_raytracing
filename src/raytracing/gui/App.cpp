@@ -143,7 +143,7 @@ namespace Raytracing
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         // Dockspace Viewport
-        ImGui::Begin("Viewport", NULL, ImGuiWindowFlags_NoScrollbar);
+        ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoScrollbar);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 
         m_viewportWidth = (uint32_t) ImGui::GetContentRegionAvail().x;
