@@ -12,7 +12,7 @@ unsigned int Raytracing::ImageWrapper::getHeight() const
     return height;
 }
 
-GLuint Raytracing::ImageWrapper::getTextureId()
+GLuint Raytracing::ImageWrapper::getTextureId() const
 {
     return textureId;
 }
