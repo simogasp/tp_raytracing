@@ -1,5 +1,5 @@
 #include "ImageWrapper.hpp"
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 
 unsigned int Raytracing::ImageWrapper::getWidth() const
