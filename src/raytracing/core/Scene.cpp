@@ -27,7 +27,7 @@ void Raytracing::Scene::addRandomSphere()
     sphere.center = glm::vec3((float)rand() / (float)RAND_MAX * 10.f, (float)rand() / (float) RAND_MAX * 10.f, (float) rand() / (float) RAND_MAX * 10.f);
     sphere.materialIndex = (uint32_t) ((float)rand() / (float)RAND_MAX * (float) materialList.size());
     // create a green material if no one exist.
-    if (materialList.size() == 0)
+    if (materialList.empty())
     {
         Material mat;
         mat.emission = glm::vec3(0.f);
