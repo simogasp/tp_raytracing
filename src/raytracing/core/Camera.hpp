@@ -40,12 +40,12 @@ namespace Raytracing
         glm::vec3 z{.0f, .0f, 1.f};
         
         /**
-         * the width of the screen.
+         * the width of the image.
          */
         uint32_t width;
         
         /**
-         * The height of the screen.
+         * The height of the image.
          */
         uint32_t height;
         
@@ -185,7 +185,7 @@ namespace Raytracing
 
 
 
-        // mouvement of the camera
+        // movement of the camera
         /**
          * Moves the camera forward.
          */
