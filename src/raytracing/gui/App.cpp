@@ -76,14 +76,12 @@ namespace Raytracing
             renderer.resetAcc();
         }
 
-        glm::vec3 position = camera.getCamera().getPosition();
-        if (ImGui::DragFloat3("Camera position", glm::value_ptr(position)))
+        if (glm::vec3 position = camera.getCamera().getPosition(); ImGui::DragFloat3("Camera position", glm::value_ptr(position)))
         {
             camera.setCameraPosition(position);
             renderer.resetAcc();
         }
-        glm::vec3 lookAt = camera.getCamera().getLookAt();
-        if (ImGui::DragFloat3("Camera lookAt", glm::value_ptr(lookAt)))
+        if (glm::vec3 lookAt = camera.getCamera().getLookAt(); ImGui::DragFloat3("Camera lookAt", glm::value_ptr(lookAt)))
         {
             camera.setLookAt(lookAt);
             renderer.resetAcc();
@@ -160,11 +158,10 @@ namespace Raytracing
         io.ClearInputCharacters();
 
         // if there is a image : draw it
-        const GLuint imageTextureId = renderer.getTextureId();
-        if (imageTextureId)
+        if (const GLuint imageTextureId = renderer.getTextureId())
         {
             ImGui::Image((ImTextureID)imageTextureId,
-                        ImVec2((float) renderer.getWidth(), (float) renderer.getHeight()));
+                        ImVec2(static_cast<float>(renderer.getWidth()), static_cast<float>(renderer.getHeight())));
         }
         ImGui::End();
         ImGui::PopStyleVar();
