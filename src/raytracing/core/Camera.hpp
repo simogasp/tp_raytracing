@@ -91,7 +91,7 @@ namespace Raytracing
          */
         Camera(const glm::vec3& positionCamera, const glm::vec3& lookAtCamera, 
             const glm::vec3& upCamera, 
-            const float fieldOfViewCamera, const float nearCamera, const float farCamera);
+            float fieldOfViewCamera, float nearCamera, float farCamera);
         /**
          * Creates a Camera.
          */
@@ -150,7 +150,7 @@ namespace Raytracing
          * Sets the horizontal fov.
          * @param newValue the new fov
          */
-        void setFocal(const float newValue);
+        void setFocal(float newValue);
         
         /**
          * Sets the up vector to the given one.
@@ -175,13 +175,13 @@ namespace Raytracing
          * Sets the near value.
          * @param newNear the new value
          */
-        void setNear(const double newNear);
+        void setNear(double newNear);
         
         /**
          * Sets the far value.
          * @param newFar the new value
          */
-        void setFar(const double newFar);
+        void setFar(double newFar);
 
 
 
@@ -253,7 +253,7 @@ namespace Raytracing
          * @param newWidth the new width
          * @param newHeight the new height
          */
-        void onResize(const uint32_t newWidth, const uint32_t newHeight);
+        void onResize(uint32_t newWidth, uint32_t newHeight);
         /**
          * Compute the ray directions.
          */
