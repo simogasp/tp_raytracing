@@ -12,32 +12,32 @@ namespace Raytracing
         /**
          * The camera Position.
          */
-        glm::vec3 position;
+        glm::vec3 position{};
         
         /**
          * The lookAt vector.
          */
-        glm::vec3 lookAt;
+        glm::vec3 lookAt{.0f, .0f, -1.f};
         
         /**
          * the up vector.
          */
-        glm::vec3 upVector;
+        glm::vec3 upVector{.0f, 1.f, .0f};
         
         /**
          * the x axis of the camera.
          */
-        glm::vec3 x;
+        glm::vec3 x{1.f, .0f, .0f};
         
         /**
          * the y axis of the camera.
          */
-        glm::vec3 y;
+        glm::vec3 y{.0f, 1.f, .0f};
         
         /**
          * The z axis of the camera.
          */
-        glm::vec3 z;
+        glm::vec3 z{.0f, .0f, 1.f};
         
         /**
          * the width of the screen.
@@ -66,20 +66,20 @@ namespace Raytracing
         /**
          * The movement speed.
          */
-        float speed = 1;
+        float speed{1};
         /**
          * The rotation speed.
          */
-        float rotationSpeed = .1f;
+        float rotationSpeed{.1f};
         
         /**
          * The cosine of the rotation speed.
          */
-        float cosRotationSpeed = std::cos(rotationSpeed);
+        float cosRotationSpeed{std::cos(rotationSpeed)};
         /**
          * The sine of the rotation speed.
          */
-        float sinRotationSpeed = std::sin(rotationSpeed);
+        float sinRotationSpeed{std::sin(rotationSpeed)};
         /**
          * The ray directions.
          */
