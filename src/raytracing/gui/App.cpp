@@ -99,7 +99,7 @@ namespace Raytracing
         if (ImGui::TreeNodeEx((void *)(intptr_t)0, node_flags, "Cam Presets"))
         {
             node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-            for (int i = 1; i <= 5; i++)
+            for (int i = 1; i <= 5; ++i)
             {
                 ImGui::TreeNodeEx((void *)(intptr_t)i, node_flags, "Cam %d", i);
                 if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
@@ -126,7 +126,7 @@ namespace Raytracing
         if (ImGui::TreeNodeEx((void *)(intptr_t) 0, node_flags, "Light Attenuation Formula"))
         {
             node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-            for (uint i = 1; i < 4; i++)
+            for (glm::uint i = 1; i < 4; ++i)
             {
                 ImGui::TreeNodeEx((void *)(intptr_t)i, node_flags, renderer.getFormulatoString(i), i);
                 if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())

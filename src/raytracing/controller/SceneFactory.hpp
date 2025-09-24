@@ -42,7 +42,7 @@ namespace Raytracing
          * @param radius the radius
          * @param materialIndex the index of the material in the material list.
          */
-        void pushSphere(glm::vec3 center, float radius, uint materialIndex);
+        void pushSphere(glm::vec3 center, float radius, unsigned int materialIndex);
         /**
          * Adds a material with the given properties. The more a sphere is shiny,
          * the more its color is influenced by the next bounce color. The more a sphere is

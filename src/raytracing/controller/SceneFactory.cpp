@@ -1,5 +1,7 @@
 #include "SceneFactory.hpp"
 
+#include "raytracing/gui/App.hpp"
+
 Raytracing::SceneFactory::SceneFactory()
 {
     currentScene = Scene();
@@ -15,7 +17,7 @@ void Raytracing::SceneFactory::addRandomSphereToScene()
     currentScene.addRandomSphere();
 }
 
-void Raytracing::SceneFactory::pushSphere(const glm::vec3 center, float radius, uint materialIndex)
+void Raytracing::SceneFactory::pushSphere(const glm::vec3 center, float radius, unsigned int materialIndex)
 {
     currentScene.addSphere({center, radius, materialIndex});
 }
