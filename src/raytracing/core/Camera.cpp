@@ -124,7 +124,7 @@ void Raytracing::Camera::down()
 
 void Raytracing::Camera::lookUp()
 {
-    glm::mat3 rot(
+    const glm::mat3 rot(
         1, 0, 0,
         0, cosRotationSpeed, sinRotationSpeed,
         0, - sinRotationSpeed, cosRotationSpeed);
@@ -136,7 +136,7 @@ void Raytracing::Camera::lookUp()
 
 void Raytracing::Camera::lookDown()
 {
-    glm::mat3 rot(
+    const glm::mat3 rot(
         1, 0, 0,
         0, cosRotationSpeed, - sinRotationSpeed,
         0, sinRotationSpeed, cosRotationSpeed);
@@ -148,7 +148,7 @@ void Raytracing::Camera::lookDown()
 
 void Raytracing::Camera::lookLeft()
 {
-    glm::mat3 rot(
+    const glm::mat3 rot(
         cosRotationSpeed, 0, - sinRotationSpeed,
         0, 1, 0,
         sinRotationSpeed, 0, cosRotationSpeed);
@@ -159,7 +159,7 @@ void Raytracing::Camera::lookLeft()
 
 void Raytracing::Camera::lookRight()
 {
-    glm::mat3 rot(
+    const glm::mat3 rot(
         cosRotationSpeed, 0, sinRotationSpeed,
         0, 1, 0,
         - sinRotationSpeed, 0, cosRotationSpeed);
@@ -170,7 +170,7 @@ void Raytracing::Camera::lookRight()
 
 void Raytracing::Camera::rotateClockWise()
 {
-    glm::mat3 rot(
+    const glm::mat3 rot(
         cosRotationSpeed, sinRotationSpeed, 0,
         -sinRotationSpeed, cosRotationSpeed, 0,
         0, 0, 1);
@@ -180,7 +180,7 @@ void Raytracing::Camera::rotateClockWise()
 
 void Raytracing::Camera::rotateAntiClockWise()
 {
-    glm::mat3 rot(
+    const glm::mat3 rot(
         cosRotationSpeed, -sinRotationSpeed, 0,
         sinRotationSpeed, cosRotationSpeed, 0,
         0, 0, 1);
