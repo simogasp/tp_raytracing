@@ -78,12 +78,12 @@ void Raytracing::Camera::setLookAt(const glm::vec3 &newLookAt)
 
 void Raytracing::Camera::setNear(double newNear)
 {
-    near = (float) newNear;
+    near = static_cast<float>(newNear);
 }
 
 void Raytracing::Camera::setFar(double newFar)
 {
-    far = (float) newFar;
+    far = static_cast<float>(newFar);
 }
 
 void Raytracing::Camera::forward()
