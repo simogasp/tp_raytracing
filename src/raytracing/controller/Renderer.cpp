@@ -3,7 +3,8 @@
 #include "Renderer.hpp"
 #include "raytracing/core/Ray.hpp"
 #include "raytracing/core/HitPayload.hpp"
-# include <glm/gtc/constants.hpp>
+#include <glm/gtc/constants.hpp>
+#include <cstdlib>
 
 // number of bounce to made
 #define BOUNCES 2
