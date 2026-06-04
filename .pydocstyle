@@ -1,0 +1,6 @@
+[pydocstyle]
+# Use Google-style docstring convention
+convention = google
+# D413: Missing blank line after last section
+# This is not required in Google-style docstrings
+add-ignore = D413
