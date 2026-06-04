@@ -286,7 +286,7 @@ def main(working_dir: str, studentify_dir: str, archive_name: str, skip_cleaning
             logger.error(f"File {file_path} is identical to the original after applying studentify.")
             clean_workspace(studentify_dir)
             sys.exit(1)
-        
+
     # # remove Depth and Normal shader implementations
     # files_to_remove = [
     #     "src/renderer/core/shader/DepthShader.java",
