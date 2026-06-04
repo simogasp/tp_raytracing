@@ -155,7 +155,6 @@ namespace Raytracing
         // call the keyboard handler
         keyboardHandler();
         io.ClearInputKeys();
-        io.ClearInputCharacters();
 
         // if there is a image : draw it
         if (const GLuint imageTextureId = renderer.getTextureId())
