@@ -9,7 +9,7 @@ namespace Raytracing
     {
     private:
         /**
-         * The list of sphere in the scene.
+         * The list of spheres in the scene.
          */
         std::vector<Raytracing::Sphere> sphereList;
         /**
@@ -27,15 +27,15 @@ namespace Raytracing
         ~Scene() = default;
 
         /**
-         * Gets the list of sphere.
-         * @return a vector of sphere.
+         * Gets the list of spheres.
+         * @return a vector of spheres.
          */
-        std::vector<Raytracing::Sphere> getListSphere() const;
+        [[nodiscard]] std::vector<Raytracing::Sphere> getListSphere() const;
         /**
          * Gets the list of material.
          * @return a vector of Material.
          */
-        std::vector<Raytracing::Material> getListMaterial() const;
+        [[nodiscard]] std::vector<Raytracing::Material> getListMaterial() const;
 
         /**
          * Adds the given sphere to the scene.

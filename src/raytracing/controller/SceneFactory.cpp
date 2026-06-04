@@ -1,5 +1,7 @@
 #include "SceneFactory.hpp"
 
+#include "raytracing/gui/App.hpp"
+
 Raytracing::SceneFactory::SceneFactory()
 {
     currentScene = Scene();
@@ -15,32 +17,32 @@ void Raytracing::SceneFactory::addRandomSphereToScene()
     currentScene.addRandomSphere();
 }
 
-void Raytracing::SceneFactory::pushSphere(const glm::vec3 center, const float radius, const uint materialIndex)
+void Raytracing::SceneFactory::pushSphere(const glm::vec3 center, float radius, unsigned int materialIndex)
 {
     currentScene.addSphere({center, radius, materialIndex});
 }
 
-void Raytracing::SceneFactory::pushMaterial(const glm::vec3 reflectionColor, const float shinyness, const float roughness)
+void Raytracing::SceneFactory::pushMaterial(const glm::vec3& reflectionColor, float shininess, float roughness)
 {
     Material mat;
     mat.reflection = reflectionColor;
-    mat.shinyness = shinyness;
+    mat.shinyness = shininess;
     mat.roughness = roughness;
     currentScene.addMaterial(mat);
 }
 
-void Raytracing::SceneFactory::pushMaterial(const glm::vec3 reflectionColor,
-                                            const glm::vec3 emissionColor,
-                                            const float shinyness,
-                                            const float roughness,
-                                            const float emissionPower,
-                                            const float attenuationRadius,
-                                            const float refractionIndex)
+void Raytracing::SceneFactory::pushMaterial(const glm::vec3& reflectionColor,
+                                            const glm::vec3& emissionColor,
+                                            float shininess,
+                                            float roughness,
+                                            float emissionPower,
+                                            float attenuationRadius,
+                                            float refractionIndex)
 {
     Material mat;
     mat.emission = emissionColor;
     mat.reflection = reflectionColor;
-    mat.shinyness = shinyness;
+    mat.shinyness = shininess;
     mat.roughness = roughness;
     mat.emissionPower = emissionPower;
     mat.attenuationRadius = attenuationRadius;
@@ -48,7 +50,7 @@ void Raytracing::SceneFactory::pushMaterial(const glm::vec3 reflectionColor,
     currentScene.addMaterial(mat);
 }
 
-void Raytracing::SceneFactory::pushMaterial(const float refractionIndex)
+void Raytracing::SceneFactory::pushMaterial(float refractionIndex)
 {
     Material mat;
     mat.shinyness = 1.f;
@@ -57,7 +59,7 @@ void Raytracing::SceneFactory::pushMaterial(const float refractionIndex)
     currentScene.addMaterial(mat);
 }
 
-void Raytracing::SceneFactory::pushMaterial(const float refractionIndex, const float roughness)
+void Raytracing::SceneFactory::pushMaterial(float refractionIndex, float roughness)
 {
     Material mat;
     mat.shinyness = 1.f;

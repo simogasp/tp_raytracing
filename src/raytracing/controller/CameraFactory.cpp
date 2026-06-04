@@ -5,7 +5,7 @@
 
 Raytracing::Camera Raytracing::CameraFactory::getDefaultCamera()
 {
-    return Camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 45, 2.f, 1000);
+    return {{0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 45, 2.f, 1000};
 }
 
 void Raytracing::CameraFactory::createNewCamera()
@@ -23,17 +23,17 @@ void Raytracing::CameraFactory::setLookAt(const glm::vec3& lookAt)
     currentCamera.setLookAt(lookAt);
 }
 
-void Raytracing::CameraFactory::setNear(const double near)
+void Raytracing::CameraFactory::setNear(double near)
 {
     currentCamera.setNear(near);
 }
 
-void Raytracing::CameraFactory::setFar(const double far)
+void Raytracing::CameraFactory::setFar(double far)
 {
     currentCamera.setFar(far);
 }
 
-void Raytracing::CameraFactory::setCameraFocal(const float newFocal) 
+void Raytracing::CameraFactory::setCameraFocal(float newFocal)
 {
     currentCamera.setFocal(newFocal);
 }
@@ -113,7 +113,7 @@ void Raytracing::CameraFactory::updateRay()
     currentCamera.updateRay();
 }
 
-void Raytracing::CameraFactory::onResize(const uint32_t width, const uint32_t height)
+void Raytracing::CameraFactory::onResize(uint32_t width, uint32_t height)
 {
     currentCamera.onResize(width, height);
 

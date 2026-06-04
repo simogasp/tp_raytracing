@@ -32,7 +32,7 @@ namespace Raytracing
          * Returns the normal for a position around the the sphere.
          * @return the normal
          */
-        glm::vec3 getNormal(const glm::vec3 position) const;
+        [[nodiscard]] glm::vec3 getNormal(glm::vec3 position) const;
     };
 
 } // namespace Raytracing

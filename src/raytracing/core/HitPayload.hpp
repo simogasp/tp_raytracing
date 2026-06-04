@@ -14,7 +14,7 @@ namespace Raytracing
         glm::vec3 worldNormal;
         /** The objectIndex */
         uint32_t objectIndex;
-        /** Wether the bounce is inside the box or not. */
+        /** Whether the bounce is inside the box or not. */
         bool inside;
     };
     

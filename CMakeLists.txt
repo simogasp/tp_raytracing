@@ -149,7 +149,10 @@ set(RAYTRACER_CORE_SOURCES
 
 add_library(core ${RAYTRACER_CORE_SOURCES})
 target_include_directories(core PUBLIC $<BUILD_INTERFACE:${RAYTRACER_INCLUDE_DIR}>)
-target_link_libraries(core glm::glm)
+target_link_libraries(core PUBLIC glm::glm)
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(core PRIVATE OpenMP::OpenMP_CXX)
+endif ()
 target_compile_options(core PRIVATE ${MY_COMPILE_OPTIONS})
 target_compile_definitions(core PUBLIC ${MY_COMPILE_DEFINITIONS})
 
