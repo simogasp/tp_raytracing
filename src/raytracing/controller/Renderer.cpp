@@ -3,7 +3,8 @@
 #include "Renderer.hpp"
 #include "raytracing/core/Ray.hpp"
 #include "raytracing/core/HitPayload.hpp"
-# include <glm/gtc/constants.hpp>
+#include <glm/gtc/constants.hpp>
+#include <cstdlib>
 
 // number of bounce to made
 #define BOUNCES 2
@@ -112,7 +113,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 if (payload.hitDistance < 0)
                 {
                     // we missed all spheres
-                    const double rgColor = (1 - abs(ray.direction.y)) / 2 + 0.3;
+                    const double rgColor = (1. - fabs(ray.direction.y)) / 2. + .3;
                     const glm::vec3 skyColor(rgColor, rgColor, 1);
                     light += skyColor;
                     break;

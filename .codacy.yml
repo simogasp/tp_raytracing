@@ -1,0 +1,10 @@
+---
+engines:
+  pydocstyle:
+    enabled: true
+    python_version: 3
+exclude_paths:
+  - 'build/**'
+  - 'cmake-build-release/**'
+  - '.claude/**'
+  - '3rdparty/**'
