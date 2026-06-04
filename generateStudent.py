@@ -220,7 +220,7 @@ def verify_no_markers_in_directory(directory: str, markers: list, studentify_dir
     Example:
         >>> verify_no_markers_in_directory("dist/src", STUDENT_TOKENS, "/tmp/tpt")
     """
-    for root, dirs, files in os.walk(directory):
+    for root, _, files in os.walk(directory):
         for file in files:
             if not file.endswith(".java"):
                 continue
@@ -256,14 +256,14 @@ def main(working_dir: str, studentify_dir: str, archive_name: str, skip_cleaning
 
     # Define trusted repository URL as a constant
     STUDENTIFY_REPO = "https://github.com/simogasp/studentipy.git"
-    
+
     logger.info(f"Cloning studentify.py to {studentify_dir}")
     # Use absolute path to git command and validate the directory path
     studentify_dir_abs = os.path.abspath(studentify_dir)
     subprocess.check_call([
-        "/usr/bin/git", 
-        "clone", 
-        STUDENTIFY_REPO, 
+        "/usr/bin/git",
+        "clone",
+        STUDENTIFY_REPO,
         studentify_dir_abs
     ])
 
@@ -310,7 +310,7 @@ def main(working_dir: str, studentify_dir: str, archive_name: str, skip_cleaning
     if not skip_packaging:
         logger.info(f"Generating archive {archive_name}.zip in {working_dir}")
         with zipfile.ZipFile(os.path.join(working_dir, f"{archive_name}.zip"), "w", compression=zipfile.ZIP_BZIP2) as zip_file:
-            for root, dirs, files in os.walk(dest_name):
+            for root, _, files in os.walk(dest_name):
                 for file in files:
                     zip_file.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), dest_name))
 
