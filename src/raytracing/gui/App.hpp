@@ -8,6 +8,8 @@
 #include "raytracing/controller/SceneFactory.hpp"
 
 #include "glm/glm.hpp"
+#include <chrono>
+#include <deque>
 
 namespace Raytracing
 {
@@ -131,6 +133,12 @@ namespace Raytracing
 
         /** The field of View of the Camera. */
         float focal = 2.f;
+
+        // FPS smoothing window
+        static constexpr double FPS_AVERAGE_WINDOW_SECONDS = 0.5;
+        std::deque<std::chrono::steady_clock::time_point> m_frameTimePoints;
+        float m_displayFps = 0.f;
+        float m_displayMs = 0.f;
 
     public:
         /**
