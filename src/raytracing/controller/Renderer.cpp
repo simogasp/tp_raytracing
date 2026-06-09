@@ -5,6 +5,9 @@
 #include "raytracing/core/HitPayload.hpp"
 #include <glm/gtc/constants.hpp>
 #include <cstdlib>
+#include <iostream>
+#include <omp.h>
+#include <random>
 
 // number of bounce to made
 #define BOUNCES 2
@@ -17,6 +20,8 @@ Raytracing::Renderer::Renderer()
 {
     image = new ImageWrapper();
     attenuationFormula = 1;
+
+    omp_set_num_threads(12);
 }
 
 uint32_t Raytracing::Renderer::getWidth() const
@@ -75,13 +80,31 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
 
     // get the computed ray direction from camera
     const std::vector<glm::vec3> dirs = camera.getRayDirections();
-#pragma omp parallel for
+
+    // random generator for noise
+    std::vector<std::mt19937> rngs(omp_get_max_threads());
+
+    std::random_device rd;
+    for (auto &rng : rngs) {
+        rng.seed(rd());
+    }
+
+#pragma omp parallel
+{
+    //#pragma omp single
+    //{
+    //    std::cout << "Threads OpenMP: " << omp_get_num_threads() << std::endl;
+    //}
 #if RESON4
+    #pragma omp for schedule(dynamic)
     for (size_t y = 0; y < getHeight(); y += 2)
 #else
+    #pragma omp for schedule(dynamic)
     for (size_t y = 0; y < getHeight(); y++)
 #endif
     {
+        int tid = omp_get_thread_num();
+        auto &rng = rngs[tid];
 #if RESON4
         for (size_t x = 0; x < getWidth(); x += 2)
 #else
@@ -113,15 +136,15 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 if (payload.hitDistance < 0)
                 {
                     // we missed all spheres
-                    const double rgColor = (1. - fabs(ray.direction.y)) / 2. + .3;
+                    const double rgColor = (1. - fabs(ray.direction.y)) / 2 + 0.3;
                     const glm::vec3 skyColor(rgColor, rgColor, 1);
                     light += skyColor;
                     break;
                 }
 
                 // update the color
-                const Sphere sphere = scene.getListSphere()[payload.objectIndex];
-                const Material mat = scene.getListMaterial()[sphere.materialIndex];
+                const Sphere& sphere = scene.getListSphere()[payload.objectIndex];
+                const Material& mat = scene.getListMaterial()[sphere.materialIndex];
                 colorContribution = (1.f - shiny) * colorContribution + shiny * mat.reflection;
                 shiny *= mat.shinyness;
 
@@ -130,22 +153,24 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 else
                     light += mat.getEmission();
 
-                // update the ray200
-
                 // noise around normal
+                std::uniform_real_distribution<float> dist(-1.f, 1.f);
+                
                 const glm::vec3 noiseN = glm::normalize(glm::vec3(
-                    2.0 * ((float)rand() / (float)RAND_MAX) - 1.0,
-                    2.0 * ((float)rand() / (float)RAND_MAX) - 1.0,
-                    2.0 * ((float)rand() / (float)RAND_MAX) - 1.0));
+                    dist(rng),
+                    dist(rng),
+                    dist(rng)
+                ));
 
                 // handle reflection
                 const glm::vec3 reflectRay = glm::normalize(glm::reflect(ray.direction, payload.worldNormal));
 
                 // noise around reflection or refraction
                 const glm::vec3 noiseR = glm::normalize(glm::vec3(
-                    2.0 * ((float) rand() / (float) RAND_MAX) - 1.0,
-                    2.0 * ((float) rand() / (float) RAND_MAX) - 1.0,
-                    2.0 * ((float) rand() / (float) RAND_MAX) - 1.0));
+                    dist(rng),
+                    dist(rng),
+                    dist(rng)
+                ));
 
                 // allow refraction
                 if (mat.refractionIndex < EPSILON) // opaque material
@@ -157,10 +182,9 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 {
                     // don't count a  bounce on translucid
                     ray.bounce--;
-                    const float cosi1 = glm::dot(ray.direction, -payload.worldNormal);
-                    const float i1 = glm::acos(cosi1);
-                    float n1;
-                    float n2;
+                    float cosi = glm::clamp(glm::dot(ray.direction, -payload.worldNormal), -1.0f, 1.0f);
+
+                    float n1, n2;
                     if (payload.inside)
                     {
                         // the ray is in the sphere
@@ -173,26 +197,32 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                         n2 = mat.refractionIndex;
                     }
 
-                    const float indexRatio = n2 / n1;
+                    const float eta = n1 / n2;
+
+                    // --- TIR test (without acos/sin) ---
+                    float sin2_t = eta * eta * (1.0f - cosi * cosi);
+
+                    bool tir = sin2_t > 1.0f;
+
+                    // schlick approximation (https://en.wikipedia.org/wiki/Schlick%27s_approximation)
+                    // --- Schlick reflection probability ---
+                    float R0 = (n1 - n2) / (n1 + n2);
+                    R0 = R0 * R0;
+
+                    float R = R0 + (1.0f - R0) * powf(1.0f - cosi, 5.0f);
 
                     // random number
                     const double randomf = (double)std::rand() / RAND_MAX;
-
-                    // schlick approximation (https://en.wikipedia.org/wiki/Schlick%27s_approximation)
-                    double r0 = (n1 - n2) / (n1 + n2);
-                    r0 *= r0;
-
-                    const double rTheta = r0 + (1 - r0) * glm::pow((1 - cosi1), 5);
-
-                    if (glm::sin(i1) > indexRatio || randomf < rTheta)
+                    
+                    if (tir || randomf < R)
                     {
-                        // there is total reflexion or the ray is just reflect
-                        ray.direction = mat.roughness * glm::normalize(payload.worldNormal + noiseN) + (1 - mat.roughness) * glm::normalize(reflectRay + mat.roughness * noiseR);
+                        // REFLECTION
+                        ray.direction = glm::normalize(glm::reflect(ray.direction, payload.worldNormal));
                         ray.origin = payload.worldPosition + EPSILON * payload.worldNormal;
                     }
                     else
                     {
-                        // the ray is refract
+                        // REFRACTION
                         ray.direction = glm::refract(ray.direction, payload.worldNormal, n1 / n2);
                         ray.origin = payload.worldPosition - EPSILON * payload.worldNormal;
                     }
@@ -226,6 +256,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     }
 
     image->setData(imageData);
+}
 }
 
 void Raytracing::Renderer::resetAcc()
@@ -262,7 +293,7 @@ Raytracing::HitPayload Raytracing::Renderer::traceRay(Ray *ray) const
     // index
     uint32_t index = 0;
     bool found = false;
-    const std::vector<Sphere> list = scene.getListSphere();
+    const std::vector<Sphere>& list = scene.getListSphere();
     double hitDistance = camera.getFar();
 
     for (uint32_t i = 0; i < list.size(); i++)
@@ -297,9 +328,9 @@ Raytracing::HitPayload Raytracing::Renderer::closestHit(Ray *ray, float hitDista
 
     // set the hit sphere
     //<!!
-    const std::vector<Sphere> spheres = scene.getListSphere();
+    const std::vector<Sphere>& spheres = scene.getListSphere();
     payload.objectIndex = objectIndex;
-    const Sphere sphere = spheres[objectIndex];
+    const Sphere& sphere = spheres[objectIndex];
     //>!!
 
     // compute the hit position
@@ -330,7 +361,7 @@ Raytracing::HitPayload Raytracing::Renderer::miss() const
     return payload;
 }
 
-float Raytracing::Renderer::getAttenuation(const HitPayload payload, const Material mat) const
+float Raytracing::Renderer::getAttenuation(const HitPayload& payload, const Material& mat) const
 {
     // light attenuation
     //++ // TODO : fit the getFormulatoString to add a light attenuation phenomen

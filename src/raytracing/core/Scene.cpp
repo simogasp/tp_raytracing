@@ -1,11 +1,25 @@
 # include "Scene.hpp"
+# include <iostream>
 
-std::vector<Raytracing::Sphere> Raytracing::Scene::getListSphere() const
+const std::vector<Raytracing::Sphere>& Raytracing::Scene::getListSphere() const
+{
+    // std::cout << "getListSphere()" << std::endl;
+    return sphereList;
+}
+
+
+std::vector<Raytracing::Sphere>& Raytracing::Scene::getListSphere()
 {
     return sphereList;
 }
 
-std::vector<Raytracing::Material> Raytracing::Scene::getListMaterial() const
+const std::vector<Raytracing::Material>& Raytracing::Scene::getListMaterial() const
+{
+    return materialList;
+}
+
+
+std::vector<Raytracing::Material>& Raytracing::Scene::getListMaterial()
 {
     return materialList;
 }
