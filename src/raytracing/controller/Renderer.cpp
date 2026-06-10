@@ -82,7 +82,8 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     const std::vector<glm::vec3>& dirs = camera.getRayDirections();
 
     // random generator for noise
-    std::vector<std::mt19937> rngs(omp_get_max_threads());
+    const size_t numThreads = static_cast<size_t>(omp_get_max_threads());
+    std::vector<std::mt19937> rngs(numThreads);
 
     std::random_device rd;
     for (auto &rng : rngs) {
@@ -103,7 +104,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     for (size_t y = 0; y < getHeight(); y++)
 #endif
     {
-        int tid = omp_get_thread_num();
+        const size_t tid = static_cast<size_t>(omp_get_thread_num());
         auto &rng = rngs[tid];
 #if RESON4
         for (size_t x = 0; x < getWidth(); x += 2)
