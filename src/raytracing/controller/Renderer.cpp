@@ -96,10 +96,10 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     //    std::cout << "Threads OpenMP: " << omp_get_num_threads() << std::endl;
     //}
 #if RESON4
-    #pragma omp for schedule(dynamic)
+    #pragma omp for schedule(static)
     for (size_t y = 0; y < getHeight(); y += 2)
 #else
-    #pragma omp for schedule(dynamic)
+    #pragma omp for schedule(static)
     for (size_t y = 0; y < getHeight(); y++)
 #endif
     {
@@ -212,7 +212,8 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                     float R = R0 + (1.0f - R0) * powf(1.0f - cosi, 5.0f);
 
                     // random number
-                    const double randomf = (double)std::rand() / RAND_MAX;
+                    std::uniform_real_distribution<float> dist01(0.f, 1.f);
+                    float randomf = dist01(rng);
                     
                     if (tir || randomf < R)
                     {
