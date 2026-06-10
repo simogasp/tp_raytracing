@@ -79,7 +79,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     camera = renderingCamera;
 
     // get the computed ray direction from camera
-    const std::vector<glm::vec3> dirs = camera.getRayDirections();
+    const std::vector<glm::vec3>& dirs = camera.getRayDirections();
 
     // random generator for noise
     std::vector<std::mt19937> rngs(omp_get_max_threads());
