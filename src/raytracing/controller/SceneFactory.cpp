@@ -2,6 +2,9 @@
 
 #include "raytracing/gui/App.hpp"
 
+#include <algorithm>
+#include <memory>
+
 Raytracing::SceneFactory::SceneFactory()
 {
     currentScene = Scene();
@@ -12,14 +15,9 @@ void Raytracing::SceneFactory::createNewScene()
     currentScene = Scene();
 }
 
-void Raytracing::SceneFactory::addRandomSphereToScene()
-{
-    currentScene.addRandomSphere();
-}
-
 void Raytracing::SceneFactory::pushSphere(const glm::vec3 center, float radius, unsigned int materialIndex)
 {
-    currentScene.addSphere({center, radius, materialIndex});
+    currentScene.addObject(std::make_shared<Sphere>(center, radius, materialIndex));
 }
 
 void Raytracing::SceneFactory::pushMaterial(const glm::vec3& reflectionColor, float shininess, float roughness)
@@ -70,7 +68,13 @@ void Raytracing::SceneFactory::pushMaterial(float refractionIndex, float roughne
 
 void Raytracing::SceneFactory::popSphere()
 {
-    currentScene.getListSphere().pop_back();
+    auto& objects = currentScene.getListObjects();
+    const auto sphere = std::find_if(objects.rbegin(), objects.rend(), [](const Scene::ObjectPtr& object) {
+        return std::dynamic_pointer_cast<Sphere>(object) != nullptr;
+    });
+
+    if (sphere != objects.rend())
+        objects.erase(std::next(sphere).base());
 }
 
 Raytracing::Scene Raytracing::SceneFactory::getScene()
@@ -81,11 +85,16 @@ Raytracing::Scene Raytracing::SceneFactory::getScene()
 Raytracing::Scene Raytracing::SceneFactory::getDefaultScene()
 {
     Scene res = Scene();
-    res.addRandomSphere();
     return res;
 }
 
 std::vector<Raytracing::Sphere> Raytracing::SceneFactory::getListOfSphere()
 {
-    return currentScene.getListSphere();
+    std::vector<Sphere> spheres;
+    for (const Scene::ObjectPtr& object : currentScene.getListObjects())
+    {
+        if (const auto sphere = std::dynamic_pointer_cast<Sphere>(object))
+            spheres.push_back(*sphere);
+    }
+    return spheres;
 }

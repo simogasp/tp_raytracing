@@ -1,5 +1,6 @@
 #pragma once
 
+#include "HittableObject.hpp"
 #include "raytracing/core/Ray.hpp"
 #include "raytracing/core/Camera.hpp"
 
@@ -7,32 +8,22 @@
 
 namespace Raytracing
 {
-    struct Sphere
+    struct Sphere : public HittableObject
     {
-        /**
-         * The center of the sphere.
-         */
+        Sphere(const glm::vec3& newCenter, float newRadius, uint32_t newMaterialIndex)
+            : HittableObject(newMaterialIndex), center(newCenter), radius(newRadius)
+        {
+        }
+
+        // The center of the sphere.
         glm::vec3 center;
-        /**
-         * The radius of the radius.
-         */
+
+        // The radius of the sphere.
         float radius;
-        /**
-         * The material Index.
-         */
-        uint32_t materialIndex;
 
-        /**
-         * Returns the distance of intersections (-1 if don't intersect).
-         * @return the distance
-         */
-        double intersect(const Camera *camera, const Ray *ray) const;
+        double sdf(const glm::vec3& position) const override;
 
-        /**
-         * Returns the normal for a position around the the sphere.
-         * @return the normal
-         */
-        [[nodiscard]] glm::vec3 getNormal(glm::vec3 position) const;
+        [[nodiscard]] glm::vec3 getNormal(glm::vec3 position) const override;
     };
 
 } // namespace Raytracing

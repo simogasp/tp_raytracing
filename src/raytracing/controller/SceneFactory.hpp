@@ -1,6 +1,7 @@
 #pragma once
 
 #include "raytracing/core/Scene.hpp"
+#include "raytracing/core/hittableObject/Sphere.hpp"
 
 namespace Raytracing
 {
@@ -31,10 +32,6 @@ namespace Raytracing
          * Creates a new scene.
          */
         void createNewScene();
-        /**
-         * Adds a random sphere in a range of 10 around origin and with a random radius below 3 and a random material.
-         */
-        void addRandomSphereToScene();
 
         /**
          * Adds a Sphere with the given properties in the scene.

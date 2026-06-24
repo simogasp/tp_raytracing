@@ -1,17 +1,22 @@
 # pragma once
-# include "hittableObject/Sphere.hpp"
+# include "hittableObject/HittableObject.hpp"
 # include "hittableObject/Material.hpp"
+# include <memory>
 # include <vector>
 
 namespace Raytracing
 {
     class Scene
     {
+    public:
+        using ObjectPtr = std::shared_ptr<HittableObject>;
+        using ObjectList = std::vector<ObjectPtr>;
+
     private:
         /**
-         * The list of spheres in the scene.
+         * The list of objects in the scene.
          */
-        std::vector<Raytracing::Sphere> sphereList;
+        ObjectList objectList;
         /**
          * The list of material of the scene.
          */
@@ -27,16 +32,16 @@ namespace Raytracing
         ~Scene() = default;
 
         /**
-         * Gets the list of spheres.
-         * @return a vector of spheres.
+         * Gets the list of objects.
+         * @return a vector of objects.
          */
-        [[nodiscard]] const std::vector<Raytracing::Sphere>& getListSphere() const;
+        [[nodiscard]] const ObjectList& getListObjects() const;
 
         /**
-         * Gets the (modifiable) list of spheres.
-         * @return a vector of spheres.
+         * Gets the (modifiable) list of objects.
+         * @return a vector of objects.
          */
-        [[nodiscard]] std::vector<Raytracing::Sphere>& getListSphere();
+        [[nodiscard]] ObjectList& getListObjects();
         
         /**
          * Gets the list of material.
@@ -51,21 +56,15 @@ namespace Raytracing
         [[nodiscard]] std::vector<Raytracing::Material>& getListMaterial();
 
         /**
-         * Adds the given sphere to the scene.
-         * @param sphere the sphere
+         * Adds the given object to the scene.
+         * @param object the object
          */
-        void addSphere(const Raytracing::Sphere& sphere);
+        void addObject(ObjectPtr object);
 
         /**
          * Adds the material to the scene.
          */
         void addMaterial(const Raytracing::Material& material);
-        
-        /**
-         * Adds a random sphere in a range of 10 around origin and with a random radius below 3 and a random material.
-         */
-        void addRandomSphere();
-
     };
     
 } // namespace Raytracing

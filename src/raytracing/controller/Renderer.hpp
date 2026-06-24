@@ -120,7 +120,7 @@ namespace Raytracing
          * Traces the given ray.
          * @return a hit payload with usefull information.
          */
-        HitPayload traceRay(Ray *ray) const;
+        HitPayload rayMarch(Ray *ray) const;
 
         /**
          * Creates a payload according to the closest hit of the ray.

@@ -15,6 +15,9 @@
 // devide the resolution by 4 to accelerate the computation
 #define RESON4 0
 
+// define a minimum value under which we consider that a ray hits an object
+#define EPSILON 1e-4f
+
 Raytracing::Renderer::Renderer()
     : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 15 * glm::pi<float>() / 16, 0, 500)
 {
@@ -132,7 +135,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
             // iteration on bounce
             for (; ray.bounce <= BOUNCES; ray.bounce++)
             {
-                HitPayload payload = traceRay(&ray);
+                HitPayload payload = rayMarch(&ray);
 
                 if (payload.hitDistance < 0)
                 {
@@ -144,8 +147,8 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 }
 
                 // update the color
-                const Sphere& sphere = scene.getListSphere()[payload.objectIndex];
-                const Material& mat = scene.getListMaterial()[sphere.materialIndex];
+                const HittableObject& object = *scene.getListObjects()[payload.objectIndex];
+                const Material& mat = scene.getListMaterial()[object.getMaterialIndex()];
                 colorContribution = (1.f - shiny) * colorContribution + shiny * mat.reflection;
                 shiny *= mat.shinyness;
 
@@ -287,7 +290,7 @@ char *Raytracing::Renderer::getFormulatoString(const uint32_t i) const
     }
 }
 
-Raytracing::HitPayload Raytracing::Renderer::traceRay(Ray *ray) const
+Raytracing::HitPayload Raytracing::Renderer::rayMarch(Ray *ray) const
 {
     //++ // TODO : check intersection with spheres  
 
@@ -295,25 +298,41 @@ Raytracing::HitPayload Raytracing::Renderer::traceRay(Ray *ray) const
     // index
     uint32_t index = 0;
     bool found = false;
-    const std::vector<Sphere>& list = scene.getListSphere();
-    double hitDistance = camera.getFar();
+    double maxDst = camera.getFar();
+    double hitDistance = 0;
+    const Scene::ObjectList& list = scene.getListObjects();
+    glm::vec3 position_on_ray = camera.getPosition();
 
-    for (uint32_t i = 0; i < list.size(); i++)
-    {
-        const Sphere &sphere = list[i];
-        const double sphereHitDistance = sphere.intersect(&camera, ray);
-
-        if (sphereHitDistance > 0 && sphereHitDistance < hitDistance)
+    while(hitDistance < maxDst) {
+        double currentMinDistance = maxDst;
+        for (uint32_t i = 0; i < list.size(); i++)
         {
-            hitDistance = sphereHitDistance;
-            index = i;
+            const HittableObject &object = *list[i];
+            const double distance = object.sdf(position_on_ray);
+
+            if (distance >= 0 && distance < currentMinDistance)
+            {
+                currentMinDistance = distance;
+                index = i;
+            }
+        }
+        hitDistance += currentMinDistance;
+        position_on_ray = position_on_ray + static_cast<float>(currentMinDistance) * ray->direction;
+        if(currentMinDistance < EPSILON)
+        {
             found = true;
+            break;
         }
     }
+
+    if(hitDistance < maxDst && hitDistance < EPSILON) {
+        found = true;
+    }
+
     // handle if any object has been hit
     if (!found)
         return miss();
-    // handle if a object has been hit
+    // handle if an object has been hit
     return closestHit(ray, (float) hitDistance, index);
     //>!!
     //++ return HitPayload();
@@ -328,11 +347,11 @@ Raytracing::HitPayload Raytracing::Renderer::closestHit(Ray *ray, float hitDista
     // set the hitDistance
     payload.hitDistance = hitDistance; //!!
 
-    // set the hit sphere
+    // set the hit object
     //<!!
-    const std::vector<Sphere>& spheres = scene.getListSphere();
+    const Scene::ObjectList& objects = scene.getListObjects();
     payload.objectIndex = objectIndex;
-    const Sphere& sphere = spheres[objectIndex];
+    const HittableObject& object = *objects[objectIndex];
     //>!!
 
     // compute the hit position
@@ -340,9 +359,8 @@ Raytracing::HitPayload Raytracing::Renderer::closestHit(Ray *ray, float hitDista
     
     // compute the hit normal (/!\ correct only for sphere).
     //<!!
-    payload.worldNormal = glm::normalize(payload.worldPosition - sphere.center);
-    const glm::vec3 oc(ray->origin - sphere.center);
-    payload.inside = glm::sqrt(glm::dot(oc, oc)) < sphere.radius;
+    payload.worldNormal = object.getNormal(payload.worldPosition);
+    payload.inside = glm::dot(ray->direction, payload.worldNormal) > 0;
     //>!!
     
     // revert the normal if the bounce is inside the sphere
