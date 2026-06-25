@@ -1,6 +1,9 @@
 #pragma once
 
 #include "raytracing/core/Scene.hpp"
+#include "raytracing/core/hittableObject/Box.hpp"
+#include "raytracing/core/hittableObject/Cone.hpp"
+#include "raytracing/core/hittableObject/Cylinder.hpp"
 #include "raytracing/core/hittableObject/Sphere.hpp"
 
 namespace Raytracing
@@ -40,6 +43,35 @@ namespace Raytracing
          * @param materialIndex the index of the material in the material list.
          */
         void pushSphere(glm::vec3 center, float radius, unsigned int materialIndex);
+
+        /**
+         * Adds an oriented box with the given properties.
+         * @param center the center of the box.
+         * @param halfSize the half-size on each local axis.
+         * @param rotation the Euler rotation in radians around X, Y and Z.
+         * @param materialIndex the index of the material in the material list.
+         */
+        void pushBox(glm::vec3 center, glm::vec3 halfSize, glm::vec3 rotation, unsigned int materialIndex);
+
+        /**
+         * Adds an oriented finite cylinder.
+         * @param baseCenter the center of the bottom cap before rotation.
+         * @param radius the cylinder radius.
+         * @param height the cylinder height along local Y.
+         * @param rotation the Euler rotation in radians around X, Y and Z.
+         * @param materialIndex the index of the material in the material list.
+         */
+        void pushCylinder(glm::vec3 baseCenter, float radius, float height, glm::vec3 rotation, unsigned int materialIndex);
+
+        /**
+         * Adds an oriented finite cone closed by its base cap.
+         * @param baseCenter the center of the bottom cap before rotation.
+         * @param radius the base radius.
+         * @param height the cone height along local Y.
+         * @param rotation the Euler rotation in radians around X, Y and Z.
+         * @param materialIndex the index of the material in the material list.
+         */
+        void pushCone(glm::vec3 baseCenter, float radius, float height, glm::vec3 rotation, unsigned int materialIndex);
         /**
          * Adds a material with the given properties. The more a sphere is shiny,
          * the more its color is influenced by the next bounce color. The more a sphere is

@@ -20,6 +20,21 @@ void Raytracing::SceneFactory::pushSphere(const glm::vec3 center, float radius, 
     currentScene.addObject(std::make_shared<Sphere>(center, radius, materialIndex));
 }
 
+void Raytracing::SceneFactory::pushBox(const glm::vec3 center, const glm::vec3 halfSize, const glm::vec3 rotation, unsigned int materialIndex)
+{
+    currentScene.addObject(std::make_shared<Box>(center, halfSize, rotation, materialIndex));
+}
+
+void Raytracing::SceneFactory::pushCylinder(const glm::vec3 baseCenter, float radius, float height, const glm::vec3 rotation, unsigned int materialIndex)
+{
+    currentScene.addObject(std::make_shared<Cylinder>(baseCenter, radius, height, rotation, materialIndex));
+}
+
+void Raytracing::SceneFactory::pushCone(const glm::vec3 baseCenter, float radius, float height, const glm::vec3 rotation, unsigned int materialIndex)
+{
+    currentScene.addObject(std::make_shared<Cone>(baseCenter, radius, height, rotation, materialIndex));
+}
+
 void Raytracing::SceneFactory::pushMaterial(const glm::vec3& reflectionColor, float shininess, float roughness)
 {
     Material mat;

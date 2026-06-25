@@ -145,6 +145,9 @@ set(RAYTRACER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/)
 set(RAYTRACER_CORE_SOURCES
         src/raytracing/core/Camera.cpp
         src/raytracing/core/Scene.cpp
+        src/raytracing/core/hittableObject/Box.cpp
+        src/raytracing/core/hittableObject/Cone.cpp
+        src/raytracing/core/hittableObject/Cylinder.cpp
         src/raytracing/core/hittableObject/Sphere.cpp)
 
 add_library(core ${RAYTRACER_CORE_SOURCES})
