@@ -53,23 +53,19 @@ namespace Raytracing
         /**White color. */
         const glm::vec3 white = glm::vec3(1.f, 1.f, 1.f);
         /**Red color. */
-        const glm::vec3 magenta = glm::vec3(1.f, 0.f, 1.f);
+        const glm::vec3 red = glm::vec3(1.f, 0.f, 0.f);
+        /**Green color. */
+        const glm::vec3 green = glm::vec3(0.f, 1.f, 0.f);
         /**Blue color. */
-        const glm::vec3 blue = glm::vec3(51.f / 255, 77.f / 255, 1.f);
+        const glm::vec3 blue = glm::vec3(0.f, 0.f, 1.f);
+        /**Magenta color. */
+        const glm::vec3 magenta = glm::vec3(1.f, 0.f, 1.f);
         /**Orange color. */
         const glm::vec3 orange = glm::vec3(0.8f, 0.5f, 0.2f);
+        /**Cyan color. */
+        const glm::vec3 cyan = glm::vec3(51.f / 255, 77.f / 255, 1.f);
         /**Gray color. */
         const glm::vec3 gray = glm::vec3(122.f / 255, 127.f / 255, 128.f / 255);
-
-        // position helper
-        /**Red sphere position. */
-        const glm::vec3 redPos = glm::vec3(-1.f, 0.f, 0.f);
-        /**Floor sphere position. */
-        const glm::vec3 floorPos = glm::vec3(0.f, -1001.f, 0.f);
-        /**Light / sun sphere position. */
-        const glm::vec3 lightPos = glm::vec3(0.f, 10.f, 30.f);
-        /**Glass sphere position. */
-        const glm::vec3 glassPos = glm::vec3(1.f, 0.f, 0.f);
 
         // shininess helper
         /**A full mat shininess. */
@@ -100,6 +96,8 @@ namespace Raytracing
         // refractive index helper
         /**A opaque material. */
         const float opaque = 0.f;
+        /**A barely translucent material. */
+        const float barelyTranslucent = 0.5f;
         /**A air material. */
         const float airTranslucid = 1.f;
         /**A water material. */

@@ -9,9 +9,8 @@ namespace Raytracing
         : camera(), scene()
     {
         // materials
-        scene.pushMaterial(magenta, mat, fullRoughness);
-        scene.pushMaterial(gray, shiny, noRoughness);
-        scene.pushMaterial(orange, orange, mat, fullRoughness, normalEmissionPower, 1000.f, opaque);
+        scene.pushMaterial(green, midShiny, midRoughness);
+        scene.pushMaterial(cyan, mat, fullRoughness);
         scene.pushMaterial(white,
                 white,
                 shiny,
@@ -19,17 +18,27 @@ namespace Raytracing
                 0.f,
                 0.f,
                 plexiGlassTranslucid);
+        scene.pushMaterial(magenta,
+                white,
+                mat,
+                0.25f,
+                0.f,
+                0.f,
+                barelyTranslucent,
+                0.8f);
+        scene.pushMaterial(orange, orange, mat, fullRoughness, normalEmissionPower, 1000.f, opaque);
                 
-        // spheres
-        scene.pushSphere(redPos, 1.f, 0);
-        scene.pushSphere(floorPos, 1000.f, 1);
-        scene.pushSphere(lightPos, 20.f, 2);
-        scene.pushSphere(glassPos, 1.f, 3);
+        // scene objects
+        scene.pushBox(glm::vec3(0.f, -1.05f, 0.f), glm::vec3(12.f, 0.05f, 12.f), glm::vec3(0.f), 0);
+        scene.pushBox(glm::vec3(-2.2f, -0.4f, -0.4f), glm::vec3(0.65f), glm::vec3(0.f, 0.35f, 0.f), 1);
+        scene.pushSphere(glm::vec3(0.1f, 0.9f, -0.4f), 0.85f, 2);
+        scene.pushCone(glm::vec3(2.0f, 0.25f, -0.4f), 0.65f, 1.4f, glm::vec3(0.25f, 0.f, -0.25f), 3);
+        scene.pushSphere(glm::vec3(-4.f, -2.5f, -24.f), 2.f, 4);
 
         // camera
         camera.createNewCamera();
-        camera.setCameraPosition(camPos4);
-        camera.setLookAt(lookAtPos4);
+        camera.setCameraPosition(glm::vec3(-0.4f, 1.4f, 5.8f));
+        camera.setLookAt(glm::vec3(0.f, 0.2f, 0.f));
         camera.setCameraFocal(2.f);
         camera.setUpVector({0, 1, 0});
         camera.setNear(0.1);
