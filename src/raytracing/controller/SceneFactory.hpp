@@ -101,7 +101,8 @@ namespace Raytracing
                           float roughness,
                           float emissionPower,
                           float attenuationRadius,
-                          float refractionIndex);
+                          float refractionIndex,
+                          float translucentAbsorption = 0.45f);
 
         /**
          * Adds a perfect dielectric material.
@@ -115,6 +116,14 @@ namespace Raytracing
          * @param roughness the roughness
          */
         void pushMaterial(float refractionIndex, float roughness);
+
+        /**
+         * Adds a rough dielectric material with colored absorption.
+         * @param refractionIndex the refraction index
+         * @param roughness the roughness
+         * @param translucentAbsorption the absorption strength per scene unit
+         */
+        void pushMaterial(float refractionIndex, float roughness, float translucentAbsorption);
 
         /**
          * Removes the last sphere added.

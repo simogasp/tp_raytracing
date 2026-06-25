@@ -50,7 +50,8 @@ void Raytracing::SceneFactory::pushMaterial(const glm::vec3& reflectionColor,
                                             float roughness,
                                             float emissionPower,
                                             float attenuationRadius,
-                                            float refractionIndex)
+                                            float refractionIndex,
+                                            float translucentAbsorption)
 {
     Material mat;
     mat.emission = emissionColor;
@@ -60,6 +61,7 @@ void Raytracing::SceneFactory::pushMaterial(const glm::vec3& reflectionColor,
     mat.emissionPower = emissionPower;
     mat.attenuationRadius = attenuationRadius;
     mat.refractionIndex = refractionIndex;
+    mat.translucentAbsorption = translucentAbsorption;
     currentScene.addMaterial(mat);
 }
 
@@ -78,6 +80,16 @@ void Raytracing::SceneFactory::pushMaterial(float refractionIndex, float roughne
     mat.shinyness = 1.f;
     mat.roughness = roughness;
     mat.refractionIndex = refractionIndex;
+    currentScene.addMaterial(mat);
+}
+
+void Raytracing::SceneFactory::pushMaterial(float refractionIndex, float roughness, float translucentAbsorption)
+{
+    Material mat;
+    mat.shinyness = 1.f;
+    mat.roughness = roughness;
+    mat.refractionIndex = refractionIndex;
+    mat.translucentAbsorption = translucentAbsorption;
     currentScene.addMaterial(mat);
 }
 

@@ -42,6 +42,10 @@ namespace Raytracing
          * The refraction index of the material.
          */
         float refractionIndex = 0;
+        /**
+         * How strongly this material absorbs light while a ray travels inside it.
+         */
+        float translucentAbsorption = 0.45f;
 
         /**
          * Gets the emissionPower times the emissions color.

@@ -140,6 +140,13 @@ namespace
 
         return refinedHitDistance;
     }
+
+    glm::vec3 getTranslucentTransmission(const Raytracing::Material& material, float travelDistance)
+    {
+        const glm::vec3 tint = glm::clamp(material.reflection, glm::vec3(0.f), glm::vec3(1.f));
+        const float absorption = 1.f - std::exp(-travelDistance * material.translucentAbsorption);
+        return glm::mix(glm::vec3(1.f), tint, absorption);
+    }
 }
 
 Raytracing::Renderer::Renderer()
@@ -246,6 +253,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
             ray.origin = renderingCamera.getPosition();
             ray.direction = dirs[pixelIndex];
             ray.bounce = 0;
+            ray.mediumMaterialIndex = -1;
 
             // final color by substraction method
             glm::vec3 light(0.f);
@@ -268,7 +276,11 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
 
                 // update the color
                 const HittableObject& object = *renderedScene.getListObjects()[payload.objectIndex];
-                const Material& mat = renderedScene.getListMaterial()[object.getMaterialIndex()];
+                const std::vector<Material>& materials = renderedScene.getListMaterial();
+                if (ray.mediumMaterialIndex >= 0)
+                    colorContribution *= getTranslucentTransmission(materials[static_cast<size_t>(ray.mediumMaterialIndex)], payload.hitDistance);
+
+                const Material& mat = materials[object.getMaterialIndex()];
                 colorContribution = (1.f - shiny) * colorContribution + shiny * mat.reflection;
                 shiny *= mat.shinyness;
 
@@ -352,6 +364,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                         // REFRACTION
                         ray.direction = glm::normalize(glm::refract(ray.direction, surfaceNormal, n1 / n2));
                         ray.origin = payload.worldPosition - RAY_BIAS * surfaceNormal;
+                        ray.mediumMaterialIndex = payload.inside ? -1 : static_cast<int>(object.getMaterialIndex());
                     }
                 }
             }
