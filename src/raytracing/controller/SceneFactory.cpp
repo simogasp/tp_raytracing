@@ -77,7 +77,7 @@ void Raytracing::SceneFactory::popSphere()
         objects.erase(std::next(sphere).base());
 }
 
-Raytracing::Scene Raytracing::SceneFactory::getScene()
+const Raytracing::Scene& Raytracing::SceneFactory::getScene() const
 {
     return currentScene;
 }

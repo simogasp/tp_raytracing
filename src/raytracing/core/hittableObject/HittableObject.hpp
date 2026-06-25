@@ -6,6 +6,12 @@
 
 namespace Raytracing
 {
+struct AxisAlignedBoundingBox
+{
+    glm::vec3 min;
+    glm::vec3 max;
+};
+
 // Abstract class to represent ray-hittable objects
 class HittableObject {
    public:
@@ -37,6 +43,24 @@ class HittableObject {
          * @return the normal
          */
         [[nodiscard]] virtual glm::vec3 getNormal(glm::vec3 position) const = 0;
+
+        /**
+         * Whether this object has a finite axis-aligned bounding box.
+         * Objects without one are always sampled during scene SDF queries.
+         */
+        [[nodiscard]] virtual bool hasBoundingBox() const
+        {
+            return false;
+        }
+
+        /**
+         * Returns the finite axis-aligned bounding box for this object.
+         * Only valid when hasBoundingBox() returns true.
+         */
+        [[nodiscard]] virtual AxisAlignedBoundingBox getBoundingBox() const
+        {
+            return {};
+        }
 
         [[nodiscard]] uint32_t getMaterialIndex() const
         {

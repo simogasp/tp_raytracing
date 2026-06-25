@@ -28,9 +28,12 @@ Raytracing::ImageWrapper::ImageWrapper()
 void Raytracing::ImageWrapper::setData(uint32_t *newData)
 {
     imageData = newData;
+
+    if (textureId == 0 || width == 0 || height == 0)
+        return;
+
     glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int) width, (int) height, 0, GL_RGBA, GL_UNSIGNED_BYTE, newData);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (int) width, (int) height, GL_RGBA, GL_UNSIGNED_BYTE, newData);
 }
 
 void Raytracing::ImageWrapper::resize(uint32_t newWidth, uint32_t newHeight)
@@ -48,4 +51,9 @@ void Raytracing::ImageWrapper::resize(uint32_t newWidth, uint32_t newHeight)
     {
         glGenTextures(1, &textureId);
     }
+
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int) width, (int) height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }

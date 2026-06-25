@@ -156,6 +156,6 @@ namespace Raytracing
          * Returns the camera made.
          * @return the camera
          */
-        [[nodiscard]] Camera getCamera() const;
+        [[nodiscard]] const Camera& getCamera() const;
     };
 } // namespace Raytracing

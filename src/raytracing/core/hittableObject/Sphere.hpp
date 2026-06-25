@@ -24,6 +24,10 @@ namespace Raytracing
         double sdf(const glm::vec3& position) const override;
 
         [[nodiscard]] glm::vec3 getNormal(glm::vec3 position) const override;
+
+        [[nodiscard]] bool hasBoundingBox() const override;
+
+        [[nodiscard]] AxisAlignedBoundingBox getBoundingBox() const override;
     };
 
 } // namespace Raytracing

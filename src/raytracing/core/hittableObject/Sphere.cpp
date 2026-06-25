@@ -19,3 +19,14 @@ glm::vec3 Raytracing::Sphere::getNormal(const glm::vec3 position) const
     //++ // TODO : according to the given position, return the normal
     //++ return glm::vec3(0.f);
 }
+
+bool Raytracing::Sphere::hasBoundingBox() const
+{
+    return true;
+}
+
+Raytracing::AxisAlignedBoundingBox Raytracing::Sphere::getBoundingBox() const
+{
+    const glm::vec3 extent(radius);
+    return {center - extent, center + extent};
+}

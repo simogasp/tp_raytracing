@@ -5,6 +5,7 @@
 #include "raytracing/core/Camera.hpp"
 #include "raytracing/core/HitPayload.hpp"
 #include <cstdint>
+#include <vector>
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -14,6 +15,15 @@
 
 namespace Raytracing
 {
+    struct SdfObject
+    {
+        const HittableObject* object;
+        AxisAlignedBoundingBox boundingBox;
+        uint32_t objectIndex;
+        bool hasBoundingBox;
+    };
+
+    using SdfObjectList = std::vector<SdfObject>;
 
     class Renderer
     {
@@ -39,14 +49,6 @@ namespace Raytracing
          * The id of the rendered Framed.
          */
         unsigned int frameId;
-        /**
-         * The last scene given to render.
-         */
-        Scene scene;
-        /**
-         * The last camera given to render.
-         */
-        Camera camera;
         /**
          * The actual light attenuation Formula selected.
          */
@@ -120,7 +122,7 @@ namespace Raytracing
          * Traces the given ray.
          * @return a hit payload with usefull information.
          */
-        HitPayload rayMarch(Ray *ray) const;
+        HitPayload rayMarch(Ray *ray, const Scene& renderedScene, const SdfObjectList& sdfObjects, float maxDistance) const;
 
         /**
          * Creates a payload according to the closest hit of the ray.
@@ -129,7 +131,7 @@ namespace Raytracing
          * @param ObjectIndex the object index hit
          * @return the payload with the hit information
          */
-        HitPayload closestHit(Ray *ray, float hitDistance, uint32_t ObjectIndex) const;
+        HitPayload closestHit(Ray *ray, const Scene& renderedScene, float hitDistance, uint32_t ObjectIndex) const;
 
         /**
          * Creates a payload for ray with any hit.

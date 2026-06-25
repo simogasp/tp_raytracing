@@ -93,7 +93,7 @@ namespace Raytracing
          * Gets the scene created.
          * @return the scene.
          */
-        Raytracing::Scene getScene();
+        const Raytracing::Scene& getScene() const;
 
         /**
          * Gets the list of spheres for the currentScene.

@@ -33,7 +33,7 @@ namespace Raytracing
         camera.setCameraFocal(2.f);
         camera.setUpVector({0, 1, 0});
         camera.setNear(0.1);
-        camera.setFar(10000);
+        camera.setFar(100);
     }
 
     void App::OnUIRender()

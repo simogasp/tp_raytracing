@@ -103,7 +103,7 @@ void Raytracing::CameraFactory::rotateClockWise()
     currentCamera.rotateClockWise();
 }
 
-Raytracing::Camera Raytracing::CameraFactory::getCamera() const
+const Raytracing::Camera& Raytracing::CameraFactory::getCamera() const
 {
     return currentCamera;
 }

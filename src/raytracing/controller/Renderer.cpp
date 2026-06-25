@@ -8,23 +8,146 @@
 #include <iostream>
 #include <omp.h>
 #include <random>
+#include <cmath>
 
 // number of bounce to made
-#define BOUNCES 2
+#define BOUNCES 5
 
 // devide the resolution by 4 to accelerate the computation
 #define RESON4 0
 
+// define a minimum value for refractive materials
+#define REFRACTION_MIN 1e-4f
+
 // define a minimum value under which we consider that a ray hits an object
-#define EPSILON 1e-4f
+#define HIT_EPSILON 1e-5f
+
+// define a wider marching threshold before refining the hit position.
+// Grazing rays need too many iterations to reach HIT_EPSILON directly.
+#define RAY_MARCH_HIT_EPSILON 2e-3f
+
+// make the marching hit threshold slightly grow with distance to avoid
+// horizon-like banding on very shallow floor rays.
+#define RAY_MARCH_RELATIVE_HIT_EPSILON 2e-4f
+
+// define a small bias to avoid re-hitting the same surface after a bounce
+#define RAY_BIAS 1e-4f
+
+// define a maximum amount of steps that can be taken along a ray
+#define MAX_STEPS 512
+
+// define a maximum amount of material interactions for a ray.
+// Translucid materials do not consume a bounce, so this prevents very long
+// reflection/refraction chains inside glass objects.
+#define MAX_RAY_EVENTS 32
+
+// define how many times we refine a raymarched hit position.
+// This reduces visible quantization artifacts on refractive surfaces.
+#define HIT_REFINE_ITERATIONS 4
+
+namespace
+{
+    struct SceneSdfSample
+    {
+        float signedDistance;
+        float surfaceDistance;
+        uint32_t objectIndex;
+    };
+
+    float boundingBoxDistanceSquared(const Raytracing::AxisAlignedBoundingBox& boundingBox,
+                                     const glm::vec3& position)
+    {
+        const glm::vec3 outside = glm::max(
+            glm::max(boundingBox.min - position, position - boundingBox.max),
+            glm::vec3(0.f));
+        return glm::dot(outside, outside);
+    }
+
+    Raytracing::SdfObjectList buildSdfObjects(const Raytracing::Scene::ObjectList& objects)
+    {
+        Raytracing::SdfObjectList sdfObjects;
+        sdfObjects.reserve(objects.size());
+
+        for (uint32_t i = 0; i < objects.size(); i++)
+        {
+            const Raytracing::HittableObject* object = objects[i].get();
+            const bool hasBoundingBox = object->hasBoundingBox();
+            sdfObjects.push_back({
+                object,
+                hasBoundingBox ? object->getBoundingBox() : Raytracing::AxisAlignedBoundingBox{},
+                i,
+                hasBoundingBox
+            });
+        }
+
+        return sdfObjects;
+    }
+
+    SceneSdfSample sampleSceneSdf(const Raytracing::SdfObjectList& objects,
+                                  const glm::vec3& position,
+                                  float maxDistance)
+    {
+        SceneSdfSample closest {
+            maxDistance,
+            maxDistance,
+            0
+        };
+
+        for (const Raytracing::SdfObject& object : objects)
+        {
+            if (object.hasBoundingBox)
+            {
+                const float bestDistanceSquared = closest.surfaceDistance * closest.surfaceDistance;
+                if (boundingBoxDistanceSquared(object.boundingBox, position) >= bestDistanceSquared)
+                    continue;
+            }
+
+            const float signedDistance = static_cast<float>(object.object->sdf(position));
+            const float surfaceDistance = std::abs(signedDistance);
+
+            if (surfaceDistance < closest.surfaceDistance)
+            {
+                closest.signedDistance = signedDistance;
+                closest.surfaceDistance = surfaceDistance;
+                closest.objectIndex = object.objectIndex;
+            }
+        }
+
+        return closest;
+    }
+
+    float refineHitDistance(const Raytracing::Ray& ray, const Raytracing::HittableObject& object, float hitDistance)
+    {
+        float refinedHitDistance = hitDistance;
+
+        for (int i = 0; i < HIT_REFINE_ITERATIONS; i++)
+        {
+            const glm::vec3 position = ray.origin + refinedHitDistance * ray.direction;
+            const float signedDistance = static_cast<float>(object.sdf(position));
+
+            if (std::abs(signedDistance) < HIT_EPSILON * 0.25f)
+                break;
+
+            const glm::vec3 normal = object.getNormal(position);
+            const float rayNormalProjection = glm::dot(normal, ray.direction);
+
+            if (std::abs(rayNormalProjection) < 1e-4f)
+                break;
+
+            refinedHitDistance -= signedDistance / rayNormalProjection;
+            refinedHitDistance = glm::max(refinedHitDistance, 0.f);
+        }
+
+        return refinedHitDistance;
+    }
+}
 
 Raytracing::Renderer::Renderer()
-    : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 15 * glm::pi<float>() / 16, 0, 500)
 {
     image = new ImageWrapper();
     attenuationFormula = 1;
 
-    omp_set_num_threads(12);
+    omp_set_num_threads(omp_get_num_procs());
 }
 
 uint32_t Raytracing::Renderer::getWidth() const
@@ -77,12 +200,9 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
         memset(accumulatedData, 0, getWidth() * getHeight() * sizeof(*accumulatedData));
     }
 
-    // store the given scene and camera
-    scene = renderedScene;
-    camera = renderingCamera;
-
     // get the computed ray direction from camera
-    const std::vector<glm::vec3>& dirs = camera.getRayDirections();
+    const std::vector<glm::vec3>& dirs = renderingCamera.getRayDirections();
+    const SdfObjectList sdfObjects = buildSdfObjects(renderedScene.getListObjects());
 
     // random generator for noise
     const size_t numThreads = static_cast<size_t>(omp_get_max_threads());
@@ -100,10 +220,10 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     //    std::cout << "Threads OpenMP: " << omp_get_num_threads() << std::endl;
     //}
 #if RESON4
-    #pragma omp for schedule(static)
+    #pragma omp for schedule(dynamic, 1)
     for (size_t y = 0; y < getHeight(); y += 2)
 #else
-    #pragma omp for schedule(static)
+    #pragma omp for schedule(dynamic, 1)
     for (size_t y = 0; y < getHeight(); y++)
 #endif
     {
@@ -123,7 +243,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
             //<!!
             // ray construction
             Ray ray;
-            ray.origin = camera.getPosition();
+            ray.origin = renderingCamera.getPosition();
             ray.direction = dirs[pixelIndex];
             ray.bounce = 0;
 
@@ -133,9 +253,9 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
             float shiny = 1.f;
 
             // iteration on bounce
-            for (; ray.bounce <= BOUNCES; ray.bounce++)
+            for (int rayEvents = 0; ray.bounce <= BOUNCES && rayEvents < MAX_RAY_EVENTS; ray.bounce++, rayEvents++)
             {
-                HitPayload payload = rayMarch(&ray);
+                HitPayload payload = rayMarch(&ray, renderedScene, sdfObjects, renderingCamera.getFar());
 
                 if (payload.hitDistance < 0)
                 {
@@ -147,8 +267,8 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 }
 
                 // update the color
-                const HittableObject& object = *scene.getListObjects()[payload.objectIndex];
-                const Material& mat = scene.getListMaterial()[object.getMaterialIndex()];
+                const HittableObject& object = *renderedScene.getListObjects()[payload.objectIndex];
+                const Material& mat = renderedScene.getListMaterial()[object.getMaterialIndex()];
                 colorContribution = (1.f - shiny) * colorContribution + shiny * mat.reflection;
                 shiny *= mat.shinyness;
 
@@ -156,6 +276,8 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                     light += getAttenuation(payload, mat) * mat.getEmission();
                 else
                     light += mat.getEmission();
+
+                const glm::vec3 surfaceNormal = payload.inside ? -payload.worldNormal : payload.worldNormal;
 
                 // noise around normal
                 std::uniform_real_distribution<float> dist(-1.f, 1.f);
@@ -167,7 +289,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 ));
 
                 // handle reflection
-                const glm::vec3 reflectRay = glm::normalize(glm::reflect(ray.direction, payload.worldNormal));
+                const glm::vec3 reflectRay = glm::normalize(glm::reflect(ray.direction, surfaceNormal));
 
                 // noise around reflection or refraction
                 const glm::vec3 noiseR = glm::normalize(glm::vec3(
@@ -177,16 +299,16 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 ));
 
                 // allow refraction
-                if (mat.refractionIndex < EPSILON) // opaque material
+                if (mat.refractionIndex < REFRACTION_MIN) // opaque material
                 {
-                    ray.direction = mat.roughness * glm::normalize(payload.worldNormal + noiseN) + (1 - mat.roughness) * glm::normalize(reflectRay + mat.roughness * noiseR);
-                    ray.origin = payload.worldPosition + EPSILON * payload.worldNormal;
+                    ray.direction = glm::normalize(mat.roughness * glm::normalize(surfaceNormal + noiseN) + (1 - mat.roughness) * glm::normalize(reflectRay + mat.roughness * noiseR));
+                    ray.origin = payload.worldPosition + RAY_BIAS * surfaceNormal;
                 }
                 else
                 {
                     // don't count a  bounce on translucid
                     ray.bounce--;
-                    float cosi = glm::clamp(glm::dot(ray.direction, -payload.worldNormal), -1.0f, 1.0f);
+                    const float cosi = glm::clamp(glm::dot(-ray.direction, surfaceNormal), 0.0f, 1.0f);
 
                     float n1, n2;
                     if (payload.inside)
@@ -222,14 +344,14 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                     if (tir || randomf < R)
                     {
                         // REFLECTION
-                        ray.direction = glm::normalize(glm::reflect(ray.direction, payload.worldNormal));
-                        ray.origin = payload.worldPosition + EPSILON * payload.worldNormal;
+                        ray.direction = glm::normalize(glm::reflect(ray.direction, surfaceNormal));
+                        ray.origin = payload.worldPosition + RAY_BIAS * surfaceNormal;
                     }
                     else
                     {
                         // REFRACTION
-                        ray.direction = glm::refract(ray.direction, payload.worldNormal, n1 / n2);
-                        ray.origin = payload.worldPosition - EPSILON * payload.worldNormal;
+                        ray.direction = glm::normalize(glm::refract(ray.direction, surfaceNormal, n1 / n2));
+                        ray.origin = payload.worldPosition - RAY_BIAS * surfaceNormal;
                     }
                 }
             }
@@ -290,7 +412,7 @@ char *Raytracing::Renderer::getFormulatoString(const uint32_t i) const
     }
 }
 
-Raytracing::HitPayload Raytracing::Renderer::rayMarch(Ray *ray) const
+Raytracing::HitPayload Raytracing::Renderer::rayMarch(Ray *ray, const Scene& renderedScene, const SdfObjectList& sdfObjects, float maxDistance) const
 {
     //++ // TODO : check intersection with spheres  
 
@@ -298,34 +420,43 @@ Raytracing::HitPayload Raytracing::Renderer::rayMarch(Ray *ray) const
     // index
     uint32_t index = 0;
     bool found = false;
-    double maxDst = camera.getFar();
-    double hitDistance = 0;
-    const Scene::ObjectList& list = scene.getListObjects();
-    glm::vec3 position_on_ray = camera.getPosition();
+    const float maxDst = maxDistance;
+    float hitDistance = 0.f;
+    glm::vec3 position_on_ray = ray->origin;
 
-    while(hitDistance < maxDst) {
-        double currentMinDistance = maxDst;
-        for (uint32_t i = 0; i < list.size(); i++)
+    int step = 0;
+
+    while(step <= MAX_STEPS && hitDistance < maxDst) 
+    {
+        step++;
+
+        const SceneSdfSample closest = sampleSceneSdf(sdfObjects, position_on_ray, maxDst);
+        const float hitThreshold = glm::max(
+            RAY_MARCH_HIT_EPSILON,
+            hitDistance * RAY_MARCH_RELATIVE_HIT_EPSILON);
+
+        if(closest.surfaceDistance < hitThreshold && hitDistance > RAY_BIAS)
         {
-            const HittableObject &object = *list[i];
-            const double distance = object.sdf(position_on_ray);
+            const HittableObject& closestObject = *sdfObjects[closest.objectIndex].object;
+            const glm::vec3 normal = closestObject.getNormal(position_on_ray);
+            const float rayNormalProjection = glm::dot(normal, ray->direction);
 
-            if (distance >= 0 && distance < currentMinDistance)
+            if (closest.signedDistance * rayNormalProjection < 0.f)
             {
-                currentMinDistance = distance;
-                index = i;
+                found = true;
+                index = closest.objectIndex;
+                break;
             }
         }
-        hitDistance += currentMinDistance;
-        position_on_ray = position_on_ray + static_cast<float>(currentMinDistance) * ray->direction;
-        if(currentMinDistance < EPSILON)
-        {
-            found = true;
-            break;
-        }
+    
+        const float stepDistance = glm::max(closest.surfaceDistance, HIT_EPSILON);
+
+        hitDistance += stepDistance;
+        position_on_ray += stepDistance * ray->direction;
+
     }
 
-    if(hitDistance < maxDst && hitDistance < EPSILON) {
+    if(hitDistance < maxDst && hitDistance < HIT_EPSILON) {
         found = true;
     }
 
@@ -333,40 +464,34 @@ Raytracing::HitPayload Raytracing::Renderer::rayMarch(Ray *ray) const
     if (!found)
         return miss();
     // handle if an object has been hit
-    return closestHit(ray, (float) hitDistance, index);
+    return closestHit(ray, renderedScene, hitDistance, index);
     //>!!
     //++ return HitPayload();
 }
 
-Raytracing::HitPayload Raytracing::Renderer::closestHit(Ray *ray, float hitDistance, uint32_t objectIndex) const
+Raytracing::HitPayload Raytracing::Renderer::closestHit(Ray *ray, const Scene& renderedScene, float hitDistance, uint32_t objectIndex) const
 {
     //++ // TODO : return payload with data
     // returned struct
     HitPayload payload;
     
-    // set the hitDistance
-    payload.hitDistance = hitDistance; //!!
-
     // set the hit object
     //<!!
-    const Scene::ObjectList& objects = scene.getListObjects();
+    const Scene::ObjectList& objects = renderedScene.getListObjects();
     payload.objectIndex = objectIndex;
     const HittableObject& object = *objects[objectIndex];
     //>!!
 
+    // set the hitDistance
+    payload.hitDistance = refineHitDistance(*ray, object, hitDistance); //!!
+
     // compute the hit position
-    payload.worldPosition = ray->origin + hitDistance * ray->direction; //!!
+    payload.worldPosition = ray->origin + payload.hitDistance * ray->direction; //!!
     
     // compute the hit normal (/!\ correct only for sphere).
     //<!!
     payload.worldNormal = object.getNormal(payload.worldPosition);
     payload.inside = glm::dot(ray->direction, payload.worldNormal) > 0;
-    //>!!
-    
-    // revert the normal if the bounce is inside the sphere
-    //<!!
-    if (payload.inside)
-        payload.worldNormal *= -1;
     //>!!
 
     return payload;
