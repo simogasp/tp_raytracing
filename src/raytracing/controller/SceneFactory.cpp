@@ -58,6 +58,34 @@ void Raytracing::SceneFactory::pushIcosahedron(const glm::vec3 center, float rad
     currentScene.addObject(std::make_shared<Icosahedron>(center, radius, rotation, materialIndex));
 }
 
+void Raytracing::SceneFactory::pushObject(Scene::ObjectPtr object)
+{
+    currentScene.addObject(std::move(object));
+}
+
+void Raytracing::SceneFactory::pushCsgObject(Scene::ObjectPtr left,
+                                             Scene::ObjectPtr right,
+                                             CsgOperation operation,
+                                             unsigned int materialIndex)
+{
+    currentScene.addObject(std::make_shared<CsgObject>(std::move(left), std::move(right), operation, materialIndex));
+}
+
+void Raytracing::SceneFactory::pushUnion(Scene::ObjectPtr left, Scene::ObjectPtr right, unsigned int materialIndex)
+{
+    pushCsgObject(std::move(left), std::move(right), CsgOperation::Union, materialIndex);
+}
+
+void Raytracing::SceneFactory::pushSubtraction(Scene::ObjectPtr left, Scene::ObjectPtr right, unsigned int materialIndex)
+{
+    pushCsgObject(std::move(left), std::move(right), CsgOperation::Subtraction, materialIndex);
+}
+
+void Raytracing::SceneFactory::pushIntersection(Scene::ObjectPtr left, Scene::ObjectPtr right, unsigned int materialIndex)
+{
+    pushCsgObject(std::move(left), std::move(right), CsgOperation::Intersection, materialIndex);
+}
+
 void Raytracing::SceneFactory::pushMaterial(const glm::vec3& reflectionColor, float shininess, float roughness)
 {
     Material mat;

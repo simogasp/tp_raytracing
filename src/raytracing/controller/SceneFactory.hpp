@@ -3,6 +3,7 @@
 #include "raytracing/core/Scene.hpp"
 #include "raytracing/core/hittableObjects/Box.hpp"
 #include "raytracing/core/hittableObjects/Cone.hpp"
+#include "raytracing/core/hittableObjects/CsgObject.hpp"
 #include "raytracing/core/hittableObjects/Cylinder.hpp"
 #include "raytracing/core/hittableObjects/Icosahedron.hpp"
 #include "raytracing/core/hittableObjects/Sphere.hpp"
@@ -89,6 +90,19 @@ namespace Raytracing
                                    unsigned int materialIndex);
 
         void pushIcosahedron(glm::vec3 center, float radius, glm::vec3 rotation, unsigned int materialIndex);
+
+        void pushObject(Scene::ObjectPtr object);
+
+        void pushCsgObject(Scene::ObjectPtr left,
+                           Scene::ObjectPtr right,
+                           CsgOperation operation,
+                           unsigned int materialIndex);
+
+        void pushUnion(Scene::ObjectPtr left, Scene::ObjectPtr right, unsigned int materialIndex);
+
+        void pushSubtraction(Scene::ObjectPtr left, Scene::ObjectPtr right, unsigned int materialIndex);
+
+        void pushIntersection(Scene::ObjectPtr left, Scene::ObjectPtr right, unsigned int materialIndex);
         /**
          * Adds a material with the given properties. The more a sphere is shiny,
          * the more its color is influenced by the next bounce color. The more a sphere is
