@@ -1,7 +1,5 @@
 #pragma once
 
-#include "hittableObject/Sphere.hpp"
-
 namespace Raytracing
 {
     struct HitPayload
