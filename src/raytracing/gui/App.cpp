@@ -10,7 +10,7 @@ namespace Raytracing
     {
         // materials
         scene.pushMaterial(green, midShiny, midRoughness);
-        scene.pushMaterial(cyan, mat, fullRoughness);
+        scene.pushMaterial(beige, mat, fullRoughness);
         scene.pushMaterial(white,
                 white,
                 shiny,
@@ -27,12 +27,16 @@ namespace Raytracing
                 barelyTranslucent,
                 0.8f);
         scene.pushMaterial(orange, orange, mat, fullRoughness, normalEmissionPower, 1000.f, opaque);
+        scene.pushMaterial(red, mat, fullRoughness);
+        scene.pushMaterial(white, 0.15f, 0.12f);
                 
         // scene objects
         scene.pushBox(glm::vec3(0.f, -1.05f, 0.f), glm::vec3(12.f, 0.05f, 12.f), glm::vec3(0.f), 0);
         scene.pushBox(glm::vec3(-2.2f, -0.4f, -0.4f), glm::vec3(0.65f), glm::vec3(0.f, 0.35f, 0.f), 1);
+        scene.pushSquarePyramid(glm::vec3(-2.2f, 0.25f, -0.4f), glm::vec2(0.72f), 0.75f, glm::vec3(0.f, 0.35f, 0.f), 5);
         scene.pushSphere(glm::vec3(0.1f, 0.9f, -0.4f), 0.85f, 2);
         scene.pushCone(glm::vec3(2.0f, 0.25f, -0.4f), 0.65f, 1.4f, glm::vec3(0.25f, 0.f, -0.25f), 3);
+        scene.pushIcosahedron(glm::vec3(2.7f, -0.532f, 1.25f), 0.55f, glm::vec3(0.f), 6);
         scene.pushSphere(glm::vec3(-4.f, -2.5f, -24.f), 2.f, 4);
 
         // camera

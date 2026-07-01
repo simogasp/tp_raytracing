@@ -66,6 +66,8 @@ namespace Raytracing
         const glm::vec3 cyan = glm::vec3(51.f / 255, 77.f / 255, 1.f);
         /**Gray color. */
         const glm::vec3 gray = glm::vec3(122.f / 255, 127.f / 255, 128.f / 255);
+        /**Beige color. */
+        const glm::vec3 beige = glm::vec3(230.f / 255, 255.f / 255, 150.f / 255);
 
         // shininess helper
         /**A full mat shininess. */
