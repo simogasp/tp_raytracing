@@ -6,6 +6,19 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 
+namespace
+{
+    glm::vec3 rotateAroundAxis(const glm::vec3& vector, const glm::vec3& axis, float angle)
+    {
+        const glm::vec3 normalizedAxis = glm::normalize(axis);
+        const float cosAngle = std::cos(angle);
+        const float sinAngle = std::sin(angle);
+        return vector * cosAngle
+            + glm::cross(normalizedAxis, vector) * sinAngle
+            + normalizedAxis * glm::dot(normalizedAxis, vector) * (1.f - cosAngle);
+    }
+}
+
 Raytracing::Camera::Camera(const glm::vec3& positionCamera,
                            const glm::vec3& lookAtCamera,
                            const glm::vec3& upCamera,
@@ -124,68 +137,52 @@ void Raytracing::Camera::down()
 
 void Raytracing::Camera::lookUp()
 {
-    const glm::mat3 rot(
-        1, 0, 0,
-        0, cosRotationSpeed, sinRotationSpeed,
-        0, - sinRotationSpeed, cosRotationSpeed);
-    upVector = rot * upVector;
-    z = rot * z;
-    y = rot * y;
+    z = glm::normalize(rotateAroundAxis(z, x, -rotationSpeed));
+    y = glm::normalize(glm::cross(z, x));
+    upVector = y;
     lookAt = position + z;
+    updateRay();
 }
 
 void Raytracing::Camera::lookDown()
 {
-    const glm::mat3 rot(
-        1, 0, 0,
-        0, cosRotationSpeed, - sinRotationSpeed,
-        0, sinRotationSpeed, cosRotationSpeed);
-    upVector = rot * upVector;
-    z = rot * z;
-    y = rot * y;
+    z = glm::normalize(rotateAroundAxis(z, x, rotationSpeed));
+    y = glm::normalize(glm::cross(z, x));
+    upVector = y;
     lookAt = position + z;
+    updateRay();
 }
 
 void Raytracing::Camera::lookLeft()
 {
-    const glm::mat3 rot(
-        cosRotationSpeed, 0, - sinRotationSpeed,
-        0, 1, 0,
-        sinRotationSpeed, 0, cosRotationSpeed);
-    x = rot * x;
-    z = rot * z;
+    x = glm::normalize(rotateAroundAxis(x, y, rotationSpeed));
+    z = glm::normalize(rotateAroundAxis(z, y, rotationSpeed));
     lookAt = position + z;
+    updateRay();
 }
 
 void Raytracing::Camera::lookRight()
 {
-    const glm::mat3 rot(
-        cosRotationSpeed, 0, sinRotationSpeed,
-        0, 1, 0,
-        - sinRotationSpeed, 0, cosRotationSpeed);
-    x = rot * x;
-    z = rot * z;
+    x = glm::normalize(rotateAroundAxis(x, y, -rotationSpeed));
+    z = glm::normalize(rotateAroundAxis(z, y, -rotationSpeed));
     lookAt = position + z;
+    updateRay();
 }
 
 void Raytracing::Camera::rotateClockWise()
 {
-    const glm::mat3 rot(
-        cosRotationSpeed, sinRotationSpeed, 0,
-        -sinRotationSpeed, cosRotationSpeed, 0,
-        0, 0, 1);
-    upVector = rot * upVector;
-    computeBase();
+    x = glm::normalize(rotateAroundAxis(x, z, rotationSpeed));
+    y = glm::normalize(glm::cross(z, x));
+    upVector = y;
+    updateRay();
 }
 
 void Raytracing::Camera::rotateAntiClockWise()
 {
-    const glm::mat3 rot(
-        cosRotationSpeed, -sinRotationSpeed, 0,
-        sinRotationSpeed, cosRotationSpeed, 0,
-        0, 0, 1);
-    upVector = rot * upVector;
-    computeBase();
+    x = glm::normalize(rotateAroundAxis(x, z, -rotationSpeed));
+    y = glm::normalize(glm::cross(z, x));
+    upVector = y;
+    updateRay();
 }
 
 void Raytracing::Camera::onResize(uint32_t newWidth, uint32_t newHeight)
