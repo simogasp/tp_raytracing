@@ -28,7 +28,7 @@ namespace Raytracing
                 0.8f);
         scene.pushMaterial(orange, orange, mat, fullRoughness, normalEmissionPower, 1000.f, opaque);
         scene.pushMaterial(red, mat, fullRoughness);
-        scene.pushMaterial(white, 0.15f, 0.12f);
+        scene.pushMaterial(white, shiny, noRoughness);
                 
         // scene objects
         scene.pushBox(glm::vec3(0.f, -1.05f, 0.f), glm::vec3(12.f, 0.05f, 12.f), glm::vec3(0.f), 0);
