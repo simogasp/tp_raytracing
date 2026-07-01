@@ -14,7 +14,7 @@
 #define BOUNCES 5
 
 // devide the resolution by 4 to accelerate the computation
-#define RESON4 0
+#define RESON4 1
 
 // define a minimum value for refractive materials
 #define REFRACTION_MIN 1e-4f
@@ -24,7 +24,7 @@
 
 // define a wider marching threshold before refining the hit position.
 // Grazing rays need too many iterations to reach HIT_EPSILON directly.
-#define RAY_MARCH_HIT_EPSILON 2e-3f
+#define RAY_MARCH_HIT_EPSILON 1e-6f
 
 // make the marching hit threshold slightly grow with distance to avoid
 // horizon-like banding on very shallow floor rays.
