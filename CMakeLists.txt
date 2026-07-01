@@ -148,7 +148,10 @@ set(RAYTRACER_CORE_SOURCES
         src/raytracing/core/hittableObject/Box.cpp
         src/raytracing/core/hittableObject/Cone.cpp
         src/raytracing/core/hittableObject/Cylinder.cpp
-        src/raytracing/core/hittableObject/Sphere.cpp)
+        src/raytracing/core/hittableObject/Icosahedron.cpp
+        src/raytracing/core/hittableObject/SquarePyramid.cpp
+        src/raytracing/core/hittableObject/Sphere.cpp
+        src/raytracing/core/hittableObject/TriangularPyramid.cpp)
 
 add_library(core ${RAYTRACER_CORE_SOURCES})
 target_include_directories(core PUBLIC $<BUILD_INTERFACE:${RAYTRACER_INCLUDE_DIR}>)
