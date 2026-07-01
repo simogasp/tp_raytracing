@@ -4,7 +4,10 @@
 #include "raytracing/core/hittableObject/Box.hpp"
 #include "raytracing/core/hittableObject/Cone.hpp"
 #include "raytracing/core/hittableObject/Cylinder.hpp"
+#include "raytracing/core/hittableObject/Icosahedron.hpp"
 #include "raytracing/core/hittableObject/Sphere.hpp"
+#include "raytracing/core/hittableObject/SquarePyramid.hpp"
+#include "raytracing/core/hittableObject/TriangularPyramid.hpp"
 
 namespace Raytracing
 {
@@ -72,6 +75,20 @@ namespace Raytracing
          * @param materialIndex the index of the material in the material list.
          */
         void pushCone(glm::vec3 baseCenter, float radius, float height, glm::vec3 rotation, unsigned int materialIndex);
+
+        void pushSquarePyramid(glm::vec3 baseCenter,
+                               glm::vec2 halfBaseSize,
+                               float height,
+                               glm::vec3 rotation,
+                               unsigned int materialIndex);
+
+        void pushTriangularPyramid(glm::vec3 baseCenter,
+                                   float baseRadius,
+                                   float height,
+                                   glm::vec3 rotation,
+                                   unsigned int materialIndex);
+
+        void pushIcosahedron(glm::vec3 center, float radius, glm::vec3 rotation, unsigned int materialIndex);
         /**
          * Adds a material with the given properties. The more a sphere is shiny,
          * the more its color is influenced by the next bounce color. The more a sphere is

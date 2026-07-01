@@ -35,6 +35,29 @@ void Raytracing::SceneFactory::pushCone(const glm::vec3 baseCenter, float radius
     currentScene.addObject(std::make_shared<Cone>(baseCenter, radius, height, rotation, materialIndex));
 }
 
+void Raytracing::SceneFactory::pushSquarePyramid(const glm::vec3 baseCenter,
+                                                 const glm::vec2 halfBaseSize,
+                                                 float height,
+                                                 const glm::vec3 rotation,
+                                                 unsigned int materialIndex)
+{
+    currentScene.addObject(std::make_shared<SquarePyramid>(baseCenter, halfBaseSize, height, rotation, materialIndex));
+}
+
+void Raytracing::SceneFactory::pushTriangularPyramid(const glm::vec3 baseCenter,
+                                                     float baseRadius,
+                                                     float height,
+                                                     const glm::vec3 rotation,
+                                                     unsigned int materialIndex)
+{
+    currentScene.addObject(std::make_shared<TriangularPyramid>(baseCenter, baseRadius, height, rotation, materialIndex));
+}
+
+void Raytracing::SceneFactory::pushIcosahedron(const glm::vec3 center, float radius, const glm::vec3 rotation, unsigned int materialIndex)
+{
+    currentScene.addObject(std::make_shared<Icosahedron>(center, radius, rotation, materialIndex));
+}
+
 void Raytracing::SceneFactory::pushMaterial(const glm::vec3& reflectionColor, float shininess, float roughness)
 {
     Material mat;
