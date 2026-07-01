@@ -2,6 +2,18 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui/imgui.h"
 #include <algorithm>
+#include <cmath>
+#include <memory>
+
+namespace
+{
+    glm::vec3 rotateAroundY(const glm::vec3& vector, float angle)
+    {
+        const float c = std::cos(angle);
+        const float s = std::sin(angle);
+        return {c * vector.x + s * vector.z, vector.y, -s * vector.x + c * vector.z};
+    }
+}
 
 namespace Raytracing
 {
@@ -31,9 +43,38 @@ namespace Raytracing
         scene.pushMaterial(white, shiny, noRoughness);
                 
         // scene objects
+        const glm::vec3 houseCenter(-2.2f, -0.4f, -0.4f);
+        const glm::vec3 houseRotation(0.f, 0.35f, 0.f);
+        Scene::ObjectPtr house = std::make_shared<Box>(houseCenter, glm::vec3(0.65f), houseRotation, 1);
+
+        const auto makeHouseCutout = [&](const glm::vec3& localCenter, const glm::vec3& halfSize) {
+            return std::make_shared<Box>(houseCenter + rotateAroundY(localCenter, houseRotation.y), halfSize, houseRotation, 1);
+        };
+
+        house = std::make_shared<CsgObject>(
+            house,
+            makeHouseCutout(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.43f)),
+            CsgOperation::Subtraction,
+            1);
+        house = std::make_shared<CsgObject>(
+            house,
+            makeHouseCutout(glm::vec3(-0.24f, -0.32f, 0.65f), glm::vec3(0.16f, 0.34f, 0.24f)),
+            CsgOperation::Subtraction,
+            1);
+        house = std::make_shared<CsgObject>(
+            house,
+            makeHouseCutout(glm::vec3(0.25f, 0.04f, 0.65f), glm::vec3(0.14f, 0.16f, 0.24f)),
+            CsgOperation::Subtraction,
+            1);
+        house = std::make_shared<CsgObject>(
+            house,
+            makeHouseCutout(glm::vec3(0.f, 0.04f, -0.65f), glm::vec3(0.18f, 0.16f, 0.24f)),
+            CsgOperation::Subtraction,
+            1);
+
         scene.pushBox(glm::vec3(0.f, -1.05f, 0.f), glm::vec3(12.f, 0.05f, 12.f), glm::vec3(0.f), 0);
-        scene.pushBox(glm::vec3(-2.2f, -0.4f, -0.4f), glm::vec3(0.65f), glm::vec3(0.f, 0.35f, 0.f), 1);
-        scene.pushSquarePyramid(glm::vec3(-2.2f, 0.25f, -0.4f), glm::vec2(0.72f), 0.75f, glm::vec3(0.f, 0.35f, 0.f), 5);
+        scene.pushObject(house);
+        scene.pushSquarePyramid(glm::vec3(-2.2f, 0.25f, -0.4f), glm::vec2(0.72f), 0.75f, houseRotation, 5);
         scene.pushSphere(glm::vec3(0.1f, 0.9f, -0.4f), 0.85f, 2);
         scene.pushCone(glm::vec3(2.0f, 0.25f, -0.4f), 0.65f, 1.4f, glm::vec3(0.25f, 0.f, -0.25f), 3);
         scene.pushIcosahedron(glm::vec3(2.7f, -0.532f, 1.25f), 0.55f, glm::vec3(0.f), 6);
