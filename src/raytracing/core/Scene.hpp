@@ -1,6 +1,6 @@
 # pragma once
-# include "hittableObject/HittableObject.hpp"
-# include "hittableObject/Material.hpp"
+# include "hittableObjects/HittableObject.hpp"
+# include "hittableObjects/Material.hpp"
 # include <memory>
 # include <vector>
 

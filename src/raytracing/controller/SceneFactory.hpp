@@ -1,13 +1,13 @@
 #pragma once
 
 #include "raytracing/core/Scene.hpp"
-#include "raytracing/core/hittableObject/Box.hpp"
-#include "raytracing/core/hittableObject/Cone.hpp"
-#include "raytracing/core/hittableObject/Cylinder.hpp"
-#include "raytracing/core/hittableObject/Icosahedron.hpp"
-#include "raytracing/core/hittableObject/Sphere.hpp"
-#include "raytracing/core/hittableObject/SquarePyramid.hpp"
-#include "raytracing/core/hittableObject/TriangularPyramid.hpp"
+#include "raytracing/core/hittableObjects/Box.hpp"
+#include "raytracing/core/hittableObjects/Cone.hpp"
+#include "raytracing/core/hittableObjects/Cylinder.hpp"
+#include "raytracing/core/hittableObjects/Icosahedron.hpp"
+#include "raytracing/core/hittableObjects/Sphere.hpp"
+#include "raytracing/core/hittableObjects/SquarePyramid.hpp"
+#include "raytracing/core/hittableObjects/TriangularPyramid.hpp"
 
 namespace Raytracing
 {
