@@ -245,9 +245,6 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
             // helper for the pixel index
             const uint32_t pixelIndex = (uint32_t) (x + y * getWidth());
             
-            //++ // TODO : handle the display of each pixel
-            
-            //<!!
             // ray construction
             Ray ray;
             ray.origin = renderingCamera.getPosition();
@@ -385,8 +382,6 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
                 outColorVect.b,
                 255);
             imageData[pixelIndex] = outColor;
-            //>!!
-            //++ imageData[pixelIndex] = IM_COL32((int) ((double) x / (double) getWidth() * 255), (int) ((1. - (double) y / (double) getHeight()) * 255), 0, 255);
 #if RESON4
             imageData[(x + 1) + y * getWidth()] = outColor;
             imageData[x + (y + 1) * getWidth()] = outColor;
@@ -427,7 +422,7 @@ char *Raytracing::Renderer::getFormulatoString(const uint32_t i) const
 
 Raytracing::HitPayload Raytracing::Renderer::rayMarch(Ray *ray, const Scene& renderedScene, const SdfObjectList& sdfObjects, float maxDistance) const
 {
-    //++ // TODO : check intersection with spheres  
+    //++ // TODO : check intersection with objects  
 
     //<!!
     // index
@@ -512,31 +507,25 @@ Raytracing::HitPayload Raytracing::Renderer::closestHit(Ray *ray, const Scene& r
 
 Raytracing::HitPayload Raytracing::Renderer::miss() const
 {
-    //++ // TODO : return a empty (or with negative distance) payload
     // returned the payload
     Raytracing::HitPayload payload;
-    payload.hitDistance = -1; //!!
+    payload.hitDistance = -1;
     return payload;
 }
 
 float Raytracing::Renderer::getAttenuation(const HitPayload& payload, const Material& mat) const
 {
     // light attenuation
-    //++ // TODO : fit the getFormulatoString to add a light attenuation phenomen
-    //<!!
     const double dOnR = payload.hitDistance / mat.attenuationRadius;
     const double a = (1. - dOnR * dOnR);
-    //>!!
     switch (attenuationFormula)
     {
-    //<!!
     case 1:
         return glm::max(0.f, (float) (1. - dOnR));
     case 2:
         return glm::max(0.f, (float) a);
     case 4:
         return glm::exp((float) (-dOnR * dOnR));
-    //>!!
     default:
         return 1.;
     }

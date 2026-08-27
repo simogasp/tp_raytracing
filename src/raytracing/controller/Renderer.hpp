@@ -122,6 +122,12 @@ namespace Raytracing
          * Traces the given ray.
          * @return a hit payload with usefull information.
          */
+        HitPayload traceRay(Ray *ray) const;
+
+        /**
+         * Traces the given ray.
+         * @return a hit payload with usefull information.
+         */
         HitPayload rayMarch(Ray *ray, const Scene& renderedScene, const SdfObjectList& sdfObjects, float maxDistance) const;
 
         /**
