@@ -8,6 +8,10 @@ namespace Raytracing
     App::App()
         : camera(), scene()
     {
+        // BASIC MATERIAL(use material index 0)
+        scene.pushMaterial(white, 0.0f, 1.0f);
+
+        //<!!
         // materials
         scene.pushMaterial(magenta, mat, fullRoughness);
         scene.pushMaterial(gray, shiny, noRoughness);
@@ -20,6 +24,7 @@ namespace Raytracing
                 0.f,
                 plexiGlassTranslucid);
                 
+        //>!!
         // spheres
         scene.pushSphere(redPos, 1.f, 0);
         scene.pushSphere(floorPos, 1000.f, 1);

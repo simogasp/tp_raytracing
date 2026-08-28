@@ -47,11 +47,13 @@ namespace Raytracing
         /**Starting LookAt. */
         const glm::vec3 startingLookAt = glm::vec3(-1.f, 0.f, 0.f);
 
+        /**White color. */
+        const glm::vec3 white = glm::vec3(1.f, 1.f, 1.f);
+
+        //<!!
         // color helper
         /**Black color. */
         const glm::vec3 black = glm::vec3(0.f, 0.f, 0.f);
-        /**White color. */
-        const glm::vec3 white = glm::vec3(1.f, 1.f, 1.f);
         /**Red color. */
         const glm::vec3 magenta = glm::vec3(1.f, 0.f, 1.f);
         /**Blue color. */
@@ -106,7 +108,7 @@ namespace Raytracing
         const float waterTranslucid = 1.33f;
         /**A plexiglass material material. */
         const float plexiGlassTranslucid = 1.5f;
-
+        //>!!
         
         /* data */
         /** 

@@ -15,6 +15,9 @@
 // devide the resolution by 4 to accelerate the computation
 #define RESON4 0
 
+// a mathematical epsilon to avoid clipping in the same sphere twice (and other uses)
+#define EPSILON 1e-2f
+
 Raytracing::Renderer::Renderer()
     : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 15 * glm::pi<float>() / 16, 0, 500)
 {
