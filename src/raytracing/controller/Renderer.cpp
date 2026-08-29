@@ -6,7 +6,9 @@
 #include <glm/gtc/constants.hpp>
 #include <cstdlib>
 #include <iostream>
+#ifdef TRACER_WITH_OPENMP
 #include <omp.h>
+#endif
 #include <random>
 
 // number of bounce to made
@@ -18,13 +20,35 @@
 // a mathematical epsilon to avoid clipping in the same sphere twice (and other uses)
 #define EPSILON 1e-2f
 
+static std::size_t tracer_get_thread_num()
+{
+#ifdef TRACER_WITH_OPENMP
+    return static_cast<std::size_t>(omp_get_thread_num());
+#else
+    return 0u;
+#endif
+}
+
+static std::size_t tracer_get_max_threads()
+{
+#ifdef TRACER_WITH_OPENMP
+    return static_cast<std::size_t>(omp_get_max_threads());
+#else
+    return 1u;
+#endif
+}
+
+
+
 Raytracing::Renderer::Renderer()
     : camera({0, 0, 2}, {0, 0, 0}, {0, 1, 0}, 15 * glm::pi<float>() / 16, 0, 500)
 {
     image = new ImageWrapper();
     attenuationFormula = 1;
 
-    omp_set_num_threads(12);
+#ifdef TRACER_WITH_OPENMP
+    omp_set_num_threads(4);
+#endif
 }
 
 uint32_t Raytracing::Renderer::getWidth() const
@@ -85,7 +109,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     const std::vector<glm::vec3>& dirs = camera.getRayDirections();
 
     // random generator for noise
-    const size_t numThreads = static_cast<size_t>(omp_get_max_threads());
+    const auto numThreads = tracer_get_max_threads();
     std::vector<std::mt19937> rngs(numThreads);
 
     std::random_device rd;
@@ -107,7 +131,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     for (size_t y = 0; y < getHeight(); y++)
 #endif
     {
-        const size_t tid = static_cast<size_t>(omp_get_thread_num());
+        const auto tid = tracer_get_thread_num();
         auto &rng = rngs[tid];
 #if RESON4
         for (size_t x = 0; x < getWidth(); x += 2)
