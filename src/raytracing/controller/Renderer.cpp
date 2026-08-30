@@ -279,9 +279,8 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
 #endif
         }
     }
-
-    image->setData(imageData);
 }
+    image->setData(imageData);
 }
 
 void Raytracing::Renderer::resetAcc()
