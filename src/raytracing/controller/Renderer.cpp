@@ -104,21 +104,13 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     // get the computed ray direction from camera
     const std::vector<glm::vec3>& dirs = camera.getRayDirections();
 
-    // random generator for noise
-    const auto numThreads = tracer_get_max_threads();
-    std::vector<std::mt19937> rngs(numThreads);
-
-    std::random_device rd;
-    for (auto &rng : rngs) {
-        rng.seed(rd());
-    }
-
 #pragma omp parallel
 {
-    //#pragma omp single
-    //{
-    //    std::cout << "Threads OpenMP: " << omp_get_num_threads() << std::endl;
-    //}
+    thread_local std::mt19937 rng([]() {
+        std::random_device rd;
+        return rd();
+    }());
+
 #if RESON4
     #pragma omp for schedule(static)
     for (size_t y = 0; y < getHeight(); y += 2)
@@ -127,8 +119,7 @@ void Raytracing::Renderer::Render(const Scene &renderedScene, const Camera &rend
     for (size_t y = 0; y < getHeight(); y++)
 #endif
     {
-        const auto tid = tracer_get_thread_num();
-        auto &rng = rngs[tid];
+
 #if RESON4
         for (size_t x = 0; x < getWidth(); x += 2)
 #else
