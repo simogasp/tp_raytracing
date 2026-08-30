@@ -8,6 +8,8 @@
 #include "raytracing/controller/SceneFactory.hpp"
 
 #include "glm/glm.hpp"
+#include <chrono>
+#include <deque>
 
 namespace Raytracing
 {
@@ -16,95 +18,97 @@ namespace Raytracing
     {
     private:
         /** Cam 1 position */
-        const glm::vec3 camPos = glm::vec3(-56.443f, -11.0f, 40.181f);
+        static inline const glm::vec3 camPos = glm::vec3(-56.443f, -11.0f, 40.181f);
         /** LookAt 1 position */
-        const glm::vec3 lookAtPos = glm::vec3(-55.641f, -11.0f, 39.584f);
+        static inline const glm::vec3 lookAtPos = glm::vec3(-55.641f, -11.0f, 39.584f);
         
         /** Cam 2 position */
-        const glm::vec3 camPos2 = glm::vec3(-6.709, 0, 3.160);
+        static inline const glm::vec3 camPos2 = glm::vec3(-6.709, 0, 3.160);
         /** LookAt 2 position */
-        const glm::vec3 lookAtPos2 = glm::vec3(-5.907, 0, 2.563);
+        static inline const glm::vec3 lookAtPos2 = glm::vec3(-5.907, 0, 2.563);
         
         /** Cam 3 position */
-        const glm::vec3 camPos3 = glm::vec3(-56.443f, 11.0f, 40.181f);
+        static inline const glm::vec3 camPos3 = glm::vec3(-56.443f, 11.0f, 40.181f);
         /** LookAt 3 position */
-        const glm::vec3 lookAtPos3 = glm::vec3(-55.641f, 11.0f, 39.584f);
+        static inline const glm::vec3 lookAtPos3 = glm::vec3(-55.641f, 11.0f, 39.584f);
         
         /** Cam 4 position */
-        const glm::vec3 camPos4 = glm::vec3(-0.443f, .0f, 5.715f);
+        static inline const glm::vec3 camPos4 = glm::vec3(-0.443f, .0f, 5.715f);
         /** LookAt 4 position */
-        const glm::vec3 lookAtPos4 = glm::vec3(-0.335f, 0.0f, 4.724f);
+        static inline const glm::vec3 lookAtPos4 = glm::vec3(-0.335f, 0.0f, 4.724f);
         
         /** Cam 5 position */
-        const glm::vec3 camPos5 = glm::vec3(0.f, .0f, 2.f);
+        static inline const glm::vec3 camPos5 = glm::vec3(0.f, .0f, 2.f);
         /** LookAt 5 position */
-        const glm::vec3 lookAtPos5 = glm::vec3(0.f);
+        static inline const glm::vec3 lookAtPos5 = glm::vec3(0.f);
         
         /**Starting Camera. */
-        const glm::vec3 startingCamera = glm::vec3(0.f, 0.f, -3.f);
+        static inline const glm::vec3 startingCamera = glm::vec3(0.f, 0.f, -3.f);
         /**Starting LookAt. */
-        const glm::vec3 startingLookAt = glm::vec3(-1.f, 0.f, 0.f);
+        static inline const glm::vec3 startingLookAt = glm::vec3(-1.f, 0.f, 0.f);
 
+        /**White color. */
+        static inline const glm::vec3 white = glm::vec3(1.f, 1.f, 1.f);
+
+        //<!!
         // color helper
         /**Black color. */
-        const glm::vec3 black = glm::vec3(0.f, 0.f, 0.f);
-        /**White color. */
-        const glm::vec3 white = glm::vec3(1.f, 1.f, 1.f);
+        static inline const glm::vec3 black = glm::vec3(0.f, 0.f, 0.f);
         /**Red color. */
-        const glm::vec3 magenta = glm::vec3(1.f, 0.f, 1.f);
+        static inline const glm::vec3 magenta = glm::vec3(1.f, 0.f, 1.f);
         /**Blue color. */
-        const glm::vec3 blue = glm::vec3(51.f / 255, 77.f / 255, 1.f);
+        static inline const glm::vec3 blue = glm::vec3(51.f / 255, 77.f / 255, 1.f);
         /**Orange color. */
-        const glm::vec3 orange = glm::vec3(0.8f, 0.5f, 0.2f);
+        static inline const glm::vec3 orange = glm::vec3(0.8f, 0.5f, 0.2f);
         /**Gray color. */
-        const glm::vec3 gray = glm::vec3(122.f / 255, 127.f / 255, 128.f / 255);
+        static inline const glm::vec3 gray = glm::vec3(122.f / 255, 127.f / 255, 128.f / 255);
 
         // position helper
         /**Red sphere position. */
-        const glm::vec3 redPos = glm::vec3(-1.f, 0.f, 0.f);
+        static inline const glm::vec3 redPos = glm::vec3(-1.f, 0.f, 0.f);
         /**Floor sphere position. */
-        const glm::vec3 floorPos = glm::vec3(0.f, -1001.f, 0.f);
+        static inline const glm::vec3 floorPos = glm::vec3(0.f, -1001.f, 0.f);
         /**Light / sun sphere position. */
-        const glm::vec3 lightPos = glm::vec3(0.f, 10.f, 30.f);
+        static inline const glm::vec3 lightPos = glm::vec3(0.f, 10.f, 30.f);
         /**Glass sphere position. */
-        const glm::vec3 glassPos = glm::vec3(1.f, 0.f, 0.f);
+        static inline const glm::vec3 glassPos = glm::vec3(1.f, 0.f, 0.f);
 
         // shininess helper
         /**A full mat shininess. */
-        const float mat = 0.0f;
+        static constexpr float mat = 0.0f;
         /**A middle shininess. */
-        const float midShiny = 0.5f;
+        static constexpr float midShiny = 0.5f;
         /**A full shiny material. */
-        const float shiny = 1.f;
+        static constexpr float shiny = 1.f;
 
         // roughness helper
         /**A material without roughness. */
-        const float noRoughness = 0.0f;
+        static constexpr float noRoughness = 0.0f;
         /**A middle roughness material */
-        const float midRoughness = .5f;
+        static constexpr float midRoughness = .5f;
         /**A full roughness material. */
-        const float fullRoughness = 1.0f;
+        static constexpr float fullRoughness = 1.0f;
 
         // emissionPower helper
         /**A non-emissive material. */
-        const float noEmissionPower = 0.F;
+        static constexpr float noEmissionPower = 0.F;
         /**A normal emissive material. */
-        const float normalEmissionPower = 1.F;
+        static constexpr float normalEmissionPower = 1.F;
         /**A brightness emissive material. */
-        const float midEmissionPower = 2.f;
+        static constexpr float midEmissionPower = 2.f;
         /**A very bright emissive material. */
-        const float fullEmissionPower = 10.f;
+        static constexpr float fullEmissionPower = 10.f;
 
         // refractive index helper
         /**A opaque material. */
-        const float opaque = 0.f;
+        static constexpr float opaque = 0.f;
         /**A air material. */
-        const float airTranslucid = 1.f;
+        static constexpr float airTranslucid = 1.f;
         /**A water material. */
-        const float waterTranslucid = 1.33f;
+        static constexpr float waterTranslucid = 1.33f;
         /**A plexiglass material material. */
-        const float plexiGlassTranslucid = 1.5f;
-
+        static constexpr float plexiGlassTranslucid = 1.5f;
+        //>!!
         
         /* data */
         /** 
@@ -131,6 +135,12 @@ namespace Raytracing
 
         /** The field of View of the Camera. */
         float focal = 2.f;
+
+        // FPS smoothing window
+        static constexpr double FPS_AVERAGE_WINDOW_SECONDS = 0.5;
+        std::deque<std::chrono::steady_clock::time_point> m_frameTimePoints;
+        float m_displayFps = 0.f;
+        float m_displayMs = 0.f;
 
     public:
         /**

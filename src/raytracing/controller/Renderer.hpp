@@ -141,7 +141,7 @@ namespace Raytracing
          * Gets the attenuation factor for a object light.
          * @return the attenuation
          */
-        [[nodiscard]] float getAttenuation(const HitPayload payload, const Material mat) const;
+        [[nodiscard]] float getAttenuation(const HitPayload& payload, const Material& mat) const;
     };
 
 }

@@ -30,12 +30,25 @@ namespace Raytracing
          * Gets the list of spheres.
          * @return a vector of spheres.
          */
-        [[nodiscard]] std::vector<Raytracing::Sphere> getListSphere() const;
+        [[nodiscard]] const std::vector<Raytracing::Sphere>& getListSphere() const;
+
+        /**
+         * Gets the (modifiable) list of spheres.
+         * @return a vector of spheres.
+         */
+        [[nodiscard]] std::vector<Raytracing::Sphere>& getListSphere();
+        
         /**
          * Gets the list of material.
          * @return a vector of Material.
          */
-        [[nodiscard]] std::vector<Raytracing::Material> getListMaterial() const;
+        [[nodiscard]] const std::vector<Raytracing::Material>& getListMaterial() const;
+
+        /**
+         * Gets the (modifiable) list of material.
+         * @return a vector of Material.
+         */
+        [[nodiscard]] std::vector<Raytracing::Material>& getListMaterial();
 
         /**
          * Adds the given sphere to the scene.

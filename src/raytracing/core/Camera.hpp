@@ -141,7 +141,7 @@ namespace Raytracing
          * @return a vector of vector3
          */
         [[ nodiscard ]]
-        std::vector<glm::vec3> getRayDirections() const;
+        const std::vector<glm::vec3>& getRayDirections() const;
 
         
 

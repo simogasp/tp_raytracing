@@ -1,11 +1,17 @@
 #include "App.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui/imgui.h"
+#include <algorithm>
+
 namespace Raytracing
 {
     App::App()
         : camera(), scene()
     {
+        // BASIC MATERIAL(use material index 0)
+        scene.pushMaterial(white, 0.0f, 1.0f);
+
+        //<!!
         // materials
         scene.pushMaterial(magenta, mat, fullRoughness);
         scene.pushMaterial(gray, shiny, noRoughness);
@@ -18,11 +24,12 @@ namespace Raytracing
                 0.f,
                 plexiGlassTranslucid);
                 
+        //>!!
         // spheres
-        scene.pushSphere(redPos, 1.f, 0);
-        scene.pushSphere(floorPos, 1000.f, 1);
-        scene.pushSphere(lightPos, 20.f, 2);
-        scene.pushSphere(glassPos, 1.f, 3);
+        scene.pushSphere(redPos, 1.f, 1);
+        scene.pushSphere(floorPos, 1000.f, 2);
+        scene.pushSphere(lightPos, 20.f, 3);
+        scene.pushSphere(glassPos, 1.f, 4);
 
         // camera
         camera.createNewCamera();
@@ -144,7 +151,24 @@ namespace Raytracing
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         // Dockspace Viewport
         ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoScrollbar);
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+
+        const auto now = std::chrono::steady_clock::now();
+        m_frameTimePoints.push_back(now);
+        const auto cutoff = now - std::chrono::duration<double>(FPS_AVERAGE_WINDOW_SECONDS);
+
+        while (m_frameTimePoints.size() > 1 && m_frameTimePoints[1] < cutoff)
+        {
+            m_frameTimePoints.pop_front();
+        }
+        if (m_frameTimePoints.size() >= 2)
+        {
+            const double elapsedSeconds = std::chrono::duration<double>(m_frameTimePoints.back() - m_frameTimePoints.front()).count();
+            const double frameCount = static_cast<double>(m_frameTimePoints.size() - 1);
+            m_displayFps = static_cast<float>(frameCount / std::max(elapsedSeconds, 1e-6));
+            m_displayMs = 1000.0f / std::max(m_displayFps, 1e-6f);
+        }
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", m_displayMs, m_displayFps);
 
         m_viewportWidth = (uint32_t) ImGui::GetContentRegionAvail().x;
         m_viewportHeight = (uint32_t) ImGui::GetContentRegionAvail().y;

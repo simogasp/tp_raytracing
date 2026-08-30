@@ -47,7 +47,7 @@ float Raytracing::Camera::getFar() const
     return far;
 }
 
-std::vector<glm::vec3> Raytracing::Camera::getRayDirections() const
+const std::vector<glm::vec3>& Raytracing::Camera::getRayDirections() const
 {
     return rayDirections;
 }
