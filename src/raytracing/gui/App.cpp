@@ -155,7 +155,8 @@ namespace Raytracing
         const auto now = std::chrono::steady_clock::now();
         m_frameTimePoints.push_back(now);
         const auto cutoff = now - std::chrono::duration<double>(FPS_AVERAGE_WINDOW_SECONDS);
-        while (!m_frameTimePoints.empty() && m_frameTimePoints.front() < cutoff)
+
+        while (m_frameTimePoints.size() > 1 && m_frameTimePoints[1] < cutoff)
         {
             m_frameTimePoints.pop_front();
         }
