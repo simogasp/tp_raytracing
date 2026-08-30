@@ -1,21 +1,10 @@
 #!/bin/bash
-
-clear && 
  
-echo "  ===============================================  " && 
-echo "                     CMAKE  " && 
-echo "  ===============================================  " && 
+set -e
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+BUILD_DIR="${SCRIPT_DIR}/build"
 
-cmake .. && 
+cmake -S "$SCRIPT_DIR" -B "$BUILD_DIR"
+cmake --build "$BUILD_DIR"
 
-echo "  ===============================================  " && 
-echo "                    MAKE ALL  " && 
-echo "  ===============================================  " && 
-
-make all && 
-
-echo "  ===============================================  " && 
-echo "                    EXECUTE  " && 
-echo "  ===============================================  " && 
-
-./raytracer
+exec "$BUILD_DIR/raytracer"
