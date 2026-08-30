@@ -45,10 +45,6 @@ Raytracing::Renderer::Renderer()
 {
     image = new ImageWrapper();
     attenuationFormula = 1;
-
-#ifdef TRACER_WITH_OPENMP
-    omp_set_num_threads(4);
-#endif
 }
 
 uint32_t Raytracing::Renderer::getWidth() const
