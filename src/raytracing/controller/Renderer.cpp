@@ -20,7 +20,11 @@
 // a mathematical epsilon to avoid clipping in the same sphere twice (and other uses)
 #define EPSILON 1e-2f
 
-static std::size_t tracer_get_thread_num()
+/**
+ * Get the thread number of the current thread.
+ * @return the thread number
+ */
+[[maybe_unused]] static std::size_t tracer_get_thread_num()
 {
 #ifdef TRACER_WITH_OPENMP
     return static_cast<std::size_t>(omp_get_thread_num());
@@ -29,7 +33,11 @@ static std::size_t tracer_get_thread_num()
 #endif
 }
 
-static std::size_t tracer_get_max_threads()
+/**
+ * Get the maximum number of threads available.
+ * @return the maximum number of threads
+ */
+[[maybe_unused]] static std::size_t tracer_get_max_threads()
 {
 #ifdef TRACER_WITH_OPENMP
     return static_cast<std::size_t>(omp_get_max_threads());
